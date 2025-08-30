@@ -25,30 +25,28 @@ import java.util.Optional;
 public class CommonEvents {
     @SubscribeEvent
     public static void modifyDefaultComponents(ModifyDefaultComponentsEvent event) {
+        List<String> suffixes = List.of(
+                "stairs",
+                "slab",
+                "wall"
+        );
 
         for (Item item : event.getAllItems().toList()) {
             ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
-            Block block = Block.byItem(item);
-            if (block instanceof SlabBlock || block instanceof StairBlock || key.getPath().endsWith("_stairs") || key.getPath().endsWith("_slab")) {
-                continue;
-            }
+            List<Item> shapes = new ArrayList<>();
 
-            Optional<Item> stairs = getOptional(key, "_stairs");
-            Optional<Item> slab = getOptional(key, "_slab");
+            for (String suffix : suffixes) {
+                if (key.getPath().endsWith(suffix)) continue;
 
-            if (stairs.isPresent() || slab.isPresent()) {
-                List<Item> shapes = new ArrayList<>();
-                stairs.ifPresent(s -> {
+                Optional<Item> optional = getOptional(key, suffix);
+
+                optional.ifPresent(s -> {
                     shapes.add(s);
                     event.modify(s, builder -> builder.set(CDataComponents.BLOCK.get(), item));
                 });
-                slab.ifPresent(s -> {
-                    shapes.add(s);
-                    event.modify(s, builder -> builder.set(CDataComponents.BLOCK.get(), item));
-                });
-
-                event.modify(item, builder -> builder.set(CDataComponents.SHAPES.get(), shapes));
             }
+
+            if (!shapes.isEmpty()) event.modify(item, builder -> builder.set(CDataComponents.SHAPES.get(), shapes));
         }
     }
 
@@ -70,10 +68,16 @@ public class CommonEvents {
     }
 
     public static Optional<Item> getOptional(ResourceLocation key, String suffix) {
-        if (key.getPath().endsWith("_planks")) {
-            return BuiltInRegistries.ITEM.getOptional(key.withPath(path -> path.substring(0, path.length() - 7) + suffix));
-        } else {
-            return BuiltInRegistries.ITEM.getOptional(key.getPath().endsWith("s") ? key.withPath(path -> path.substring(0, path.length() - 1) + suffix) : key.withSuffix(suffix));
+        String newSuffix = "_" + suffix;
+        Optional<Item> optional = BuiltInRegistries.ITEM.getOptional(key.withSuffix(newSuffix));
+        if (optional.isEmpty()) {
+            if (key.getPath().endsWith("_planks")) {
+                return BuiltInRegistries.ITEM.getOptional(key.withPath(path -> path.substring(0, path.length() - 7) + newSuffix));
+            } else if (key.getPath().endsWith("s")) {
+                return BuiltInRegistries.ITEM.getOptional(key.withPath(path -> path.substring(0, path.length() - 1) + newSuffix));
+            }
         }
+
+        return optional;
     }
 }
