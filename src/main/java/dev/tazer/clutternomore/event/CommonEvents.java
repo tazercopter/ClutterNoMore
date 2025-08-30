@@ -1,10 +1,8 @@
-package dev.tazer.clutternomore.common.event;
+package dev.tazer.clutternomore.event;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.common.registry.CDataComponents;
-import dev.tazer.clutternomore.networking.PlayerChangeStack;
-import net.minecraft.client.Minecraft;
+import dev.tazer.clutternomore.registry.CDataComponents;
+import dev.tazer.clutternomore.networking.ChangeStackPayload;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -12,13 +10,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.SlabType;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.ModifyDefaultComponentsEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
@@ -38,8 +33,6 @@ public class CommonEvents {
                 continue;
             }
 
-            // todo: remove selected shape index, make the stairs and slab store their own index in the original block component
-            // todo: remove the block itself from the shapes list
             Optional<Item> stairs = getOptional(key, "_stairs");
             Optional<Item> slab = getOptional(key, "_slab");
 
@@ -67,12 +60,12 @@ public class CommonEvents {
     }
 
     @SubscribeEvent
-    public static void register(RegisterPayloadHandlersEvent event) {
+    public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
         final PayloadRegistrar registrar = event.registrar("1");
         registrar.playToServer(
-                PlayerChangeStack.TYPE,
-                PlayerChangeStack.STREAM_CODEC,
-                PlayerChangeStack::handleDataOnServer
+                ChangeStackPayload.TYPE,
+                ChangeStackPayload.STREAM_CODEC,
+                ChangeStackPayload::handleDataOnServer
         );
     }
 
@@ -82,9 +75,5 @@ public class CommonEvents {
         } else {
             return BuiltInRegistries.ITEM.getOptional(key.getPath().endsWith("s") ? key.withPath(path -> path.substring(0, path.length() - 1) + suffix) : key.withSuffix(suffix));
         }
-    }
-
-    public static boolean isKeyDown(int key) {
-        return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), key);
     }
 }

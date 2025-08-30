@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.common.mixin;
+package dev.tazer.clutternomore.mixin;
 
 import dev.tazer.clutternomore.CHooks;
 import net.minecraft.world.inventory.AbstractContainerMenu;

@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.common.registry;
+package dev.tazer.clutternomore.registry;
 
 public class CKeyBindings {
 //    public static final KeyMapping MY_KEYBINDING = new KeyMapping("key.opengui", ,"category.cube");

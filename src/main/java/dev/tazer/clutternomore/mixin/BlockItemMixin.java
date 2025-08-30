@@ -1,15 +1,11 @@
-package dev.tazer.clutternomore.common.mixin;
+package dev.tazer.clutternomore.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.tazer.clutternomore.common.registry.CDataComponents;
-import net.minecraft.core.BlockPos;
+import dev.tazer.clutternomore.registry.CDataComponents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;

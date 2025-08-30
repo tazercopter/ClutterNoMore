@@ -9,13 +9,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record PlayerChangeStack(ItemStack stack) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<PlayerChangeStack> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "player_change_stack"));
+public record ChangeStackPayload(ItemStack stack) implements CustomPacketPayload {
+    public static final CustomPacketPayload.Type<ChangeStackPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "player_change_stack"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PlayerChangeStack> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ChangeStackPayload> STREAM_CODEC = StreamCodec.composite(
             ItemStack.STREAM_CODEC,
-            PlayerChangeStack::stack,
-            PlayerChangeStack::new
+            ChangeStackPayload::stack,
+            ChangeStackPayload::new
     );
 
     @Override
@@ -23,7 +23,7 @@ public record PlayerChangeStack(ItemStack stack) implements CustomPacketPayload 
         return TYPE;
     }
 
-    public static void handleDataOnServer(final PlayerChangeStack data, final IPayloadContext context) {
+    public static void handleDataOnServer(final ChangeStackPayload data, final IPayloadContext context) {
         context.player().setItemInHand(InteractionHand.MAIN_HAND, data.stack);
     }
 }

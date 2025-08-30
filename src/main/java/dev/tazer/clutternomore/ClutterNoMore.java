@@ -1,8 +1,7 @@
 package dev.tazer.clutternomore;
 
 import com.mojang.logging.LogUtils;
-import dev.tazer.clutternomore.client.event.SwitchingHandler;
-import dev.tazer.clutternomore.common.registry.CDataComponents;
+import dev.tazer.clutternomore.registry.CDataComponents;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.common.registry;
+package dev.tazer.clutternomore.registry;
 
 import dev.tazer.clutternomore.ClutterNoMore;
 import net.minecraft.core.component.DataComponentType;

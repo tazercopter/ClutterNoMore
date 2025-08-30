@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore;
 
-import dev.tazer.clutternomore.common.registry.CDataComponents;
+import dev.tazer.clutternomore.registry.CDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -37,7 +37,7 @@ public class CHooks {
     }
 
     public static List<ItemStack> getDrops(List<ItemStack> old, BlockState state, ServerLevel level, BlockPos pos, BlockEntity blockEntity, @Nullable Entity entity, ItemStack tool) {
-        if (state.getOptionalValue(SlabBlock.TYPE).isPresent() &&  state.getValue(SlabBlock.TYPE) != SlabType.DOUBLE || state.getBlock().asItem().getDefaultInstance().has(CDataComponents.BLOCK)) {
+        if (state.getOptionalValue(SlabBlock.TYPE).isPresent() && state.getValue(SlabBlock.TYPE) == SlabType.DOUBLE && state.getBlock().asItem().getDefaultInstance().has(CDataComponents.BLOCK)) {
             LootParams.Builder lootparams$builder = (new LootParams.Builder(level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos)).withParameter(LootContextParams.TOOL, tool).withOptionalParameter(LootContextParams.THIS_ENTITY, entity).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity);
             BlockState newState = state.setValue(SlabBlock.TYPE, SlabType.BOTTOM);
             return newState.getDrops(lootparams$builder);

@@ -1,31 +1,24 @@
-package dev.tazer.clutternomore.common.mixin;
+package dev.tazer.clutternomore.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import dev.tazer.clutternomore.common.registry.CDataComponents;
+import dev.tazer.clutternomore.registry.CDataComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.neoforged.neoforge.common.conditions.WithConditions;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
 
-@Mixin(RecipeManager.class)
+@Mixin(value = RecipeManager.class)
 public class RecipeManagerMixin {
     @Shadow
     private Map<ResourceLocation, RecipeHolder<?>> byName;

@@ -1,11 +1,13 @@
 {
   "required": true,
-  "package": "dev.tazer.clutternomore.common.mixin",
+  "package": "dev.tazer.clutternomore.mixin",
   "compatibilityLevel": "JAVA_21",
   "refmap": "clutternomore.refmap.json",
   "mixins": [
     "AbstractContainerMenuMixin",
     "BlockItemMixin",
+    "BlockMixin",
+    "InventoryMixin",
     "RecipeManagerMixin",
     "SlotMixin"
   ],
