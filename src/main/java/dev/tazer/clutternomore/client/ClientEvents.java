@@ -1,12 +1,15 @@
 package dev.tazer.clutternomore.client;
 
+import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.registry.CDataComponents;
 import dev.tazer.clutternomore.networking.ChangeStackPayload;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -27,9 +30,6 @@ import java.util.*;
 @EventBusSubscriber(modid = ClutterNoMore.MODID, value = Dist.CLIENT)
 public class ClientEvents {
     private static final Map<UUID, Float> ROW_INDEX = new HashMap<>();
-    private static final ResourceLocation LEFT_ARROW = ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "left_arrow");
-    private static final ResourceLocation RIGHT_ARROW = ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "right_arrow");
-    private static final ResourceLocation OUTLINE_SPRITE = ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "outline");
 
     public static final Lazy<KeyMapping> KEY_MAPPING = Lazy.of(() -> new KeyMapping(
             "key.clutternomore.change_block_shape",
@@ -38,7 +38,9 @@ public class ClientEvents {
     ));
 
     private static ItemStack getActiveHeldStack() {
-        if (KEY_MAPPING.get().isDown() && Minecraft.getInstance().screen == null) {
+        boolean activated = CNMConfig.HOLD.get() ? KEY_MAPPING.get().isDown() : KEY_MAPPING.get().consumeClick();
+
+        if (activated && Minecraft.getInstance().screen == null) {
             Player player = Minecraft.getInstance().player;
             if (player != null) {
                 ItemStack heldStack = player.getItemInHand(InteractionHand.MAIN_HAND);
@@ -57,7 +59,14 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void onKeyInput(InputEvent.MouseScrollingEvent event) {
+    public static void onKeyInput(InputEvent.Key event) {
+        if (event.getKey() == KEY_MAPPING.get().getKey().getValue()) {
+
+        }
+    }
+
+    @SubscribeEvent
+    public static void onMouseScrolling(InputEvent.MouseScrollingEvent event) {
         ItemStack heldStack = getActiveHeldStack();
         if (heldStack.isEmpty()) return;
         event.setCanceled(true);
@@ -70,7 +79,7 @@ public class ClientEvents {
 
         int scroll = (int) event.getScrollDeltaY();
         int maxIndex = shapes.size() - 1;
-        int nextIndex = shapes.indexOf(heldStack.getItem()) + scroll;
+        int nextIndex = shapes.indexOf(heldStack.getItem()) - scroll;
         if (nextIndex < 0) nextIndex = maxIndex;
         if (nextIndex > maxIndex) nextIndex = 0;
 
@@ -79,6 +88,9 @@ public class ClientEvents {
         Item nextItem = shapes.get(nextIndex);
         ItemStack next = nextItem.getDefaultInstance();
         next.setCount(count);
+        Player player = Objects.requireNonNull(Minecraft.getInstance().player);
+        player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
+        player.setItemInHand(InteractionHand.MAIN_HAND, next);
         PacketDistributor.sendToServer(new ChangeStackPayload(next));
     }
 
@@ -92,36 +104,51 @@ public class ClientEvents {
 
         List<Item> shapes = new ArrayList<>(Objects.requireNonNull(stack.get(CDataComponents.SHAPES)));
 
-        int originalIndex = shapes.size() / 2;
-        shapes.add(originalIndex, stack.getItem());
+        boolean alternative = !CNMConfig.SCROLLING.get();
 
-        int targetIndex = shapes.indexOf(heldStack.getItem());
-
-        int centreX = guiGraphics.guiWidth() / 2 - 8;
-        int baseY = guiGraphics.guiHeight() / 2 + 30;
+        int middleIndex = shapes.size() / 2;
+        shapes.add(middleIndex, stack.getItem());
+        int selectedIndex = shapes.indexOf(heldStack.getItem());
 
         UUID id = Minecraft.getInstance().player.getUUID();
-        float dt = Mth.clamp(event.getPartialTick().getRealtimeDeltaTicks(), 0, 1.5F);
+        float deltaTicks = Mth.clamp(event.getPartialTick().getRealtimeDeltaTicks(), 0, 1.5F);
+        float smoothing = 1 - (float) Math.exp(-10 * deltaTicks);
+
+        int y = guiGraphics.guiHeight() / 2 + 20;
+        int centreX = guiGraphics.guiWidth() / 2;
+        int spacing = 22;
+
+
         Float smoothed = ROW_INDEX.get(id);
-        float currentIndex = smoothed == null ? targetIndex : smoothed;
-        float smoothing = 1 - (float) Math.exp(-10 * dt);
-        currentIndex = Mth.lerp(smoothing, currentIndex, targetIndex);
+        float currentIndex = smoothed == null ? selectedIndex : smoothed;
+        currentIndex = Mth.lerp(smoothing, currentIndex, selectedIndex);
         ROW_INDEX.put(id, currentIndex);
+        int startX;
 
-        int startX = Mth.floor(centreX - currentIndex * 20);
-        for (int i = 0; i < shapes.size(); i++) {
-            int x = startX + i * 20;
-            float raiseFactor = 1 - Mth.clamp(Math.abs(i - currentIndex), 0, 1);
-            int y = baseY - Mth.floor(5 * raiseFactor);
-            guiGraphics.renderItem(shapes.get(i).getDefaultInstance(), x, y);
+        ResourceLocation background = ClutterNoMore.location("textures/gui/shape_background.png");
+        ResourceLocation selected = ClutterNoMore.location("textures/gui/selected_shape.png");
+
+        if (alternative) {
+            startX = Mth.floor(centreX - middleIndex * spacing);
+
+            for (int index = 0; index < shapes.size(); index++) {
+                int x = startX + index * spacing;
+
+                guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+                guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
+            }
+
+            guiGraphics.blit(selected, Mth.floor(startX + currentIndex * spacing) - 3, y - 3, 0, 0, 22, 22, 22, 22);
+        } else {
+            startX = Mth.floor(centreX - currentIndex * spacing);
+
+            for (int index = 0; index < shapes.size(); index++) {
+                int x = startX + index * spacing;
+                guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+                guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
+            }
+
+            guiGraphics.blit(selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
         }
-
-        int selectedSnap = Mth.floor(currentIndex + 0.5F);
-        int xSelected = startX + selectedSnap * 20;
-        float raiseSelected = 1 - Mth.clamp(Math.abs(currentIndex - selectedSnap), 0, 1);
-        int ySelected = baseY - Mth.floor(5 * raiseSelected);
-
-        guiGraphics.blitSprite(LEFT_ARROW, xSelected - 5, ySelected, 8, 8);
-        guiGraphics.blitSprite(RIGHT_ARROW, xSelected + 13, ySelected, 8, 8);
     }
 }

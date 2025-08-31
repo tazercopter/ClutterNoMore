@@ -1,0 +1,11 @@
+{
+  "values": {
+    "minecraft:stone_bricks": {
+      "shapes": [
+        "minecraft:lantern",
+        "minecraft:copper_block",
+        "minecraft:pumpkin"
+      ]
+    }
+  }
+}

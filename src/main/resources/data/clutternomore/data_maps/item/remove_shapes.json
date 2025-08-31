@@ -1,0 +1,9 @@
+{
+  "values": {
+    "minecraft:stone_bricks": {
+      "shapes": [
+        "minecraft:stone_brick_stairs"
+      ]
+    }
+  }
+}

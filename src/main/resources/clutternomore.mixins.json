@@ -4,14 +4,16 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "clutternomore.refmap.json",
   "mixins": [
-    "AbstractContainerMenuMixin",
     "BlockItemMixin",
     "BlockMixin",
-    "InventoryMixin",
-    "RecipeManagerMixin",
-    "SlotMixin"
+    "BuildCreativeModeTabContentsEventMixin",
+    "ItemStackMixin",
+    "RecipeManagerMixin"
   ],
   "client": [
+    "AccessibilityScreenMixin",
+    "OptionsSubScreenMixin",
+    "ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
