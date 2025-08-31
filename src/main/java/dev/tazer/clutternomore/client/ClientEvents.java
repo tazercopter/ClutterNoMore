@@ -1,5 +1,6 @@
 package dev.tazer.clutternomore.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.registry.CDataComponents;
@@ -7,6 +8,7 @@ import dev.tazer.clutternomore.networking.ChangeStackPayload;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -126,16 +128,18 @@ public class ClientEvents {
         ResourceLocation background = ClutterNoMore.location("textures/gui/shape_background.png");
         ResourceLocation selected = ClutterNoMore.location("textures/gui/selected_shape.png");
 
+
         if (alternative) {
             startX = Mth.floor(centreX - (float) shapes.size() / 2 * spacing) + spacing / 2;
 
             for (int index = 0; index < shapes.size(); index++) {
                 int x = startX + index * spacing;
-
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+                RenderSystem.enableBlend();
                 guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
             }
 
+            RenderSystem.enableBlend();
             guiGraphics.blit(selected, Mth.floor(startX + currentIndex * spacing) - 3, y - 3, 0, 0, 22, 22, 22, 22);
         } else {
             startX = Mth.floor(centreX - currentIndex * spacing);
@@ -143,10 +147,15 @@ public class ClientEvents {
             for (int index = 0; index < shapes.size(); index++) {
                 int x = startX + index * spacing;
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+                RenderSystem.enableBlend();
                 guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
+
             }
 
+            RenderSystem.enableBlend();
             guiGraphics.blit(selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
         }
+
+        RenderSystem.disableBlend();
     }
 }
