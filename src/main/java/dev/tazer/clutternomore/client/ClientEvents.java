@@ -74,8 +74,7 @@ public class ClientEvents {
         ItemStack stack = heldStack.getOrDefault(CDataComponents.BLOCK, heldStack.getItem()).getDefaultInstance();
         List<Item> shapes = new ArrayList<>(Objects.requireNonNull(stack.get(CDataComponents.SHAPES)));
 
-        int originalIndex = shapes.size() / 2;
-        shapes.add(originalIndex, stack.getItem());
+        shapes.addFirst(stack.getItem());
 
         int scroll = (int) event.getScrollDeltaY();
         int maxIndex = shapes.size() - 1;
@@ -106,8 +105,7 @@ public class ClientEvents {
 
         boolean alternative = !CNMConfig.SCROLLING.get();
 
-        int middleIndex = shapes.size() / 2;
-        shapes.add(middleIndex, stack.getItem());
+        shapes.addFirst(stack.getItem());
         int selectedIndex = shapes.indexOf(heldStack.getItem());
 
         UUID id = Minecraft.getInstance().player.getUUID();
@@ -115,7 +113,7 @@ public class ClientEvents {
         float smoothing = 1 - (float) Math.exp(-10 * deltaTicks);
 
         int y = guiGraphics.guiHeight() / 2 + 20;
-        int centreX = guiGraphics.guiWidth() / 2;
+        int centreX = guiGraphics.guiWidth() / 2 - 8;
         int spacing = 22;
 
 
@@ -129,7 +127,7 @@ public class ClientEvents {
         ResourceLocation selected = ClutterNoMore.location("textures/gui/selected_shape.png");
 
         if (alternative) {
-            startX = Mth.floor(centreX - middleIndex * spacing);
+            startX = Mth.floor(centreX - (float) shapes.size() / 2 * spacing) + spacing / 2;
 
             for (int index = 0; index < shapes.size(); index++) {
                 int x = startX + index * spacing;
