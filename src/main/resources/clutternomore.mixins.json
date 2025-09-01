@@ -11,9 +11,9 @@
     "RecipeManagerMixin"
   ],
   "client": [
-    "AccessibilityScreenMixin",
-    "OptionsSubScreenMixin",
-    "ScreenMixin"
+    "screen.AccessibilityScreenMixin",
+    "screen.OptionsSubScreenMixin",
+    "screen.ScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

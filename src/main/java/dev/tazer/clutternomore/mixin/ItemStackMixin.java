@@ -11,25 +11,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 import java.util.Objects;
 
+import static dev.tazer.clutternomore.event.CommonEvents.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.event.CommonEvents.SHAPES_DATAMAP;
+
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
     @Inject(method = "isSameItemSameComponents", at = @At("HEAD"), cancellable = true)
     private static void isSameItemSameComponents(ItemStack stack, ItemStack other, CallbackInfoReturnable<Boolean> cir) {
-        List<Item> shapes = stack.getOrDefault(CDataComponents.SHAPES, List.of());
-        if (shapes.contains(other.getItem())) {
-            cir.setReturnValue(true);
+        if (SHAPES_DATAMAP.containsKey(other.getItem())) {
+            if (SHAPES_DATAMAP.get(other.getItem()).contains(stack.getItem())) cir.setReturnValue(true);
             return;
         }
 
-        if (stack.has(CDataComponents.BLOCK)) {
-            Item originalItem = Objects.requireNonNull(stack.get(CDataComponents.BLOCK));
+        if (INVERSE_SHAPES_DATAMAP.containsKey(stack.getItem())) {
+            Item originalItem = INVERSE_SHAPES_DATAMAP.get(stack.getItem());
             if (other.is(originalItem)) {
                 cir.setReturnValue(true);
                 return;
             }
 
-            if (other.has(CDataComponents.BLOCK)) {
-                Item otherOriginalItem = Objects.requireNonNull(other.get(CDataComponents.BLOCK));
+            if (INVERSE_SHAPES_DATAMAP.containsKey(other.getItem())) {
+                Item otherOriginalItem = INVERSE_SHAPES_DATAMAP.get(other.getItem());
                 if (otherOriginalItem == originalItem) {
                     cir.setReturnValue(true);
                     return;

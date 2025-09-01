@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+import dev.tazer.clutternomore.event.CommonEvents;
 import dev.tazer.clutternomore.registry.CDataComponents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
@@ -17,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class BlockItemMixin {
     @Redirect(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;consume(ILnet/minecraft/world/entity/LivingEntity;)V"))
     private void place(ItemStack instance, int amount, LivingEntity entity, @Local(argsOnly = true) BlockPlaceContext context, @Local(ordinal = 0) BlockState blockstate) {
-        if (blockstate.getOptionalValue(SlabBlock.TYPE).isEmpty() ||  blockstate.getValue(SlabBlock.TYPE) != SlabType.DOUBLE || !context.getItemInHand().has(CDataComponents.BLOCK)) {
+        if (blockstate.getOptionalValue(SlabBlock.TYPE).isEmpty() ||  blockstate.getValue(SlabBlock.TYPE) != SlabType.DOUBLE || !CommonEvents.INVERSE_SHAPES_DATAMAP.containsKey(context.getItemInHand().getItem())) {
             instance.consume(amount, entity);
         }
     }

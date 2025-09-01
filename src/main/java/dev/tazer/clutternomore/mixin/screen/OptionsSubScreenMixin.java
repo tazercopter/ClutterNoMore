@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.mixin;
+package dev.tazer.clutternomore.mixin.screen;
 
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.components.OptionsList;

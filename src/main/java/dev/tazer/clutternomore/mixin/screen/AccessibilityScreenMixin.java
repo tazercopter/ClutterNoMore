@@ -1,13 +1,9 @@
-package dev.tazer.clutternomore.mixin;
+package dev.tazer.clutternomore.mixin.screen;
 
-import dev.tazer.clutternomore.CNMConfig;
-import dev.tazer.clutternomore.client.ShapeSwitcherScreen;
-import net.minecraft.client.OptionInstance;
+import dev.tazer.clutternomore.client.ShapeSwitcherOptionsScreen;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.options.AccessibilityOptionsScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -22,7 +18,7 @@ public class AccessibilityScreenMixin extends OptionsSubScreenMixin {
         Button shapeSwitcherButton = Button
                 .builder(
                         Component.translatable("key.clutternomore.shape_switcher"),
-                        button -> minecraft.setScreen(new ShapeSwitcherScreen(((AccessibilityOptionsScreen) (Object) this), options))
+                        button -> minecraft.setScreen(new ShapeSwitcherOptionsScreen(((AccessibilityOptionsScreen) (Object) this), options))
                 ).bounds(0, 0, 150, 20).build();
         list.addSmall(List.of(shapeSwitcherButton));
     }
