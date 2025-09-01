@@ -7,12 +7,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.Component;
 
-import java.util.List;
-
-public class ShapeSwitcherScreen extends OptionsSubScreen {
+public class ShapeSwitcherOptionsScreen extends OptionsSubScreen {
     public static final Component TITLE = Component.translatable("options.clutternomore.shape_switcher.title");
 
-    public ShapeSwitcherScreen(Screen lastScreen, Options options) {
+    public ShapeSwitcherOptionsScreen(Screen lastScreen, Options options) {
         super(lastScreen, options, TITLE);
     }
 

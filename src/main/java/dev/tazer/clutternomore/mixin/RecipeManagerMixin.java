@@ -18,6 +18,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Arrays;
 import java.util.Map;
 
+import static dev.tazer.clutternomore.event.CommonEvents.INVERSE_SHAPES_DATAMAP;
+
 @Mixin(value = RecipeManager.class)
 public class RecipeManagerMixin {
     @Shadow
@@ -41,11 +43,11 @@ public class RecipeManagerMixin {
 
         for(RecipeHolder<?> recipeholder : recipes) {
             Recipe<?> recipe = recipeholder.value();
-            if (recipe.getResultItem(registries).has(CDataComponents.BLOCK)) continue;
+            if (INVERSE_SHAPES_DATAMAP.containsKey(recipe.getResultItem(registries).getItem())) continue;
             recipe.getIngredients().replaceAll(ingredient -> Ingredient.of(
                     Arrays.stream(ingredient.getItems()).map(stack -> {
-                        if (stack.has(CDataComponents.BLOCK)) {
-                            ItemStack originalStack = stack.get(CDataComponents.BLOCK).getDefaultInstance();
+                        if (INVERSE_SHAPES_DATAMAP.containsKey(stack.getItem())) {
+                            ItemStack originalStack = INVERSE_SHAPES_DATAMAP.get(stack.getItem()).getDefaultInstance();
                             originalStack.setCount(stack.getCount());
                             return originalStack;
                         }

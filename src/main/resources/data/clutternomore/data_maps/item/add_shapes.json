@@ -1,9 +1,15 @@
 {
   "values": {
-    "minecraft:stone_bricks": {
+    "minecraft:lantern": {
       "shapes": [
-        "minecraft:lantern",
         "minecraft:copper_block",
+        "minecraft:pumpkin"
+      ]
+    }
+  },
+  "remove": {
+    "minecraft:lantern": {
+      "shapes": [
         "minecraft:pumpkin"
       ]
     }
