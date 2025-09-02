@@ -1,6 +1,26 @@
 {
   "values": {
-  },
-  "remove": {
+    "crimson_stem": {
+      "shapes": [
+        "crimson_hyphae"
+      ]
+    },
+    "warped_stem": {
+      "shapes": [
+        "warped_hyphae"
+      ]
+    },
+    "supplementaries:timber_frame": {
+      "shapes": [
+        "supplementaries:timber_brace",
+        "supplementaries:timber_cross_brace"
+      ]
+    },
+    "supplementaries:daub_frame": {
+      "shapes": [
+        "supplementaries:daub_brace",
+        "supplementaries:daub_cross_brace"
+      ]
+    }
   }
 }
