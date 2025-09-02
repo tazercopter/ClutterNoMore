@@ -7,7 +7,6 @@
     },
     "facing=north,double=true": {
       "model": "clutternomore:block/full_block",
-      "y": 180,
       "uvlock": true
     },
     "facing=east,double=false": {
@@ -17,7 +16,6 @@
     },
     "facing=east,double=true": {
       "model": "clutternomore:block/full_block",
-      "y": 270,
       "uvlock": true
     },
     "facing=south,double=false": {
@@ -35,7 +33,6 @@
     },
     "facing=west,double=true": {
       "model": "clutternomore:block/full_block",
-      "y": 90,
       "uvlock": true
     }
   }

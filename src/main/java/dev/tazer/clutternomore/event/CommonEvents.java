@@ -80,29 +80,41 @@ public class CommonEvents {
                                 shapes.add(shape);
                             }
                         });
-                    } else INVERSE_SHAPES_DATAMAP_INTERNAL.put(item, mainChild);
+                    }
                 }
 
                 if (!shapes.isEmpty()) SHAPES_DATAMAP_INTERNAL.put(item, shapes);
             }
+
             registry.getDataMap(ADD_SHAPE_DATA).forEach((resourceKey, shapes) -> {
                 Item item = BuiltInRegistries.ITEM.get(resourceKey);
                 SHAPES_DATAMAP_INTERNAL.put(item, shapes.items());
-
-                for (Item shape : shapes.items()) {
-                    INVERSE_SHAPES_DATAMAP_INTERNAL.put(shape, item);
-                }
             });
 
             registry.getDataMap(REMOVE_SHAPE_DATA).forEach((resourceKey, shapes) -> {
                 Item item = BuiltInRegistries.ITEM.get(resourceKey);
 
                 REMOVE_SHAPES_DATAMAP_INTERNAL.put(item, shapes.items());
-
-                for (Item shape : shapes.items()) {
-                    INVERSE_SHAPES_DATAMAP_INTERNAL.remove(shape);
-                }
             });
+
+            for (Map.Entry<Item, List<Item>> entry : new HashSet<>(SHAPES_DATAMAP_INTERNAL.entrySet())) {
+                Item item = entry.getKey();
+                List<Item> shapes = entry.getValue();
+
+                if (new HashSet<>(REMOVE_SHAPES_DATAMAP_INTERNAL.getOrDefault(item, List.of())).containsAll(shapes)) {
+                    SHAPES_DATAMAP_INTERNAL.remove(item);
+                }
+
+                for (Item shape : shapes) {
+                    INVERSE_SHAPES_DATAMAP_INTERNAL.put(shape, item);
+                }
+            }
+
+            for (Map.Entry<Item, Item> entry : new HashSet<>(INVERSE_SHAPES_DATAMAP_INTERNAL.entrySet())) {
+                if (!SHAPES_DATAMAP_INTERNAL.containsKey(entry.getValue())) {
+                    INVERSE_SHAPES_DATAMAP_INTERNAL.remove(entry.getKey());
+                }
+            }
         });
     }
 

@@ -40,15 +40,17 @@ public class CBlockSet {
 
         @Override
         public Optional<ShapeSet> detectTypeFromBlock(Block block, ResourceLocation blockId) {
-            List<String> postfixes = List.of(
-                    "stairs",
-                    "slab",
-                    "wall"
-            );
+            if (block.asItem() != Items.AIR) {
+                List<String> postfixes = List.of(
+                        "stairs",
+                        "slab",
+                        "wall"
+                );
 
-            for (String postfix : postfixes) {
-                if (CommonEvents.hasBlock(blockId, postfix)) {
-                    return Optional.of(new ShapeSet(blockId, block));
+                for (String postfix : postfixes) {
+                    if (CommonEvents.hasBlock(blockId, postfix)) {
+                        return Optional.of(new ShapeSet(blockId, block));
+                    }
                 }
             }
 
@@ -73,8 +75,8 @@ public class CBlockSet {
             this.block = block;
         }
 
-        public String getVariantId(String postfix) {
-            String name = getTypeName();
+        public String getVariantId(String prefix, String postfix) {
+            String name = prefix + "_" + getTypeName();
 
             if (name.endsWith("_block")) name = name.substring(0, name.length() - 6);
             if (name.endsWith("_planks")) name = name.substring(0, name.length() - 7);
@@ -108,18 +110,20 @@ public class CBlockSet {
         }
 
         @Override
-        public ItemLike mainChild() {
+        public Block mainChild() {
             return block;
         }
     }
 
     private static void registerShapeBlocks(Registrator<Block> event, Collection<ShapeSet> shapeSets) {
         for (ShapeSet type : shapeSets) {
-            ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical_slab"));
-            if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-                Block block = new VerticalSlabBlock(BlockBehaviour.Properties.of());
-                event.register(id, block);
-                type.addChild("vertical_slab_block", block);
+            if (type.hasChild("slab")) {
+                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
+                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
+                    Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(type.mainChild()));
+                    event.register(id, block);
+                    type.addChild("vertical_slab_block", block);
+                }
             }
         }
     }
@@ -128,7 +132,7 @@ public class CBlockSet {
         for (ShapeSet type : shapeSets) {
             Block block = (Block) type.getChild("vertical_slab_block");
             if (block != null) {
-                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical_slab"));
+                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
                 if (!BuiltInRegistries.ITEM.containsKey(id)) {
                     Item item = new BlockItem(block, new Item.Properties());
                     event.register(id, item);

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,double=false": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab",
+      "y": 180
+    },
+    "facing=north,double=true": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab_block",
+      "y": 180
+    },
+    "facing=east,double=false": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab",
+      "y": 270
+    },
+    "facing=east,double=true": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab_block",
+      "y": 270
+    },
+    "facing=south,double=false": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab"
+    },
+    "facing=south,double=true": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab_block"
+    },
+    "facing=west,double=false": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab",
+      "y": 90
+    },
+    "facing=west,double=true": {
+      "model": "clutternomore:block/vertical_smooth_stone_slab_block",
+      "y": 90
+    }
+  }
+}
