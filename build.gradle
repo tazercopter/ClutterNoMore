@@ -96,15 +96,14 @@ dependencies {
 //                module: "slf4j-api"
 //    })
 
-    implementation "maven.modrinth:farmers-delight:1.21.1-1.2.4a"
-    implementation "maven.modrinth:the-block-box:0.1.1"
+    localRuntime "maven.modrinth:the-block-box:0.1.1"
 
-    compileOnly "mezz.jei:jei-$minecraft_version-common-api:$jei_version"
-    compileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:$jei_version"
-    localRuntime "mezz.jei:jei-$minecraft_version-neoforge:$jei_version"
+    compileOnly "mezz.jei:jei-$minecraft_version-common-api:19.21.0.247"
+    compileOnly "mezz.jei:jei-$minecraft_version-neoforge-api:19.21.0.247"
+    localRuntime "mezz.jei:jei-$minecraft_version-neoforge:19.21.0.247"
 
-    localRuntime "maven.modrinth:supplementaries:neoforge_1.21-3.0.39-beta"
-    localRuntime "maven.modrinth:moonlight:neoforge_1.21-2.17.32"
+    localRuntime "maven.modrinth:supplementaries:neoforge_1.21-3.4.14"
+    implementation "maven.modrinth:moonlight:$moonlight_version-neoforge"
     localRuntime "me.djtheredstoner:DevAuth-neoforge:1.2.1"
 }
 

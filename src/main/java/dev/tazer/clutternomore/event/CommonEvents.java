@@ -4,13 +4,16 @@ import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.datamap.ListMerger;
 import dev.tazer.clutternomore.datamap.ListRemover;
 import dev.tazer.clutternomore.datamap.Shapes;
-import dev.tazer.clutternomore.registry.CDataComponents;
+import dev.tazer.clutternomore.registry.CBlockSet;
 import dev.tazer.clutternomore.networking.ChangeStackPayload;
+import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
+import net.mehvahdjukaar.moonlight.api.set.BlockType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -64,31 +67,24 @@ public class CommonEvents {
             INVERSE_SHAPES_DATAMAP_INTERNAL.clear();
             REMOVE_SHAPES_DATAMAP_INTERNAL.clear();
 
-            List<String> suffixes = List.of(
-                    "stairs",
-                    "slab",
-                    "vertical_slab",
-                    "wall"
-            );
-
             for (Item item : registry.stream().toList()) {
-                ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
                 List<Item> shapes = new ArrayList<>();
 
-                for (String suffix : suffixes) {
-                    if (key.getPath().endsWith(suffix)) continue;
+                CBlockSet.ShapeSet shapeSet = BlockSetAPI.getBlockTypeOf(item, CBlockSet.ShapeSet.class);
 
-                    Optional<Item> optional = getOptional(key, suffix);
-
-                    optional.ifPresent(shape -> {
-                        shapes.add(shape);
-                        INVERSE_SHAPES_DATAMAP_INTERNAL.put(shape, item);
-                    });
+                if (shapeSet != null) {
+                    Item mainChild = shapeSet.mainChild().asItem();
+                    if (item == mainChild) {
+                        shapeSet.getChildren().forEach(child -> {
+                            if (child != mainChild && child.getValue() instanceof Item shape) {
+                                shapes.add(shape);
+                            }
+                        });
+                    } else INVERSE_SHAPES_DATAMAP_INTERNAL.put(item, mainChild);
                 }
 
                 if (!shapes.isEmpty()) SHAPES_DATAMAP_INTERNAL.put(item, shapes);
             }
-
             registry.getDataMap(ADD_SHAPE_DATA).forEach((resourceKey, shapes) -> {
                 Item item = BuiltInRegistries.ITEM.get(resourceKey);
                 SHAPES_DATAMAP_INTERNAL.put(item, shapes.items());
@@ -110,16 +106,10 @@ public class CommonEvents {
         });
     }
 
-
-    @SubscribeEvent
-    public static void modifyDefaultComponents(ModifyDefaultComponentsEvent event) {
-
-    }
-
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onBuildCreativeModeTabContents(final BuildCreativeModeTabContentsEvent event) {
         BuiltInRegistries.ITEM.stream()
-                .filter(SHAPES_DATAMAP::containsKey)
+                .filter(INVERSE_SHAPES_DATAMAP::containsKey)
                 .forEach(item -> event.remove(item.getDefaultInstance(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY));
     }
 
@@ -133,14 +123,32 @@ public class CommonEvents {
         );
     }
 
-    public static Optional<Item> getOptional(ResourceLocation key, String suffix) {
-        String newSuffix = "_" + suffix;
+    public static Optional<Item> getOptional(ResourceLocation key, String postfix) {
+        String newSuffix = "_" + postfix;
         Optional<Item> optional = BuiltInRegistries.ITEM.getOptional(key.withSuffix(newSuffix));
         if (optional.isEmpty()) {
-            if (key.getPath().endsWith("_planks")) {
+            if (key.getPath().endsWith("_block")) {
+                return BuiltInRegistries.ITEM.getOptional(key.withPath(path -> path.substring(0, path.length() - 6) + newSuffix));
+            } else if (key.getPath().endsWith("_planks")) {
                 return BuiltInRegistries.ITEM.getOptional(key.withPath(path -> path.substring(0, path.length() - 7) + newSuffix));
             } else if (key.getPath().endsWith("s")) {
                 return BuiltInRegistries.ITEM.getOptional(key.withPath(path -> path.substring(0, path.length() - 1) + newSuffix));
+            }
+        }
+
+        return optional;
+    }
+
+    public static boolean hasBlock(ResourceLocation key, String postfix) {
+        String newSuffix = "_" + postfix;
+        boolean optional = BuiltInRegistries.BLOCK.containsKey(key.withSuffix(newSuffix));
+        if (!optional) {
+            if (key.getPath().endsWith("_block")) {
+                return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> path.substring(0, path.length() - 6) + newSuffix));
+            } else if (key.getPath().endsWith("_planks")) {
+                return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> path.substring(0, path.length() - 7) + newSuffix));
+            } else if (key.getPath().endsWith("s")) {
+                return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> path.substring(0, path.length() - 1) + newSuffix));
             }
         }
 

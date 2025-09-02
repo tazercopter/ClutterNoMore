@@ -1,0 +1,8 @@
+{
+  "parent": "clutternomore:block/vertical_slab",
+  "textures": {
+    "bottom": "minecraft:block/smooth_stone",
+    "side": "clutternomore:block/smooth_stone_vertical_slab_side",
+    "top": "minecraft:block/smooth_stone"
+  }
+}

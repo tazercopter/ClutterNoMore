@@ -7,7 +7,6 @@
     "BlockItemMixin",
     "BlockMixin",
     "BuildCreativeModeTabContentsEventMixin",
-    "ItemStackMixin",
     "RecipeManagerMixin"
   ],
   "client": [
