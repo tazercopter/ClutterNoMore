@@ -7,9 +7,12 @@
     "BlockItemMixin",
     "BlockMixin",
     "BuildCreativeModeTabContentsEventMixin",
+    "ItemDisplayBuilderMixin",
+    "ItemStackMixin",
     "RecipeManagerMixin"
   ],
   "client": [
+    "MinecraftMixin",
     "screen.AccessibilityScreenMixin",
     "screen.OptionsSubScreenMixin",
     "screen.ScreenMixin"

@@ -17,7 +17,8 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.lwjgl.glfw.GLFW;
 
-import static dev.tazer.clutternomore.event.CommonEvents.*;
+import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.event.DatamapHandler.SHAPES_DATAMAP;
 
 @EventBusSubscriber(modid = ClutterNoMore.MODID, value = Dist.CLIENT)
 public class ClientEvents {
@@ -45,12 +46,26 @@ public class ClientEvents {
                 if (player != null) {
                     ItemStack heldStack = player.getItemInHand(InteractionHand.MAIN_HAND);
                     if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
-                        if (CNMConfig.HOLD.get()) {
-                            if (OVERLAY == null && action == 1) OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack);
-                            else if (action == 0) OVERLAY = null;
-                        } else if (action == 1) {
-                            if (OVERLAY == null) OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack);
-                            else OVERLAY = null;
+                        switch (CNMConfig.HOLD.get()) {
+                            case HOLD -> {
+                                if (OVERLAY == null && action == 1)
+                                    OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack, true);
+                                else if (action == 0) OVERLAY = null;
+                            }
+                            case TOGGLE -> {
+                                if (action == 1) {
+                                    if (OVERLAY == null) OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack, true);
+                                    else OVERLAY = null;
+                                }
+                            }
+                            case PRESS -> {
+                                if (action == 1) {
+                                    if (OVERLAY == null)
+                                        OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack, false);
+                                    OVERLAY.onMouseScrolled(-1);
+                                    OVERLAY = null;
+                                }
+                            }
                         }
 
                     }
@@ -70,7 +85,7 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onRenderGui(RenderGuiEvent.Post event) {
-        if (OVERLAY != null) {
+        if (OVERLAY != null && OVERLAY.render) {
             OVERLAY.render(event.getGuiGraphics(), event.getPartialTick().getGameTimeDeltaTicks());
         }
     }

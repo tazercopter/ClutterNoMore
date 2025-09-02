@@ -1,6 +1,5 @@
 package dev.tazer.clutternomore.mixin;
 
-import dev.tazer.clutternomore.registry.CDataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -8,11 +7,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
 import java.util.Objects;
 
-import static dev.tazer.clutternomore.event.CommonEvents.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.event.CommonEvents.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.event.DatamapHandler.SHAPES_DATAMAP;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin {

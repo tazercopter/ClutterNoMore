@@ -1,10 +1,7 @@
 package dev.tazer.clutternomore;
 
-import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
-import dev.tazer.clutternomore.event.CommonEvents;
-import dev.tazer.clutternomore.registry.CDataComponents;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Overlay;
+import dev.tazer.clutternomore.registry.CBlockSet;
+import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -17,21 +14,26 @@ import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
+
+import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
 
 public class CHooks {
     public static List<ItemStack> getDrops(List<ItemStack> old, BlockState state, ServerLevel level, BlockPos pos, BlockEntity blockEntity, @Nullable Entity entity, ItemStack tool) {
-        if (state.getOptionalValue(SlabBlock.TYPE).isPresent() && state.getValue(SlabBlock.TYPE) == SlabType.DOUBLE && CommonEvents.INVERSE_SHAPES_DATAMAP.containsKey(state.getBlock().asItem())) {
+        if (state.getOptionalValue(SlabBlock.TYPE).isPresent() && state.getValue(SlabBlock.TYPE) == SlabType.DOUBLE && INVERSE_SHAPES_DATAMAP.containsKey(state.getBlock().asItem())) {
             LootParams.Builder lootparams$builder = (new LootParams.Builder(level)).withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos)).withParameter(LootContextParams.TOOL, tool).withOptionalParameter(LootContextParams.THIS_ENTITY, entity).withOptionalParameter(LootContextParams.BLOCK_ENTITY, blockEntity);
             BlockState newState = state.setValue(SlabBlock.TYPE, SlabType.BOTTOM);
             return newState.getDrops(lootparams$builder);
         }
 
         return old;
+    }
+
+    public static boolean acceptItem(Item item) {
+        CBlockSet.ShapeSet shapeSet = BlockSetAPI.getBlockTypeOf(item, CBlockSet.ShapeSet.class);
+        if (shapeSet != null && shapeSet.mainChild().asItem() != item) return false;
+        return !INVERSE_SHAPES_DATAMAP.containsKey(item);
     }
 }

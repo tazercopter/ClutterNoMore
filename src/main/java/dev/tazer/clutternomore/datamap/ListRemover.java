@@ -2,6 +2,8 @@ package dev.tazer.clutternomore.datamap;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -17,11 +19,11 @@ public record ListRemover(Shapes shapes) implements DataMapValueRemover<Item, Sh
 
     @Override
     public Optional<Shapes> remove(Shapes shapes, Registry<Item> registry, Either<TagKey<Item>, ResourceKey<Item>> either, Item item) {
-        List<Item> finalList = new ArrayList<>(shapes.items());
-        for (Item shape : this.shapes.items()) {
+        List<Holder<Item>> finalList = new ArrayList<>(shapes.items().stream().toList());
+        for (Holder<Item> shape : this.shapes.items()) {
             finalList.remove(shape);
         }
 
-        return Optional.of(new Shapes(finalList));
+        return Optional.of(new Shapes(HolderSet.direct(finalList)));
     }
 }

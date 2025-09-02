@@ -3,7 +3,6 @@ package dev.tazer.clutternomore.mixin;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import dev.tazer.clutternomore.registry.CDataComponents;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Arrays;
 import java.util.Map;
 
-import static dev.tazer.clutternomore.event.CommonEvents.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
 
 @Mixin(value = RecipeManager.class)
 public class RecipeManagerMixin {

@@ -19,18 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static dev.tazer.clutternomore.event.CommonEvents.*;
+import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.event.DatamapHandler.SHAPES_DATAMAP;
 
 public class ShapeSwitcherOverlay {
 
     public final Minecraft minecraft;
+    public final boolean render;
+    public final int selected;
     public int count;
     public final List<Item> shapes;
     public int selectedIndex;
     public float currentIndex;
 
-    public ShapeSwitcherOverlay(Minecraft minecraft, ItemStack heldStack) {
+    public ShapeSwitcherOverlay(Minecraft minecraft, ItemStack heldStack, boolean render) {
         this.minecraft = minecraft;
+        this.render = render;
+        selected = minecraft.player.getInventory().selected;
 
         ItemStack stack = INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem()) ? INVERSE_SHAPES_DATAMAP.get(heldStack.getItem()).getDefaultInstance() : heldStack;
         count = heldStack.getCount();
@@ -38,7 +43,6 @@ public class ShapeSwitcherOverlay {
 
         Item key = stack.getItem();
         if (SHAPES_DATAMAP.containsKey(key)) shapes.addAll(SHAPES_DATAMAP.get(key));
-        if (REMOVE_SHAPES_DATAMAP.containsKey(key)) shapes.removeIf(item -> REMOVE_SHAPES_DATAMAP.get(key).contains(item));
 
         shapes.addFirst(stack.getItem());
 
@@ -100,12 +104,13 @@ public class ShapeSwitcherOverlay {
         Player player = Objects.requireNonNull(minecraft.player);
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
         player.setItemInHand(InteractionHand.MAIN_HAND, next);
-        PacketDistributor.sendToServer(new ChangeStackPayload(next));
+        PacketDistributor.sendToServer(new ChangeStackPayload(-1, next));
     }
 
     public boolean shouldStayOpenTick() {
+        int selected = minecraft.player.getInventory().selected;
         ItemStack heldStack = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
         count = heldStack.getCount();
-        return !heldStack.isEmpty();
+        return shapes.contains(heldStack.getItem()) && selected == this.selected;
     }
 }

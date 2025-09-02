@@ -1,6 +1,8 @@
 package dev.tazer.clutternomore.datamap;
 
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -13,8 +15,8 @@ import java.util.List;
 public class ListMerger implements DataMapValueMerger<Item, Shapes> {
     @Override
     public Shapes merge(Registry<Item> registry, Either<TagKey<Item>, ResourceKey<Item>> firstKey, Shapes firstList, Either<TagKey<Item>, ResourceKey<Item>> secondKey, Shapes secondList) {
-        List<Item> finalList = new ArrayList<>(firstList.items());
-        finalList.addAll(secondList.items());
-        return new Shapes(finalList);
+        List<Holder<Item>> finalList = new ArrayList<>(firstList.items().stream().toList());
+        finalList.addAll(secondList.items().stream().toList());
+        return new Shapes(HolderSet.direct(finalList));
     }
 }

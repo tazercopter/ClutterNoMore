@@ -1,10 +1,8 @@
 package dev.tazer.clutternomore;
 
-import com.mojang.logging.LogUtils;
-import dev.tazer.clutternomore.client.CDynamicResources;
+import dev.tazer.clutternomore.client.assets.CDynamicResources;
 import dev.tazer.clutternomore.registry.CBlockSet;
 import dev.tazer.clutternomore.registry.CBlocks;
-import dev.tazer.clutternomore.registry.CDataComponents;
 import dev.tazer.clutternomore.registry.CItems;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -21,7 +19,6 @@ public class ClutterNoMore {
     public static final Logger LOGGER = LogManager.getLogger("ClutterNoMore");
 
     public ClutterNoMore(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
-        CDataComponents.COMPONENTS.register(modEventBus);
         CBlocks.BLOCKS.register(modEventBus);
         CItems.ITEMS.register(modEventBus);
         CBlockSet.init();
