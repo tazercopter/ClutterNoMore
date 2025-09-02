@@ -35,7 +35,8 @@ public class CDynamicResources extends DynClientResourcesGenerator {
     }
 
     private static final List<AssetGenerator> GENERATORS = List.of(
-            new VerticalSlabGenerator()
+            new VerticalSlabGenerator(),
+            new StepGenerator()
     );
 
     @Override

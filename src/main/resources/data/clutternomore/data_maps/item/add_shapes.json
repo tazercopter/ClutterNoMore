@@ -1,20 +1,6 @@
 {
   "values": {
-    "arrow": {
-      "shapes": "#arrows"
-    },
-    "golden_apple": {
-      "shapes": [
-        "enchanted_golden_apple"
-      ]
-    }
   },
   "remove": {
-    "arrow": {
-      "shapes": [
-        "arrow",
-        "tipped_arrow"
-      ]
-    }
   }
 }

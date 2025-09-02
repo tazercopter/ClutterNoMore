@@ -1,6 +1,9 @@
 package dev.tazer.clutternomore.registry;
 
+import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.blocks.StepBlock;
+import dev.tazer.clutternomore.blocks.VerticalSlabBlock;
 import net.mehvahdjukaar.moonlight.api.misc.Registrator;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.mehvahdjukaar.moonlight.api.set.BlockType;
@@ -29,7 +32,7 @@ public class CBlockSet {
 
     public static class ShapeSetRegistry extends BlockTypeRegistry<ShapeSet> {
         protected ShapeSetRegistry() {
-            super(ShapeSet.class, "slab_type");
+            super(ShapeSet.class, "shape_set");
         }
 
         @Override
@@ -49,7 +52,7 @@ public class CBlockSet {
 
                 for (String prefix : prefixes) {
                     for (String postfix : postfixes) {
-                        if (hasBlock(blockId, prefix, postfix)) {
+                        if (hasBlock(blockId, prefix, postfix) || (blockId.getPath().endsWith("_log") && hasWood(blockId))) {
                             return Optional.of(new ShapeSet(blockId, block));
                         }
                     }
@@ -59,8 +62,8 @@ public class CBlockSet {
             return Optional.empty();
         }
 
-        public static boolean hasBlock(ResourceLocation key, String postfix) {
-            return hasBlock(key, "", postfix);
+        public static boolean hasWood(ResourceLocation key) {
+            return BuiltInRegistries.ITEM.containsKey(key.withPath(path -> path.substring(0, path.length() - 3) + "wood"));
         }
 
         public static boolean hasBlock(ResourceLocation key, String prefix, String postfix) {
@@ -103,12 +106,12 @@ public class CBlockSet {
         }
 
         public String getVariantId(String prefix, String postfix) {
-            String name = prefix + "_" + getTypeName();
+            String name = prefix + (prefix.isEmpty() ? "" : "_") + getTypeName();
 
             if (name.endsWith("_block")) name = name.substring(0, name.length() - 6);
             if (name.endsWith("_planks")) name = name.substring(0, name.length() - 7);
             if (name.endsWith("s")) name = name.substring(0, name.length() - 1);
-            return name + "_" + postfix;
+            return name + (postfix.isEmpty() ? "" : "_") + postfix;
         }
 
         @Override
@@ -141,6 +144,10 @@ public class CBlockSet {
             return optional.orElse(null);
         }
 
+        public @Nullable Item getWood() {
+            return id.getPath().endsWith("_log") ? BuiltInRegistries.ITEM.getOptional(id.withPath(path -> path.substring(0, path.length() - 3) + "wood")).orElse(null) : null;
+        }
+
         @Override
         protected void initializeChildrenItems() {
             Item stairs = findRelatedEntry("stairs");
@@ -151,11 +158,13 @@ public class CBlockSet {
             if (wall != null) addChild("wall", wall);
             Item spiked = findRelatedEntry("spiked", "");
             if (spiked != null) addChild("spiked", spiked);
+            Item wood = getWood();
+            if (wood != null) addChild("wood", wood);
         }
 
         @Override
         public String getTranslationKey() {
-            return "slab_type." + this.getNamespace() + "." + this.getTypeName();
+            return "shape_set." + this.getNamespace() + "." + this.getTypeName();
         }
 
         @Override
@@ -165,13 +174,22 @@ public class CBlockSet {
     }
 
     private static void registerShapeBlocks(Registrator<Block> event, Collection<ShapeSet> shapeSets) {
-        for (ShapeSet type : shapeSets) {
-            if (type.hasChild("slab")) {
-                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
+        for (ShapeSet set : shapeSets) {
+            if (CNMConfig.VERTICAL_SLABS.get() && set.hasChild("slab")) {
+                ResourceLocation id = ClutterNoMore.location(set.getVariantId("vertical", "slab"));
                 if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-                    Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(type.mainChild()));
+                    Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("slab"))));
                     event.register(id, block);
-                    type.addChild("vertical_slab_block", block);
+                    set.addChild("vertical_slab_block", block);
+                }
+            }
+
+            if (CNMConfig.STEPS.get() && set.hasChild("stairs")) {
+                ResourceLocation id = ClutterNoMore.location(set.getVariantId("", "step"));
+                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
+                    Block block = new StepBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("stairs"))));
+                    event.register(id, block);
+                    set.addChild("step_block", block);
                 }
             }
         }
@@ -179,13 +197,25 @@ public class CBlockSet {
 
     private static void registerShapeItems(Registrator<Item> event, Collection<ShapeSet> shapeSets) {
         for (ShapeSet type : shapeSets) {
-            Block block = (Block) type.getChild("vertical_slab_block");
+            Block block;
+
+            block = (Block) type.getChild("vertical_slab_block");
             if (block != null) {
                 ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
                 if (!BuiltInRegistries.ITEM.containsKey(id)) {
                     Item item = new BlockItem(block, new Item.Properties());
                     event.register(id, item);
                     type.addChild("vertical_slab", item);
+                }
+            }
+
+            block = (Block) type.getChild("step_block");
+            if (block != null) {
+                ResourceLocation id = ClutterNoMore.location(type.getVariantId("", "step"));
+                if (!BuiltInRegistries.ITEM.containsKey(id)) {
+                    Item item = new BlockItem(block, new Item.Properties());
+                    event.register(id, item);
+                    type.addChild("step", item);
                 }
             }
         }

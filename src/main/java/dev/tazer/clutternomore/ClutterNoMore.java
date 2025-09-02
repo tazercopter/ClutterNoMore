@@ -22,6 +22,7 @@ public class ClutterNoMore {
         CBlocks.BLOCKS.register(modEventBus);
         CItems.ITEMS.register(modEventBus);
         CBlockSet.init();
+        modContainer.registerConfig(ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
         modContainer.registerConfig(ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
 
         if (dist.isClient()) {

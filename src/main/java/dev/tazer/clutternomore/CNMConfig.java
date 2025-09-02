@@ -6,7 +6,9 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CNMConfig {
 
-    public static ModConfigSpec COMMON_CONFIG;
+    public static ModConfigSpec STARTUP_CONFIG;
+    public static ModConfigSpec.BooleanValue VERTICAL_SLABS;
+    public static ModConfigSpec.BooleanValue STEPS;
     public static ModConfigSpec CLIENT_CONFIG;
     public static ModConfigSpec.BooleanValue SCROLLING;
     public static ModConfigSpec.EnumValue<InputType> HOLD;
@@ -32,8 +34,16 @@ public class CNMConfig {
     static {
 
         ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
-
-        COMMON_CONFIG = COMMON_BUILDER.build();
+        COMMON_BUILDER.push("shapes");
+        COMMON_BUILDER.comment("Ensure these values are the same as the servers you're joining or issues may arise");
+        VERTICAL_SLABS = COMMON_BUILDER
+                .comment("If vertical slabs should be added to all existing slabs")
+                .define("verticalSlabs", true);
+        STEPS = COMMON_BUILDER
+                .comment("If steps should be added to all existing stairs")
+                .define("steps", true);
+        COMMON_BUILDER.pop();
+        STARTUP_CONFIG = COMMON_BUILDER.build();
 
         ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
 

@@ -20,23 +20,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public final class VerticalSlabGenerator implements AssetGenerator {
-    public static List<String> VERTICAL_SLABS = new ArrayList<>();
+public final class StepGenerator implements AssetGenerator {
+    public static List<String> STEPS = new ArrayList<>();
 
     @Override
     public void initialize(ResourceManager manager, ResourceSink sink) {
-        VERTICAL_SLABS.clear();
+        STEPS.clear();
     }
 
     public void generate(Item item, ResourceManager manager, ResourceSink sink) {
-        if (!CNMConfig.VERTICAL_SLABS.get()) return;
+        if (!CNMConfig.STEPS.get()) return;
 
         CBlockSet.ShapeSet set = BlockSetAPI.getBlockTypeOf(item, CBlockSet.ShapeSet.class);
-        if (set == null || item != set.getChild("slab")) return;
+        if (set == null || item != set.getChild("stairs")) return;
 
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
-        String name = verticalSlabName(key.getPath());
-        VERTICAL_SLABS.add(name);
+        String name = stepName(key.getPath());
+        STEPS.add(name);
 
         ResourceLocation id = ClutterNoMore.location(name);
 
@@ -90,30 +90,29 @@ public final class VerticalSlabGenerator implements AssetGenerator {
         if (manager.getResource(id.withPath(path -> "blockstates/" + path + ".json")).isEmpty()) {
             if (manager.getResource(id.withPath(path -> "models/block/" + path + ".json")).isEmpty()) {
                 JsonObject blockModel = new JsonObject();
-                blockModel.addProperty("parent", ClutterNoMore.MODID + ":block/vertical_slab");
+                blockModel.addProperty("parent", ClutterNoMore.MODID + ":block/step");
                 if (!textures.isEmpty()) blockModel.add("textures", textures);
                 sink.addBlockModel(id, blockModel);
             }
 
-            ResourceLocation fullBlockId = ClutterNoMore.location(name + "_block");
-            if (manager.getResource(fullBlockId.withPath(path -> "models/block/" + path + ".json")).isEmpty()) {
+            ResourceLocation topStepId = ClutterNoMore.location(name + "_top");
+            if (manager.getResource(topStepId.withPath(path -> "models/block/" + path + ".json")).isEmpty()) {
                 JsonObject fullModel = new JsonObject();
-                fullModel.addProperty("parent", ClutterNoMore.MODID + ":block/full_block");
+                fullModel.addProperty("parent", ClutterNoMore.MODID + ":block/step_top");
                 if (!textures.isEmpty()) fullModel.add("textures", textures);
-                sink.addBlockModel(fullBlockId, fullModel);
+                sink.addBlockModel(topStepId, fullModel);
             }
 
-            StaticResource template = StaticResource.getOrThrow(manager, ClutterNoMore.location("blockstates/vertical_slab.json"));
+            StaticResource template = StaticResource.getOrThrow(manager, ClutterNoMore.location("blockstates/step.json"));
             sink.addSimilarJsonResource(manager, template, string -> string
-                    .replace("vertical_slab", name)
-                    .replace("full_block", name + "_block")
+                    .replace("step", name)
             );
         }
     }
 
     @Override
     public void translate(AfterLanguageLoadEvent languageEvent) {
-        VERTICAL_SLABS.forEach(name -> languageEvent.addEntry("block." + ClutterNoMore.MODID + "." + name, langName(name)));
+        STEPS.forEach(name -> languageEvent.addEntry("block." + ClutterNoMore.MODID + "." + name, langName(name)));
     }
 
     public static String langName(String name) {
@@ -135,13 +134,13 @@ public final class VerticalSlabGenerator implements AssetGenerator {
         return result.toString().trim();
     }
 
-    public static String verticalSlabName(String name) {
-        name = "vertical_" + name.substring(0, name.length() - 5);
+    public static String stepName(String name) {
+        name = name.substring(0, name.length() - 7);
 
         if (name.endsWith("_block")) name = name.substring(0, name.length() - 6);
         if (name.endsWith("_planks")) name = name.substring(0, name.length() - 7);
         if (name.endsWith("s")) name = name.substring(0, name.length() - 1);
-        return name + "_slab";
+        return name + "_step";
     }
 }
 

@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.registry;
+package dev.tazer.clutternomore.blocks;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -17,7 +17,6 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -34,13 +33,34 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
+    public VerticalSlabBlock(BlockBehaviour.Properties properties) {
+        super(properties);
+        registerDefaultState(stateDefinition.any().setValue(DOUBLE, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
+    }
+
+    @Override
+    protected MapCodec<? extends VerticalSlabBlock> codec() {
+        return CODEC;
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(DOUBLE).add(FACING).add(WATERLOGGED);
     }
 
-    public VerticalSlabBlock(BlockBehaviour.Properties properties) {
-        super(properties);
-        registerDefaultState(stateDefinition.any().setValue(DOUBLE, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockPos blockPos = context.getClickedPos();
+        BlockState replacingBlockState = context.getLevel().getBlockState(blockPos);
+        FluidState replacingFluidState = context.getLevel().getFluidState(blockPos);
+
+        if (replacingBlockState.is(this)) {
+            return replacingBlockState.setValue(DOUBLE, true);
+        }
+
+        return defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection())
+                .setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -59,10 +79,20 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
     }
 
     @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
+
+    @Override
     public boolean useShapeForLightOcclusion(BlockState state) {
         return !state.getValue(DOUBLE);
     }
 
+    @Override
     protected boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
         ItemStack itemStack = context.getItemInHand();
         if (state.getValue(DOUBLE) || !(itemStack.is(asItem())) ) {
@@ -83,21 +113,6 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
             case Direction.WEST -> hitposX >= 0.5;
             default -> false;
         };
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos blockPos = context.getClickedPos();
-        BlockState replacingBlockState = context.getLevel().getBlockState(blockPos);
-        FluidState replacingFluidState = context.getLevel().getFluidState(blockPos);
-
-        if (replacingBlockState.is(this)) {
-            return replacingBlockState.setValue(DOUBLE, true);
-        }
-
-        return defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection())
-                .setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
     }
 
     @Override
@@ -127,21 +142,7 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
-        if (state.getValue(WATERLOGGED)) {
-            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        }
-        
-        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
-    @Override
     protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return state.getValue(DOUBLE);
-    }
-
-    @Override
-    protected MapCodec<? extends VerticalSlabBlock> codec() {
-        return CODEC;
     }
 }

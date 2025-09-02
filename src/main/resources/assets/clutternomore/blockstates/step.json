@@ -1,0 +1,42 @@
+{
+  "variants": {
+    "facing=north,half=bottom": {
+      "model": "clutternomore:block/step",
+      "uvlock": true
+    },
+    "facing=north,half=top": {
+      "model": "clutternomore:block/step_top",
+      "uvlock": true
+    },
+    "facing=east,half=bottom": {
+      "model": "clutternomore:block/step",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=east,half=top": {
+      "model": "clutternomore:block/step_top",
+      "y": 90,
+      "uvlock": true
+    },
+    "facing=south,half=bottom": {
+      "model": "clutternomore:block/step",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=south,half=top": {
+      "model": "clutternomore:block/step_top",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west,half=bottom": {
+      "model": "clutternomore:block/step",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=west,half=top": {
+      "model": "clutternomore:block/step_top",
+      "y": 270,
+      "uvlock": true
+    }
+  }
+}
