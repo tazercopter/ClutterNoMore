@@ -1,7 +1,7 @@
 package dev.tazer.clutternomore;
 
 import dev.tazer.clutternomore.client.assets.DynamicClientResources;
-import dev.tazer.clutternomore.common.data.BlockSetRegistry;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import dev.tazer.clutternomore.common.data.DynamicServerResources;
 import dev.tazer.clutternomore.common.registry.CBlocks;
 import dev.tazer.clutternomore.common.registry.CItems;
@@ -25,10 +25,10 @@ public class ClutterNoMore {
         BlockSetRegistry.init();
         modContainer.registerConfig(ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
         modContainer.registerConfig(ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
-        DynamicServerResources.init();
+        DynamicServerResources.INSTANCE.register();
 
         if (dist.isClient()) {
-            DynamicClientResources.init();
+            DynamicClientResources.INSTANCE.register();
         }
     }
 

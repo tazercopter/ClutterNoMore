@@ -2,7 +2,7 @@ package dev.tazer.clutternomore.client.assets;
 
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.common.data.BlockSetRegistry;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.mehvahdjukaar.moonlight.api.events.AfterLanguageLoadEvent;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
 import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;

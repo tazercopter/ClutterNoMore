@@ -1,16 +1,4 @@
 {
   "values": {
-    "bamboo": {
-      "shapes": [
-        "bamboo_stairs",
-        "bamboo_slab"
-      ]
-    },
-    "bamboo_block": {
-      "shapes": [
-        "bamboo_stairs",
-        "bamboo_slab"
-      ]
-    }
   }
 }

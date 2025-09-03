@@ -4,7 +4,7 @@ import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.datamap.ListMerger;
 import dev.tazer.clutternomore.common.datamap.ListRemover;
 import dev.tazer.clutternomore.common.datamap.Shapes;
-import dev.tazer.clutternomore.common.data.BlockSetRegistry;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;

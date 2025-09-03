@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore.common;
 
-import dev.tazer.clutternomore.common.data.BlockSetRegistry;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

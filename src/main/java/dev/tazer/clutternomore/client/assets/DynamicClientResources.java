@@ -17,10 +17,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class DynamicClientResources extends DynClientResourcesGenerator {
-    public static void init() {
-        DynamicClientResources generator = new DynamicClientResources();
-        generator.register();
-    }
+
+    public static final DynamicClientResources INSTANCE = new DynamicClientResources();
 
     protected DynamicClientResources() {
         super(new DynamicTexturePack(ClutterNoMore.location("generated_pack"), Pack.Position.BOTTOM, false, false));

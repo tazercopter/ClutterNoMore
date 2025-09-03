@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.common.data;
+package dev.tazer.clutternomore.common.registry;
 
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
@@ -52,7 +52,7 @@ public class BlockSetRegistry {
 
                 for (String prefix : prefixes) {
                     for (String postfix : postfixes) {
-                        if (hasBlock(blockId, prefix, postfix) || (blockId.getPath().endsWith("_log") && hasWood(blockId))) {
+                        if (!defHasBlock(blockId, "", "planks") && (hasBlock(blockId, prefix, postfix) || (blockId.getPath().endsWith("_log") && hasWood(blockId)))) {
                             return Optional.of(new ShapeSet(blockId, block));
                         }
                     }
@@ -64,6 +64,18 @@ public class BlockSetRegistry {
 
         public static boolean hasWood(ResourceLocation key) {
             return BuiltInRegistries.ITEM.containsKey(key.withPath(path -> path.substring(0, path.length() - 3) + "wood"));
+        }
+
+        public static boolean defHasBlock(ResourceLocation key, String prefix, String postfix) {
+            String newPrefix = prefix + (prefix.isEmpty() ? "" : "_");
+            String newPostfix = (postfix.isEmpty() ? "" : "_") + postfix;
+            boolean hasBlock = BuiltInRegistries.BLOCK.containsKey(key.withPrefix(newPrefix).withSuffix(newPostfix));
+            if (!hasBlock) {
+                if (key.getPath().endsWith("_block")) {
+                    return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> newPrefix + path.substring(0, path.length() - 6) + newPostfix));
+                }
+            }
+            return hasBlock;
         }
 
         public static boolean hasBlock(ResourceLocation key, String prefix, String postfix) {

@@ -2,7 +2,7 @@ package dev.tazer.clutternomore.client.assets;
 
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.common.data.BlockSetRegistry;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.mehvahdjukaar.moonlight.api.events.AfterLanguageLoadEvent;
 import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
 import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +30,8 @@ public final class VerticalSlabGenerator implements AssetGenerator {
 
     public void generate(Item item, ResourceManager manager, ResourceSink sink) {
         BlockSetRegistry.ShapeSet set = BlockSetAPI.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
+        if (item == Items.BAMBOO)
+            System.out.println("bamBOO!");
         if (set == null || !set.hasChild("vertical_slab_block") || item != set.getChild("slab")) return;
 
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);

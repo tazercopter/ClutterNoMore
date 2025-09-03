@@ -15,10 +15,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class DynamicServerResources extends DynServerResourcesGenerator {
-    public static void init() {
-        DynamicServerResources generator = new DynamicServerResources();
-        generator.register();
-    }
+
+    public static final DynamicServerResources INSTANCE = new DynamicServerResources();
 
     protected DynamicServerResources() {
         super(new DynamicDataPack(ClutterNoMore.location("generated_pack")));
