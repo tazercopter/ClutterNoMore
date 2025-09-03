@@ -86,6 +86,11 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
     }
 
     @Override
+    protected boolean useShapeForLightOcclusion(BlockState state) {
+        return true;
+    }
+
+    @Override
     public FluidState getFluidState(BlockState state) {
         if (state.getValue(WATERLOGGED)) {
             return Fluids.WATER.getSource(false);

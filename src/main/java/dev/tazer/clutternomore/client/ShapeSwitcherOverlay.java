@@ -37,14 +37,11 @@ public class ShapeSwitcherOverlay {
         this.render = render;
         selected = minecraft.player.getInventory().selected;
 
-        ItemStack stack = INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem()) ? INVERSE_SHAPES_DATAMAP.get(heldStack.getItem()).getDefaultInstance() : heldStack;
+        Item item = INVERSE_SHAPES_DATAMAP.getOrDefault(heldStack.getItem(), heldStack.getItem());
         count = heldStack.getCount();
-        shapes = new ArrayList<>();
 
-        Item key = stack.getItem();
-        if (SHAPES_DATAMAP.containsKey(key)) shapes.addAll(SHAPES_DATAMAP.get(key));
-
-        shapes.addFirst(stack.getItem());
+        shapes = new ArrayList<>(SHAPES_DATAMAP.get(item));
+        shapes.addFirst(item);
 
         selectedIndex = shapes.indexOf(heldStack.getItem());
         currentIndex = selectedIndex;
@@ -92,9 +89,9 @@ public class ShapeSwitcherOverlay {
         RenderSystem.disableBlend();
     }
 
-    public void onMouseScrolled(int scroll) {
+    public void onMouseScrolled(int direction) {
         int maxIndex = shapes.size() - 1;
-        selectedIndex = selectedIndex - scroll;
+        selectedIndex = selectedIndex - direction;
         if (selectedIndex < 0) selectedIndex = maxIndex;
         if (selectedIndex > maxIndex) selectedIndex = 0;
 
@@ -104,7 +101,7 @@ public class ShapeSwitcherOverlay {
         Player player = Objects.requireNonNull(minecraft.player);
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
         player.setItemInHand(InteractionHand.MAIN_HAND, next);
-        PacketDistributor.sendToServer(new ChangeStackPayload(-1, next));
+        PacketDistributor.sendToServer(new ChangeStackPayload(-1, -1, next));
     }
 
     public boolean shouldStayOpenTick() {
