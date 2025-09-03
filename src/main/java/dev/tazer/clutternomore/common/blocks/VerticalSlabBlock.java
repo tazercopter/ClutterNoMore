@@ -21,6 +21,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -50,17 +51,30 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockPos blockPos = context.getClickedPos();
-        BlockState replacingBlockState = context.getLevel().getBlockState(blockPos);
-        FluidState replacingFluidState = context.getLevel().getFluidState(blockPos);
+        BlockPos pos = context.getClickedPos();
+        Vec3 exactPos = context.getClickLocation();
+        Direction direction = context.getHorizontalDirection();
+        BlockState replacingBlockState = context.getLevel().getBlockState(pos);
+        FluidState replacingFluidState = context.getLevel().getFluidState(pos);
 
         if (replacingBlockState.is(this)) {
             return replacingBlockState.setValue(DOUBLE, true);
         }
 
-        return defaultBlockState()
-                .setValue(FACING, context.getHorizontalDirection())
+        BlockState stateForPlacement = super.getStateForPlacement(context)
+                .setValue(FACING, direction)
                 .setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
+
+        switch (direction) {
+            case NORTH, SOUTH -> {
+                if (exactPos.z - pos.getZ() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            }
+            case EAST, WEST -> {
+                if (exactPos.x - pos.getX() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            }
+        }
+
+        return stateForPlacement;
     }
 
     @Override
