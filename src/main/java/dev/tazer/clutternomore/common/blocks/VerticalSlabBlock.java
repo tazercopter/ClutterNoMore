@@ -67,10 +67,10 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
 
         switch (direction) {
             case NORTH, SOUTH -> {
-                if (exactPos.z - pos.getZ() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+                if (exactPos.z - pos.getZ() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
             }
             case EAST, WEST -> {
-                if (exactPos.x - pos.getX() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+                if (exactPos.x - pos.getX() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
             }
         }
 

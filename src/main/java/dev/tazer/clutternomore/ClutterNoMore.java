@@ -25,10 +25,10 @@ public class ClutterNoMore {
         BlockSetRegistry.init();
         modContainer.registerConfig(ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
         modContainer.registerConfig(ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
-        DynamicServerResources.INSTANCE.register();
+        DynamicServerResources.register();
 
         if (dist.isClient()) {
-            DynamicClientResources.INSTANCE.register();
+            DynamicClientResources.register();
         }
     }
 

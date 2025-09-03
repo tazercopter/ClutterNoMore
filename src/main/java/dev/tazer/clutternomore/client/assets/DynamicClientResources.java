@@ -2,9 +2,8 @@ package dev.tazer.clutternomore.client.assets;
 
 import dev.tazer.clutternomore.ClutterNoMore;
 import net.mehvahdjukaar.moonlight.api.events.AfterLanguageLoadEvent;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynClientResourcesGenerator;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicTexturePack;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.mehvahdjukaar.moonlight.api.resources.pack.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.Item;
@@ -16,19 +15,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DynamicClientResources extends DynClientResourcesGenerator {
+public class DynamicClientResources extends DynamicClientResourceProvider {
 
-    public static final DynamicClientResources INSTANCE = new DynamicClientResources();
-
+    public static void register() {
+        RegHelper.registerDynamicResourceProvider(new DynamicClientResources());
+    }
     protected DynamicClientResources() {
-        super(new DynamicTexturePack(ClutterNoMore.location("generated_pack"), Pack.Position.BOTTOM, false, false));
+        super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.runOnce());
     }
 
     @Override
-    public Collection<String> additionalNamespaces() {
-        List<String> namespaces = new ArrayList<>(List.of("minecraft"));
+    protected Collection<String> gatherSupportedNamespaces() {
+        List<String> namespaces = new ArrayList<>(List.of("minecraft", ClutterNoMore.MODID));
         ModList.get().getMods().forEach(info -> namespaces.add(info.getNamespace()));
-        namespaces.remove(ClutterNoMore.MODID);
         return namespaces;
     }
 
@@ -56,10 +55,5 @@ public class DynamicClientResources extends DynClientResourcesGenerator {
         for (AssetGenerator generator : GENERATORS) {
             generator.translate(languageEvent);
         }
-    }
-
-    @Override
-    public Logger getLogger() {
-        return ClutterNoMore.LOGGER;
     }
 }

@@ -62,10 +62,10 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
 
         switch (direction) {
             case NORTH, SOUTH -> {
-                if (exactPos.z - pos.getZ() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+                if (exactPos.z - pos.getZ() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
             }
             case EAST, WEST -> {
-                if (exactPos.x - pos.getX() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+                if (exactPos.x - pos.getX() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
             }
         }
 
@@ -106,8 +106,8 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
     public static VoxelShape createShape(Direction direction, double y) {
         return switch (direction) {
             case Direction.NORTH -> Shapes.create(0, y, 0, 1, y + 0.5, 0.5);
-            case Direction.SOUTH -> Shapes.create(0.5, y, 0, 1, y + 0.5, 1);
-            case Direction.EAST -> Shapes.create(0, y, 0.5, 1, y + 0.5, 1);
+            case Direction.EAST -> Shapes.create(0.5, y, 0, 1, y + 0.5, 1);
+            case Direction.SOUTH -> Shapes.create(0, y, 0.5, 1, y + 0.5, 1);
             case Direction.WEST -> Shapes.create(0, y, 0, 0.5, y + 0.5, 1);
             default -> Shapes.block();
         };

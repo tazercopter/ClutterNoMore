@@ -30,7 +30,7 @@ public class BlockItemMixin {
                 consume = true;
             } else {
                 if (slabType.isPresent()) consume = slabType.get() != SlabType.DOUBLE;
-                if (isDouble.isPresent()) consume = isDouble.get();
+                if (isDouble.isPresent()) consume = !isDouble.get();
             }
         }
 

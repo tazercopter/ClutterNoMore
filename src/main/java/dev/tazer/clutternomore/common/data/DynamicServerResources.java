@@ -1,11 +1,11 @@
 package dev.tazer.clutternomore.common.data;
 
 import dev.tazer.clutternomore.ClutterNoMore;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynServerResourcesGenerator;
-import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicDataPack;
-import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
+import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
+import net.mehvahdjukaar.moonlight.api.resources.pack.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.fml.ModList;
 import org.apache.logging.log4j.Logger;
 
@@ -14,19 +14,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class DynamicServerResources extends DynServerResourcesGenerator {
+public class DynamicServerResources extends DynamicServerResourceProvider {
 
-    public static final DynamicServerResources INSTANCE = new DynamicServerResources();
-
+    public static void register() {
+        RegHelper.registerDynamicResourceProvider(new DynamicServerResources());
+    }
     protected DynamicServerResources() {
-        super(new DynamicDataPack(ClutterNoMore.location("generated_pack")));
+        super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.REGEN_ON_EVERY_RELOAD);
     }
 
     @Override
-    public Collection<String> additionalNamespaces() {
-        List<String> namespaces = new ArrayList<>(List.of("minecraft"));
+    protected Collection<String> gatherSupportedNamespaces() {
+        List<String> namespaces = new ArrayList<>(List.of("minecraft", ClutterNoMore.MODID));
         ModList.get().getMods().forEach(info -> namespaces.add(info.getNamespace()));
-        namespaces.remove(ClutterNoMore.MODID);
         return namespaces;
     }
 
@@ -45,13 +45,13 @@ public class DynamicServerResources extends DynServerResourcesGenerator {
                     generator.generate(item, resourceManager, sink);
                 }
 
+                List<Block> blocks = BuiltInRegistries.BLOCK.stream().toList();
+                for (Block block : blocks) {
+                    generator.generate(block, resourceManager, sink);
+                }
+
                 generator.finish(resourceManager, sink);
             }
         });
-    }
-
-    @Override
-    public Logger getLogger() {
-        return ClutterNoMore.LOGGER;
     }
 }

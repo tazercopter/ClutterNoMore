@@ -11,8 +11,10 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
 public class TagGenerator implements DataGenerator {
     public SimpleTagBuilder verticalSlabItems;
@@ -35,7 +37,7 @@ public class TagGenerator implements DataGenerator {
         woodenStepItems = SimpleTagBuilder.of(ClutterNoMore.location("wooden_steps"));
         woodenVerticalSlabBlocks = SimpleTagBuilder.of(ClutterNoMore.location(("wooden_vertical_slabs")));
         woodenStepBlocks = SimpleTagBuilder.of(ClutterNoMore.location("wooden_steps"));
-        pickaxeMineable = SimpleTagBuilder.of(ClutterNoMore.location("pickaxe_mineable"));
+        pickaxeMineable = SimpleTagBuilder.of(ClutterNoMore.location("mineable/pickaxe"));
     }
 
     @Override
@@ -45,10 +47,11 @@ public class TagGenerator implements DataGenerator {
 
         if (set.hasChild("vertical_slab")) {
             Item verticalSlab = (Item) set.getChild("vertical_slab");
-            stepItems.addEntry(verticalSlab);
+            verticalSlabItems.addEntry(verticalSlab);
 
             ItemStack stack = ((Item) set.getChild("slab")).getDefaultInstance();
-            if (stack.is(ItemTags.WOODEN_SLABS)) woodenStepItems.addEntry(verticalSlab);
+            if (stack.is(ItemTags.WOODEN_SLABS)) woodenVerticalSlabItems.addEntry(verticalSlab);
+            else pickaxeMineable.addEntry(verticalSlab);
         }
 
         if (set.hasChild("step")) {
@@ -57,33 +60,41 @@ public class TagGenerator implements DataGenerator {
 
             ItemStack stack = ((Item) set.getChild("stairs")).getDefaultInstance();
             if (stack.is(ItemTags.WOODEN_STAIRS)) woodenStepItems.addEntry(step);
+            else pickaxeMineable.addEntry(step);
         }
+    }
+
+    @Override
+    public void generate(Block block, ResourceManager manager, ResourceSink sink) {
+        BlockSetRegistry.ShapeSet set = null;
+        if (block.asItem() != Items.AIR) set = BlockSetAPI.getBlockTypeOf(block, BlockSetRegistry.ShapeSet.class);
+        if (set == null || block != set.mainChild()) return;
 
         if (set.hasChild("vertical_slab_block")) {
-            Block block = (Block) set.getChild("vertical_slab_block");
-            verticalSlabBlocks.addEntry(block);
+            Block verticalSlab = (Block) set.getChild("vertical_slab_block");
+            verticalSlabBlocks.addEntry(verticalSlab);
 
             BlockState state = Block.byItem((Item) set.getChild("slab")).defaultBlockState();
             if (state.is(BlockTags.WOODEN_SLABS)) {
-                woodenVerticalSlabBlocks.addEntry(block);
+                woodenVerticalSlabBlocks.addEntry(verticalSlab);
             }
 
             if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                pickaxeMineable.addEntry(block);
+                pickaxeMineable.addEntry(verticalSlab);
             }
         }
 
         if (set.hasChild("step_block")) {
-            Block block = (Block) set.getChild("step_block");
-            stepBlocks.addEntry(block);
+            Block step = (Block) set.getChild("step_block");
+            stepBlocks.addEntry(step);
 
             BlockState state = Block.byItem((Item) set.getChild("stairs")).defaultBlockState();
             if (state.is(BlockTags.WOODEN_STAIRS)) {
-                woodenStepBlocks.addEntry(block);
+                woodenStepBlocks.addEntry(step);
             }
 
             if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                pickaxeMineable.addEntry(block);
+                pickaxeMineable.addEntry(step);
             }
         }
     }
@@ -130,9 +141,8 @@ public class TagGenerator implements DataGenerator {
         builder.addTag(woodenStepItems);
         sink.addTag(builder, Registries.ITEM);
 
-        sink.addTag(pickaxeMineable, Registries.BLOCK);
         builder = SimpleTagBuilder.of(BlockTags.MINEABLE_WITH_PICKAXE);
-        builder.addTag(pickaxeMineable);
+        builder.merge(pickaxeMineable);
         sink.addTag(builder, Registries.BLOCK);
     }
 }
