@@ -1,9 +1,10 @@
 package dev.tazer.clutternomore;
 
-import dev.tazer.clutternomore.client.assets.CDynamicResources;
-import dev.tazer.clutternomore.registry.CBlockSet;
-import dev.tazer.clutternomore.registry.CBlocks;
-import dev.tazer.clutternomore.registry.CItems;
+import dev.tazer.clutternomore.client.assets.DynamicClientResources;
+import dev.tazer.clutternomore.common.data.BlockSetRegistry;
+import dev.tazer.clutternomore.common.data.DynamicServerResources;
+import dev.tazer.clutternomore.common.registry.CBlocks;
+import dev.tazer.clutternomore.common.registry.CItems;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -21,12 +22,13 @@ public class ClutterNoMore {
     public ClutterNoMore(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         CBlocks.BLOCKS.register(modEventBus);
         CItems.ITEMS.register(modEventBus);
-        CBlockSet.init();
+        BlockSetRegistry.init();
         modContainer.registerConfig(ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
         modContainer.registerConfig(ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
+        DynamicServerResources.init();
 
         if (dist.isClient()) {
-            CDynamicResources.init();
+            DynamicClientResources.init();
         }
     }
 

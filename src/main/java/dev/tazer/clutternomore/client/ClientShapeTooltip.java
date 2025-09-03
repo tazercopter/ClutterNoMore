@@ -2,7 +2,7 @@ package dev.tazer.clutternomore.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.tooltip.ShapeTooltip;
+import dev.tazer.clutternomore.common.tooltip.ShapeTooltip;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -17,12 +17,10 @@ import java.util.List;
 public class ClientShapeTooltip implements ClientTooltipComponent {
     public final List<Item> shapes;
     public int selectedIndex;
-    public float currentIndex;
 
     public ClientShapeTooltip(ShapeTooltip shapeTooltip) {
         shapes = shapeTooltip.shapes();
         selectedIndex = shapeTooltip.selectedIndex();
-        currentIndex = selectedIndex;
     }
 
     @Override
@@ -42,15 +40,10 @@ public class ClientShapeTooltip implements ClientTooltipComponent {
 
     @Override
     public void renderImage(Font font, int mouseX, int mouseY, GuiGraphics guiGraphics) {
-        ResourceLocation background = ClutterNoMore.location("textures/gui/shape_background.png");
-        ResourceLocation selected = ClutterNoMore.location("textures/gui/selected_shape.png");
+        ResourceLocation selected = ClutterNoMore.location("textures/gui/selected_shape_inventory.png");
 
         int spacing = 22;
-        int startX;
-
-        // todo: partial tick
-
-        startX = mouseX + 2;
+        int startX = mouseX + 2;
 
         for (int index = 0; index < shapes.size(); index++) {
             int x = startX + index * spacing;

@@ -5,7 +5,7 @@
       "uvlock": true
     },
     "facing=north,double=true": {
-      "model": "clutternomore:block/full_block",
+      "model": "clutternomore:block/vertical_slab_double",
       "uvlock": true
     },
     "facing=east,double=false": {
@@ -14,7 +14,7 @@
       "uvlock": true
     },
     "facing=east,double=true": {
-      "model": "clutternomore:block/full_block",
+      "model": "clutternomore:block/vertical_slab_double",
       "uvlock": true
     },
     "facing=south,double=false": {
@@ -23,7 +23,7 @@
       "uvlock": true
     },
     "facing=south,double=true": {
-      "model": "clutternomore:block/full_block",
+      "model": "clutternomore:block/vertical_slab_double",
       "uvlock": true
     },
     "facing=west,double=false": {
@@ -32,7 +32,7 @@
       "uvlock": true
     },
     "facing=west,double=true": {
-      "model": "clutternomore:block/full_block",
+      "model": "clutternomore:block/vertical_slab_double",
       "uvlock": true
     }
   }

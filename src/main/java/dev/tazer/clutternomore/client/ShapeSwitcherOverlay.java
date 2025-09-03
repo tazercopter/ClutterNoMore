@@ -3,7 +3,7 @@ package dev.tazer.clutternomore.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.networking.ChangeStackPayload;
+import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
 
 public class ShapeSwitcherOverlay {
 

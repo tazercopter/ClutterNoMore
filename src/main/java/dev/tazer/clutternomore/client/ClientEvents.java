@@ -3,8 +3,8 @@ package dev.tazer.clutternomore.client;
 import com.mojang.datafixers.util.Either;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.networking.ChangeStackPayload;
-import dev.tazer.clutternomore.tooltip.ShapeTooltip;
+import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
+import dev.tazer.clutternomore.common.tooltip.ShapeTooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -34,8 +34,8 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.tazer.clutternomore.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
 
 @EventBusSubscriber(modid = ClutterNoMore.MODID, value = Dist.CLIENT)
 public class ClientEvents {
