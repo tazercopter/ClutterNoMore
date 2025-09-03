@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.*;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -43,6 +44,8 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockPos pos = context.getClickedPos();
+        Vec3 exactPos = context.getClickLocation();
+        Direction direction = context.getHorizontalDirection();
         BlockState replacingBlockState = context.getLevel().getBlockState(pos);
         FluidState replacingFluidState = context.getLevel().getFluidState(pos);
 
@@ -54,10 +57,19 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
         }
 
         BlockState stateForPlacement = super.getStateForPlacement(context)
-                .setValue(FACING, context.getHorizontalDirection())
+                .setValue(FACING, direction)
                 .setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
 
-        if (context.getClickedFace() == Direction.DOWN || context.getClickLocation().y - pos.getY() > 0.5F) {
+        switch (direction) {
+            case NORTH, SOUTH -> {
+                if (exactPos.z - pos.getZ() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            }
+            case EAST, WEST -> {
+                if (exactPos.x - pos.getX() > 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            }
+        }
+
+        if (exactPos.y - pos.getY() > 0.5) {
             stateForPlacement = stateForPlacement.setValue(SLAB_TYPE, SlabType.TOP);
         }
 
@@ -75,7 +87,9 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
             return true;
         }
 
-        return context.getClickedFace() == state.getValue(FACING).getOpposite();
+        Direction direction = context.getClickedFace();
+
+        return direction == (state.getValue(SLAB_TYPE) == SlabType.BOTTOM ? Direction.UP : Direction.DOWN) || direction == state.getValue(FACING).getOpposite();
     }
 
     @Override
@@ -92,8 +106,8 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
     public static VoxelShape createShape(Direction direction, double y) {
         return switch (direction) {
             case Direction.NORTH -> Shapes.create(0, y, 0, 1, y + 0.5, 0.5);
-            case Direction.EAST -> Shapes.create(0.5, y, 0, 1, y + 0.5, 1);
-            case Direction.SOUTH -> Shapes.create(0, y, 0.5, 1, y + 0.5, 1);
+            case Direction.SOUTH -> Shapes.create(0.5, y, 0, 1, y + 0.5, 1);
+            case Direction.EAST -> Shapes.create(0, y, 0.5, 1, y + 0.5, 1);
             case Direction.WEST -> Shapes.create(0, y, 0, 0.5, y + 0.5, 1);
             default -> Shapes.block();
         };
