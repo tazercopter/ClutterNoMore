@@ -61,20 +61,24 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
             return replacingBlockState.setValue(DOUBLE, true);
         }
 
-        BlockState stateForPlacement = super.getStateForPlacement(context)
-                .setValue(FACING, direction)
-                .setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
+        BlockState stateForPlacement = defaultBlockState().setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
 
         switch (direction) {
-            case NORTH, SOUTH -> {
-                if (exactPos.z - pos.getZ() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            case NORTH -> {
+                if (exactPos.z - pos.getZ() > 0.5) direction = direction.getOpposite();
             }
-            case EAST, WEST -> {
-                if (exactPos.x - pos.getX() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            case SOUTH -> {
+                if (exactPos.z - pos.getZ() < 0.5) direction = direction.getOpposite();
+            }
+            case EAST -> {
+                if (exactPos.x - pos.getX() < 0.5) direction = direction.getOpposite();
+            }
+            case WEST -> {
+                if (exactPos.x - pos.getX() > 0.5) direction = direction.getOpposite();
             }
         }
 
-        return stateForPlacement;
+        return stateForPlacement.setValue(FACING, direction);
     }
 
     @Override

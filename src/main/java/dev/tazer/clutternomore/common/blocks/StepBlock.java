@@ -56,24 +56,29 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
             return replacingBlockState.setValue(SLAB_TYPE, SlabType.DOUBLE);
         }
 
-        BlockState stateForPlacement = super.getStateForPlacement(context)
-                .setValue(FACING, direction)
-                .setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
+        BlockState stateForPlacement = defaultBlockState().setValue(WATERLOGGED, replacingFluidState.getType() == Fluids.WATER);
 
         switch (direction) {
-            case NORTH, SOUTH -> {
-                if (exactPos.z - pos.getZ() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            case NORTH -> {
+                if (exactPos.z - pos.getZ() > 0.5) direction = direction.getOpposite();
             }
-            case EAST, WEST -> {
-                if (exactPos.x - pos.getX() < 0.5) stateForPlacement = stateForPlacement.setValue(FACING, direction.getOpposite());
+            case SOUTH -> {
+                if (exactPos.z - pos.getZ() < 0.5) direction = direction.getOpposite();
+            }
+            case EAST -> {
+                if (exactPos.x - pos.getX() < 0.5) direction = direction.getOpposite();
+            }
+            case WEST -> {
+                if (exactPos.x - pos.getX() > 0.5) direction = direction.getOpposite();
             }
         }
+
 
         if (exactPos.y - pos.getY() > 0.5) {
             stateForPlacement = stateForPlacement.setValue(SLAB_TYPE, SlabType.TOP);
         }
 
-        return stateForPlacement;
+        return stateForPlacement.setValue(FACING, direction);
     }
 
     @Override
