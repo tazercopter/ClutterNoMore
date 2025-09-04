@@ -5,6 +5,8 @@ import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.mehvahdjukaar.moonlight.api.resources.SimpleTagBuilder;
 import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
+import net.mehvahdjukaar.moonlight.api.set.wood.WoodType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.BlockTags;
@@ -44,13 +46,20 @@ public class TagGenerator implements DataGenerator {
     public void generate(Item item, ResourceManager manager, ResourceSink sink) {
         BlockSetRegistry.ShapeSet set = BlockSetAPI.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
         if (set == null || item != set.mainChild().asItem()) return;
+        String id = BuiltInRegistries.ITEM.getKey(item).getPath();
+        boolean wood = id.contains("wood") || id.contains("planks");
+
+        if (!wood) {
+            WoodType woodType = BlockSetAPI.getBlockTypeOf(item, WoodType.class);
+            if (woodType != null) wood = true;
+        }
 
         if (set.hasChild("vertical_slab")) {
             Item verticalSlab = (Item) set.getChild("vertical_slab");
             verticalSlabItems.addEntry(verticalSlab);
 
-            ItemStack stack = ((Item) set.getChild("slab")).getDefaultInstance();
-            if (stack.is(ItemTags.WOODEN_SLABS)) woodenVerticalSlabItems.addEntry(verticalSlab);
+
+            if (wood) woodenVerticalSlabItems.addEntry(verticalSlab);
             else pickaxeMineable.addEntry(verticalSlab);
         }
 
@@ -58,8 +67,7 @@ public class TagGenerator implements DataGenerator {
             Item step = (Item) set.getChild("step");
             stepItems.addEntry(step);
 
-            ItemStack stack = ((Item) set.getChild("stairs")).getDefaultInstance();
-            if (stack.is(ItemTags.WOODEN_STAIRS)) woodenStepItems.addEntry(step);
+            if (wood) woodenStepItems.addEntry(step);
             else pickaxeMineable.addEntry(step);
         }
     }
@@ -69,33 +77,28 @@ public class TagGenerator implements DataGenerator {
         BlockSetRegistry.ShapeSet set = null;
         if (block.asItem() != Items.AIR) set = BlockSetAPI.getBlockTypeOf(block, BlockSetRegistry.ShapeSet.class);
         if (set == null || block != set.mainChild()) return;
+        String id = BuiltInRegistries.BLOCK.getKey(block).getPath();
+        boolean wood = id.contains("wood") || id.contains("planks");
+
+        if (!wood) {
+            WoodType woodType = BlockSetAPI.getBlockTypeOf(block, WoodType.class);
+            if (woodType != null) wood = true;
+        }
 
         if (set.hasChild("vertical_slab_block")) {
             Block verticalSlab = (Block) set.getChild("vertical_slab_block");
             verticalSlabBlocks.addEntry(verticalSlab);
 
-            BlockState state = Block.byItem((Item) set.getChild("slab")).defaultBlockState();
-            if (state.is(BlockTags.WOODEN_SLABS)) {
-                woodenVerticalSlabBlocks.addEntry(verticalSlab);
-            }
-
-            if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                pickaxeMineable.addEntry(verticalSlab);
-            }
+            if (wood) woodenVerticalSlabBlocks.addEntry(verticalSlab);
+            else pickaxeMineable.addEntry(verticalSlab);
         }
 
         if (set.hasChild("step_block")) {
             Block step = (Block) set.getChild("step_block");
             stepBlocks.addEntry(step);
 
-            BlockState state = Block.byItem((Item) set.getChild("stairs")).defaultBlockState();
-            if (state.is(BlockTags.WOODEN_STAIRS)) {
-                woodenStepBlocks.addEntry(step);
-            }
-
-            if (state.is(BlockTags.MINEABLE_WITH_PICKAXE)) {
-                pickaxeMineable.addEntry(step);
-            }
+            if (wood) woodenStepBlocks.addEntry(step);
+            else pickaxeMineable.addEntry(step);
         }
     }
 

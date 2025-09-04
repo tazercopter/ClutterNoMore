@@ -156,7 +156,7 @@ public class BlockSetRegistry {
             return optional.orElse(null);
         }
 
-        public @Nullable Item getWood() {
+        protected @Nullable Item getWood() {
             return id.getPath().endsWith("_log") ? BuiltInRegistries.ITEM.getOptional(id.withPath(path -> path.substring(0, path.length() - 3) + "wood")).orElse(null) : null;
         }
 

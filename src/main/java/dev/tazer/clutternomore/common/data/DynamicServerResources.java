@@ -31,7 +31,8 @@ public class DynamicServerResources extends DynamicServerResourceProvider {
     }
 
     private static final List<DataGenerator> GENERATORS = List.of(
-            new TagGenerator()
+            new TagGenerator(),
+            new LootGenerator()
     );
 
     @Override
@@ -39,6 +40,8 @@ public class DynamicServerResources extends DynamicServerResourceProvider {
         executor.accept((resourceManager, sink) -> {
             for (DataGenerator generator : GENERATORS) {
                 generator.initialize(resourceManager, sink);
+
+                generator.generate(resourceManager, sink);
 
                 List<Item> items = BuiltInRegistries.ITEM.stream().toList();
                 for (Item item : items) {
