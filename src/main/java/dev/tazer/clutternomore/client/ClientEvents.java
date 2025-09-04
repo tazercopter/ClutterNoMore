@@ -61,17 +61,13 @@ public class ClientEvents {
 
     @SubscribeEvent
     public static void onItemTooltips(ItemTooltipEvent event) {
-        Item.TooltipContext context = event.getContext();
         Item item = event.getItemStack().getItem();
         List<Component> tooltip = event.getToolTip();
-        TooltipFlag tooltipFlag = event.getFlags();
         boolean hasShapes = SHAPES_DATAMAP.containsKey(item);
         boolean isShape = INVERSE_SHAPES_DATAMAP.containsKey(item);
 
         if (!showTooltip) {
             if (hasShapes || isShape) {
-                item = INVERSE_SHAPES_DATAMAP.getOrDefault(item, item);
-
                 Component component = tooltip.getFirst().copy().append(Component.literal(" [+]").withStyle(ChatFormatting.DARK_GRAY));
                 tooltip.removeFirst();
                 tooltip.addFirst(component);
