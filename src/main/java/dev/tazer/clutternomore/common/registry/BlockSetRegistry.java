@@ -18,9 +18,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class BlockSetRegistry {
 
@@ -38,65 +36,89 @@ public class BlockSetRegistry {
         @Override
         public Optional<ShapeSet> detectTypeFromBlock(Block block, ResourceLocation blockId) {
             if (block.asItem() != Items.AIR) {
-                List<String> prefixes = List.of(
-                        "",
-                        "spiked"
-                );
-
-                List<String> postfixes = List.of(
-                        "",
-                        "stairs",
-                        "slab",
-                        "wall"
-                );
-
-                for (String prefix : prefixes) {
-                    for (String postfix : postfixes) {
-                        if (!defHasBlock(blockId, "", "planks") && (hasBlock(blockId, prefix, postfix) || (blockId.getPath().endsWith("_log") && hasWood(blockId)))) {
-                            return Optional.of(new ShapeSet(blockId, block));
-                        }
-                    }
+                if (isParentBlock(blockId)) {
+                    return Optional.of(new ShapeSet(blockId, block));
                 }
             }
 
             return Optional.empty();
         }
 
-        public static boolean hasWood(ResourceLocation key) {
-            return BuiltInRegistries.ITEM.containsKey(key.withPath(path -> path.substring(0, path.length() - 3) + "wood"));
+        private static boolean has(ResourceLocation block) {
+            return BuiltInRegistries.BLOCK.containsKey(block);
         }
 
-        public static boolean defHasBlock(ResourceLocation key, String prefix, String postfix) {
-            String newPrefix = prefix + (prefix.isEmpty() ? "" : "_");
-            String newPostfix = (postfix.isEmpty() ? "" : "_") + postfix;
-            boolean hasBlock = BuiltInRegistries.BLOCK.containsKey(key.withPrefix(newPrefix).withSuffix(newPostfix));
-            if (!hasBlock) {
-                if (key.getPath().endsWith("_block")) {
-                    return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> newPrefix + path.substring(0, path.length() - 6) + newPostfix));
+        private static boolean isParentBlock(ResourceLocation block) {
+            List<String> namespaces = List.of(block.getNamespace(), "minecraft");
+            String path = block.getPath();
+
+            List<String> parentSuffixes = List.of("log", "planks", "block");
+            List<String> ignoredSuffixes = List.of("block");
+            Map<String, String> replacements = Map.of("log", "wood");
+            List<String> prefixes = List.of("spiked");
+            List<String> ignoredPrefixes = List.of("stripped");
+            List<String> suffixes = List.of("stairs", "slab", "wall");
+
+            for (String namespace : namespaces) {
+                ResourceLocation base = ResourceLocation.fromNamespaceAndPath(namespace, path);
+
+                String suffixBase = path;
+                for (String ignored : ignoredSuffixes) {
+                    suffixBase = stripSuffix(suffixBase, ignored);
+                }
+
+                for (String parent : parentSuffixes) {
+                    String suffixed = suffixBase + "_" + parent;
+                    if (!suffixed.equals(path)) {
+                        ResourceLocation candidate = base.withPath(p -> suffixed);
+                        if (has(candidate)) return false;
+                    }
+                }
+
+                for (Map.Entry<String, String> replacement : replacements.entrySet()) {
+                    String replaced = path.replace(replacement.getKey(), replacement.getValue());
+                    if (!replaced.equals(path)) {
+                        ResourceLocation candidate = base.withPath(p -> replaced);
+                        if (has(candidate)) return true;
+                    }
+                }
+
+                String prefixBase = path;
+                for (String ignored : ignoredPrefixes) {
+                    prefixBase = stripPrefix(prefixBase, ignored);
+                }
+
+                for (String prefix : prefixes) {
+                    String prefixed = prefix + "_" + prefixBase;
+                    if (!prefixed.equals(path)) {
+                        ResourceLocation candidate = base.withPath(p -> prefixed);
+                        if (has(candidate)) return true;
+                    }
+                }
+
+                for (String parent : parentSuffixes) {
+                    suffixBase = stripSuffix(suffixBase, parent);
+                }
+
+                for (String suffix : suffixes) {
+                    if (suffixBase.endsWith("s")) {
+                        String trimmed  = suffixBase.substring(0, suffixBase.length() - 1);
+                        String suffixed = trimmed + "_" + suffix;
+                        if (!suffixed.equals(path)) {
+                            ResourceLocation candidate = base.withPath(p -> suffixed);
+                            if (has(candidate)) return true;
+                        }
+                    }
+
+                    String suffixed = suffixBase + "_" + suffix;
+                    if (!suffixed.equals(path)) {
+                        ResourceLocation candidate = base.withPath(p -> suffixed);
+                        if (has(candidate)) return true;
+                    }
                 }
             }
-            return hasBlock;
-        }
 
-        public static boolean hasBlock(ResourceLocation key, String prefix, String postfix) {
-            String newPrefix = prefix + (prefix.isEmpty() ? "" : "_");
-            String newPostfix = (postfix.isEmpty() ? "" : "_") + postfix;
-            boolean optional = BuiltInRegistries.BLOCK.containsKey(key.withPrefix(newPrefix).withSuffix(newPostfix));
-            if (!optional) {
-                if (key.getPath().endsWith("stripped_")) {
-                    return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> "stripped_" + newPrefix + path.substring(9) + newPostfix));
-                }
-
-                if (key.getPath().endsWith("_block")) {
-                    return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> newPrefix + path.substring(0, path.length() - 6) + newPostfix));
-                } else if (key.getPath().endsWith("_planks")) {
-                    return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> newPrefix + path.substring(0, path.length() - 7) + newPostfix));
-                } else if (key.getPath().endsWith("s")) {
-                    return BuiltInRegistries.BLOCK.containsKey(key.withPath(path -> newPrefix + path.substring(0, path.length() - 1) + newPostfix));
-                }
-            }
-
-            return optional;
+            return false;
         }
 
         @Override
@@ -117,6 +139,11 @@ public class BlockSetRegistry {
             this.block = block;
         }
 
+        @Override
+        protected void initializeChildrenBlocks() {
+            addChild("block", block);
+        }
+
         public String getVariantId(String prefix, String postfix) {
             String name = prefix + (prefix.isEmpty() ? "" : "_") + getTypeName();
 
@@ -126,53 +153,74 @@ public class BlockSetRegistry {
             return name + (postfix.isEmpty() ? "" : "_") + postfix;
         }
 
-        @Override
-        protected void initializeChildrenBlocks() {
-            addChild("block", block);
+
+        protected @Nullable Item findRelatedEntry(String prefix, String postfix) {
+            String basePath = id.getPath();
+
+            List<String> parentSuffixes = List.of("block", "planks");
+            for (String parent : parentSuffixes) {
+                basePath = stripSuffix(basePath, parent);
+            }
+
+            List<String> ignoredPrefixes = List.of("stripped");
+            String reapplyPrefix = "";
+            for (String ignored : ignoredPrefixes) {
+                if (id.getPath().startsWith(ignored + "_")) {
+                    reapplyPrefix = ignored + "_";
+                    basePath = stripPrefix(basePath, ignored);
+                }
+            }
+
+            String prefixPart = prefix.isEmpty() ? "" : prefix + "_";
+            String postfixPart = postfix.isEmpty() ? "" : "_" + postfix;
+
+            // try plural-trimmed and untrimmed separately
+            List<String> candidates = new ArrayList<>();
+            if (basePath.endsWith("s")) {
+                candidates.add(basePath.substring(0, basePath.length() - 1));
+            }
+            candidates.add(basePath);
+
+            for (String stem : candidates) {
+                String candidatePath = reapplyPrefix + prefixPart + stem + postfixPart;
+                ResourceLocation candidateId = id.withPath(p -> candidatePath);
+                Optional<Item> found = BuiltInRegistries.ITEM.getOptional(candidateId);
+                if (found.isPresent()) return found.get();
+            }
+
+            return null;
         }
 
         protected @Nullable Item findRelatedEntry(String postfix) {
             return findRelatedEntry("", postfix);
         }
 
-        protected @Nullable Item findRelatedEntry(String prefix, String postfix) {
-            String newPrefix = prefix + (prefix.isEmpty() ? "" : "_");
-            String newPostfix = (postfix.isEmpty() ? "" : "_") + postfix;
-            Optional<Item> optional = BuiltInRegistries.ITEM.getOptional(id.withPrefix(newPrefix).withSuffix(newPostfix));
-            if (optional.isEmpty()) {
-                if (id.getPath().startsWith("stripped_")) {
-                    return BuiltInRegistries.ITEM.getOptional(id.withPath(path -> "stripped_" + newPrefix + path.substring(9) + newPostfix)).orElse(null);
-                }
-
-                if (id.getPath().endsWith("_block")) {
-                    return BuiltInRegistries.ITEM.getOptional(id.withPath(path -> newPrefix + path.substring(0, path.length() - 6) + newPostfix)).orElse(null);
-                } else if (id.getPath().endsWith("_planks")) {
-                    return BuiltInRegistries.ITEM.getOptional(id.withPath(path -> newPrefix + path.substring(0, path.length() - 7) + newPostfix)).orElse(null);
-                } else if (id.getPath().endsWith("s")) {
-                    return BuiltInRegistries.ITEM.getOptional(id.withPath(path -> newPrefix + path.substring(0, path.length() - 1) + newPostfix)).orElse(null);
-                }
-            }
-
-            return optional.orElse(null);
-        }
-
         protected @Nullable Item getWood() {
-            return id.getPath().endsWith("_log") ? BuiltInRegistries.ITEM.getOptional(id.withPath(path -> path.substring(0, path.length() - 3) + "wood")).orElse(null) : null;
+            String path = id.getPath();
+            if (path.endsWith("_log")) {
+                String stem = path.substring(0, path.length() - 4); // remove "_log"
+                ResourceLocation woodId = id.withPath(p -> stem + "wood");
+                return BuiltInRegistries.ITEM.getOptional(woodId).orElse(null);
+            }
+            return null;
         }
 
         @Override
         protected void initializeChildrenItems() {
-            Item stairs = findRelatedEntry("stairs");
-            if (stairs != null) addChild("stairs", stairs);
-            Item slab = findRelatedEntry("slab");
-            if (slab != null) addChild("slab", slab);
-            Item wall = findRelatedEntry("wall");
-            if (wall != null) addChild("wall", wall);
+            List<String> postfixes = List.of("stairs", "slab", "wall");
+
+            for (String postfix : postfixes) {
+                Item found = findRelatedEntry(postfix);
+                if (found != null) addChild(postfix, found);
+            }
+
             Item spiked = findRelatedEntry("spiked", "");
             if (spiked != null) addChild("spiked", spiked);
+
             Item wood = getWood();
             if (wood != null) addChild("wood", wood);
         }
+
 
         @Override
         public String getTranslationKey() {
@@ -231,5 +279,17 @@ public class BlockSetRegistry {
                 }
             }
         }
+    }
+
+    private static String stripSuffix(String path, String suffix) {
+        if (path.endsWith("_" + suffix)) return path.substring(0, path.length() - suffix.length() - 1);
+        if (path.endsWith(suffix)) return path.substring(0, path.length() - suffix.length());
+        return path;
+    }
+
+    private static String stripPrefix(String path, String prefix) {
+        if (path.startsWith(prefix + "_")) return path.substring(prefix.length() + 1);
+        if (path.startsWith(prefix)) return path.substring(prefix.length());
+        return path;
     }
 }

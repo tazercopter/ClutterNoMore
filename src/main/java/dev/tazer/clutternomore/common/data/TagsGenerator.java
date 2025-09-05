@@ -12,13 +12,10 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 
-public class TagGenerator implements DataGenerator {
+public class TagsGenerator implements DataGenerator {
     public SimpleTagBuilder verticalSlabItems;
     public SimpleTagBuilder stepItems;
     public SimpleTagBuilder verticalSlabBlocks;

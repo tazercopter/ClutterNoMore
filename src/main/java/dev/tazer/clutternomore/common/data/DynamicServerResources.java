@@ -7,7 +7,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.fml.ModList;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +19,7 @@ public class DynamicServerResources extends DynamicServerResourceProvider {
         RegHelper.registerDynamicResourceProvider(new DynamicServerResources());
     }
     protected DynamicServerResources() {
-        super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.CACHED);
+        super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.runOnce());
     }
 
     @Override
@@ -31,7 +30,7 @@ public class DynamicServerResources extends DynamicServerResourceProvider {
     }
 
     private static final List<DataGenerator> GENERATORS = List.of(
-            new TagGenerator(),
+            new TagsGenerator(),
             new LootGenerator()
     );
 
