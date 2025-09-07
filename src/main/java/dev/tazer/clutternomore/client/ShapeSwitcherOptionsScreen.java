@@ -1,7 +1,6 @@
 package dev.tazer.clutternomore.client;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
 import dev.tazer.clutternomore.CNMConfig;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;

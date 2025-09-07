@@ -27,13 +27,13 @@ public class DatamapHandler {
             ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "add_shapes"),
             Registries.ITEM,
             Shapes.CODEC
-    ).synced(Shapes.SHAPES_CODEC, false).merger(new ListMerger()).remover(ListRemover.CODEC).build();
+    ).synced(Shapes.SHAPES_CODEC, true).merger(new ListMerger()).remover(ListRemover.CODEC).build();
 
     public static final AdvancedDataMapType<Item, Shapes, ListRemover> REMOVE_SHAPE_DATA = AdvancedDataMapType.builder(
             ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "remove_shapes"),
             Registries.ITEM,
             Shapes.CODEC
-    ).synced(Shapes.SHAPES_CODEC, false).merger(new ListMerger()).remover(ListRemover.CODEC).build();
+    ).synced(Shapes.SHAPES_CODEC, true).merger(new ListMerger()).remover(ListRemover.CODEC).build();
 
     private static final Map<Item, List<Item>> SHAPES_DATAMAP_INTERNAL = new HashMap<>();
     private static final Map<Item, Item> INVERSE_SHAPES_DATAMAP_INTERNAL = new HashMap<>();

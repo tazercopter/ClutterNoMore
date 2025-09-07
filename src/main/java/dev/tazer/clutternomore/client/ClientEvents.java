@@ -20,7 +20,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -165,7 +164,7 @@ public class ClientEvents {
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Pre event) {
         if (OVERLAY != null) {
-            if (!OVERLAY.shouldStayOpenTick()) OVERLAY = null;
+            if (!OVERLAY.shouldStayOpenThisTick()) OVERLAY = null;
         }
     }
 

@@ -3,12 +3,12 @@ package dev.tazer.clutternomore.client.assets;
 import dev.tazer.clutternomore.ClutterNoMore;
 import net.mehvahdjukaar.moonlight.api.events.AfterLanguageLoadEvent;
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
-import net.mehvahdjukaar.moonlight.api.resources.pack.*;
+import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicClientResourceProvider;
+import net.mehvahdjukaar.moonlight.api.resources.pack.PackGenerationStrategy;
+import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.Item;
 import net.neoforged.fml.ModList;
-import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Collection;
