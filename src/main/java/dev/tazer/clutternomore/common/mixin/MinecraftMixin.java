@@ -40,7 +40,6 @@ public abstract class MinecraftMixin {
             if (slotItem == originalItem || shapes.contains(slotItem)) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
                 Objects.requireNonNull(getConnection()).send(new ChangeStackPayload(-1, exactIndex, replaced));
-                inventory.items.set(exactIndex, replaced);
             }
         }
 

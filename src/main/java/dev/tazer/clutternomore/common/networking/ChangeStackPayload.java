@@ -7,9 +7,14 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
 
 public record ChangeStackPayload(int containerId, int slot, ItemStack stack) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ChangeStackPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "player_change_stack"));
@@ -30,13 +35,22 @@ public record ChangeStackPayload(int containerId, int slot, ItemStack stack) imp
     }
 
     public static void handleDataOnServer(final ChangeStackPayload data, final IPayloadContext context) {
-        if (data.containerId == -1) {
-            if (data.slot == -1) context.player().setItemInHand(InteractionHand.MAIN_HAND, data.stack);
-            else context.player().getInventory().setItem(data.slot, data.stack);
-        } else {
-            if (data.containerId == context.player().containerMenu.containerId) {
-                AbstractContainerMenu menu = context.player().containerMenu;
-                menu.setItem(data.slot, menu.getStateId(), data.stack);
+        if (INVERSE_SHAPES_DATAMAP.containsKey(data.stack.getItem()) || SHAPES_DATAMAP.containsKey(data.stack.getItem())) {
+            Item main = INVERSE_SHAPES_DATAMAP.getOrDefault(data.stack.getItem(), data.stack().getItem());
+
+            if (data.slot == -1) {
+                Item item = context.player().getItemInHand(InteractionHand.MAIN_HAND).getItem();
+                if (main == item || SHAPES_DATAMAP.get(main).contains(item)) {
+                    context.player().setItemInHand(InteractionHand.MAIN_HAND, data.stack);
+                }
+            } else {
+                InventoryMenu inventory = context.player().inventoryMenu;
+                Slot slot = inventory.getSlot(data.slot);
+                Item item = slot.getItem().getItem();
+                if (main == item || SHAPES_DATAMAP.get(main).contains(item)) {
+                    slot.setByPlayer(data.stack);
+                    inventory.sendAllDataToRemote();
+                }
             }
         }
     }

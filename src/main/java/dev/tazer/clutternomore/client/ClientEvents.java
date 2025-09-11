@@ -15,7 +15,6 @@ import net.minecraft.network.chat.FormattedText;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
@@ -119,7 +118,7 @@ public class ClientEvents {
                 if (slot != null) {
                     ItemStack heldStack = slot.getItem();
                     if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
-                        switchShapeInSlot(screen.getMinecraft().player, screen.getMenu().containerId, slot, heldStack, (int) event.getScrollDeltaY());
+                        switchShapeInSlot(screen.getMinecraft().player, screen.getMenu().containerId, slot.getSlotIndex(), heldStack, (int) event.getScrollDeltaY());
                     }
                 }
             }
@@ -215,7 +214,7 @@ public class ClientEvents {
                         case PRESS -> switchShapeInSlot(
                                 screen.getMinecraft().player,
                                 containerScreen.getMenu().containerId,
-                                slot,
+                                slot.getSlotIndex(),
                                 heldStack,
                                 -1
                         );
@@ -231,7 +230,7 @@ public class ClientEvents {
         }
     }
 
-    public static void switchShapeInSlot(Player player, int containerId, Slot slot, ItemStack heldStack, int direction) {
+    public static void switchShapeInSlot(Player player, int containerId, int slotId, ItemStack heldStack, int direction) {
         Item item = INVERSE_SHAPES_DATAMAP.getOrDefault(heldStack.getItem(), heldStack.getItem());
         int count = heldStack.getCount();
 
@@ -248,11 +247,7 @@ public class ClientEvents {
         ItemStack next = nextItem.getDefaultInstance();
         next.setCount(count);
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
-        slot.setByPlayer(next);
-        AbstractContainerMenu menu = player.containerMenu;
-        int slotId = slot.getContainerSlot();
         if (slotId < 9) slotId += 36;
-        menu.setItem(slotId, menu.getStateId(), next);
         PacketDistributor.sendToServer(new ChangeStackPayload(containerId, slotId, next));
     }
 }
