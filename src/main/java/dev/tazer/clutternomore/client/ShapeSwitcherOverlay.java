@@ -104,7 +104,7 @@ public class ShapeSwitcherOverlay {
         PacketDistributor.sendToServer(new ChangeStackPayload(-1, -1, next));
     }
 
-    public boolean shouldStayOpenTick() {
+    public boolean shouldStayOpenThisTick() {
         int selected = minecraft.player.getInventory().selected;
         ItemStack heldStack = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
         count = heldStack.getCount();

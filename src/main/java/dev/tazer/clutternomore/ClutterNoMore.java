@@ -1,8 +1,8 @@
 package dev.tazer.clutternomore;
 
 import dev.tazer.clutternomore.client.assets.DynamicClientResources;
-import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import dev.tazer.clutternomore.common.data.DynamicServerResources;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import dev.tazer.clutternomore.common.registry.CBlocks;
 import dev.tazer.clutternomore.common.registry.CItems;
 import net.minecraft.resources.ResourceLocation;

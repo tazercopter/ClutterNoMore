@@ -147,9 +147,15 @@ public class BlockSetRegistry {
         public String getVariantId(String prefix, String postfix) {
             String name = prefix + (prefix.isEmpty() ? "" : "_") + getTypeName();
 
-            if (name.endsWith("_block")) name = name.substring(0, name.length() - 6);
-            if (name.endsWith("_planks")) name = name.substring(0, name.length() - 7);
-            if (name.endsWith("s")) name = name.substring(0, name.length() - 1);
+            List<String> suffixes = List.of("_block", "_planks", "s");
+
+            for (String suffix : suffixes) {
+                if (name.endsWith(suffix)) {
+                    name = name.substring(0, name.length() - suffix.length());
+                    break;
+                }
+            }
+
             return name + (postfix.isEmpty() ? "" : "_") + postfix;
         }
 
@@ -174,7 +180,6 @@ public class BlockSetRegistry {
             String prefixPart = prefix.isEmpty() ? "" : prefix + "_";
             String postfixPart = postfix.isEmpty() ? "" : "_" + postfix;
 
-            // try plural-trimmed and untrimmed separately
             List<String> candidates = new ArrayList<>();
             if (basePath.endsWith("s")) {
                 candidates.add(basePath.substring(0, basePath.length() - 1));
@@ -197,11 +202,12 @@ public class BlockSetRegistry {
 
         protected @Nullable Item getWood() {
             String path = id.getPath();
-            if (path.endsWith("_log")) {
-                String stem = path.substring(0, path.length() - 4); // remove "_log"
+            if (path.endsWith("log")) {
+                String stem = path.substring(0, path.length() - 3);
                 ResourceLocation woodId = id.withPath(p -> stem + "wood");
                 return BuiltInRegistries.ITEM.getOptional(woodId).orElse(null);
             }
+
             return null;
         }
 
