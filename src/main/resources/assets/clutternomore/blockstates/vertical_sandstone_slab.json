@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,double=false": {
+      "model": "clutternomore:block/vertical_sandstone_slab"
+    },
+    "facing=north,double=true": {
+      "model": "block/sandstone"
+    },
+    "facing=east,double=false": {
+      "model": "clutternomore:block/vertical_sandstone_slab",
+      "y": 90
+    },
+    "facing=east,double=true": {
+      "model": "block/sandstone",
+      "y": 90
+    },
+    "facing=south,double=false": {
+      "model": "clutternomore:block/vertical_sandstone_slab",
+      "y": 180
+    },
+    "facing=south,double=true": {
+      "model": "block/sandstone",
+      "y": 180
+    },
+    "facing=west,double=false": {
+      "model": "clutternomore:block/vertical_sandstone_slab",
+      "y": 270
+    },
+    "facing=west,double=true": {
+      "model": "block/sandstone",
+      "y": 270
+    }
+  }
+}
