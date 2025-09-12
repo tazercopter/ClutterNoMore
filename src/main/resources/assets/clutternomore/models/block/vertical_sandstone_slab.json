@@ -1,5 +1,5 @@
 {
-  "parent": "clutternomore:block/templates/rotateable_vertical_slab",
+  "parent": "clutternomore:block/templates/vertical_slab",
   "textures": {
     "top": "block/sandstone_top",
     "side": "block/sandstone",
