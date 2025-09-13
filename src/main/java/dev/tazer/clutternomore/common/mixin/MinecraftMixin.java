@@ -1,6 +1,8 @@
 package dev.tazer.clutternomore.common.mixin;
 
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
+//? if fabric
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +41,12 @@ public abstract class MinecraftMixin {
 
             if (slotItem == originalItem || shapes.contains(slotItem)) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
-                Objects.requireNonNull(getConnection()).send(new ChangeStackPayload(-1, exactIndex, replaced));
+                //? if neoforge {
+                /*Objects.requireNonNull(getConnection())
+                *///?} else {
+                ClientPlayNetworking
+                //?}
+                        .send(new ChangeStackPayload(-1, exactIndex, replaced));
             }
         }
 

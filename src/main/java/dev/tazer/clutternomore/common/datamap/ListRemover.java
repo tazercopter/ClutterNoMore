@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore.common.datamap;
-
-import com.mojang.datafixers.util.Either;
+//? if neoforge {
+/*import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -27,3 +27,4 @@ public record ListRemover(Shapes shapes) implements DataMapValueRemover<Item, Sh
         return Optional.of(new Shapes(HolderSet.direct(finalList)));
     }
 }
+*///?}

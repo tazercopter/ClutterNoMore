@@ -4,6 +4,7 @@ package dev.tazer.clutternomore.fabric;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.client.ClientShapeTooltip;
 import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
+import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import dev.tazer.clutternomore.common.networking.ShapeTooltip;
@@ -110,7 +111,7 @@ public class ClientEvents {
                 if (slot != null) {
                     ItemStack heldStack = slot.getItem();
                     if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
-                        switchShapeInSlot(Minecraft.getInstance().player, screen.getMenu().containerId, slot.index, heldStack, (int) scrollY);
+                        switchShapeInSlot(Minecraft.getInstance().player, screen.getMenu().containerId, ((SlotAccessor) slot).getSlotIndex(), heldStack, (int) scrollY);
                     }
                 }
             }
@@ -205,7 +206,7 @@ public class ClientEvents {
                         case PRESS -> switchShapeInSlot(
                                 Minecraft.getInstance().player,
                                 containerScreen.getMenu().containerId,
-                                slot.index,
+                                ((SlotAccessor) slot).getSlotIndex(),
                                 heldStack,
                                 -1
                         );

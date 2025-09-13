@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore.common.datamap;
-
-import com.mojang.datafixers.util.Either;
+//? if neoforge {
+/*import com.mojang.datafixers.util.Either;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
@@ -20,3 +20,4 @@ public class ListMerger implements DataMapValueMerger<Item, Shapes> {
         return new Shapes(HolderSet.direct(finalList));
     }
 }
+*///?}
