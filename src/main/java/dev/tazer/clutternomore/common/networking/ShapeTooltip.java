@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.common.tooltip;
+package dev.tazer.clutternomore.common.networking;
 
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;

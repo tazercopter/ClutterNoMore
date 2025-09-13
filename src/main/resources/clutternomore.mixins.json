@@ -8,8 +8,7 @@
     "BuildCreativeModeTabContentsEventMixin",
     "ItemDisplayBuilderMixin",
     "ItemMixin",
-    "ItemStackMixin",
-    "RecipeManagerMixin"
+    "ItemStackMixin"
   ],
   "client": [
     "MinecraftMixin",

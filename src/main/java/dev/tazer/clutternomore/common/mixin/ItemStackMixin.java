@@ -7,45 +7,38 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Objects;
-
 import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
 import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
 
 @Mixin(ItemStack.class)
 public class ItemStackMixin {
-    @Inject(method = "isSameItemSameComponents", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "isSameItemSameComponents", at = @At("RETURN"), cancellable = true)
     private static void isSameItemSameComponents(ItemStack stack, ItemStack other, CallbackInfoReturnable<Boolean> cir) {
-        if (SHAPES_DATAMAP.containsKey(other.getItem())) {
-            if (SHAPES_DATAMAP.get(other.getItem()).contains(stack.getItem())) cir.setReturnValue(true);
-            return;
-        }
-
-        if (SHAPES_DATAMAP.containsKey(stack.getItem())) {
-            if (SHAPES_DATAMAP.get(stack.getItem()).contains(other.getItem())) cir.setReturnValue(true);
-            return;
-        }
-
-        if (INVERSE_SHAPES_DATAMAP.containsKey(stack.getItem())) {
-            Item originalItem = INVERSE_SHAPES_DATAMAP.get(stack.getItem());
-            if (other.is(originalItem)) {
-                cir.setReturnValue(true);
+        if (!cir.getReturnValue()) {
+            Item item = stack.getItem();
+            Item otherItem = other.getItem();
+            if (SHAPES_DATAMAP.containsKey(otherItem)) {
+                if (SHAPES_DATAMAP.get(otherItem).contains(item)) cir.setReturnValue(true);
                 return;
             }
 
-            if (INVERSE_SHAPES_DATAMAP.containsKey(other.getItem())) {
-                Item otherOriginalItem = INVERSE_SHAPES_DATAMAP.get(other.getItem());
-                if (otherOriginalItem == originalItem) {
+            if (SHAPES_DATAMAP.containsKey(item)) {
+                if (SHAPES_DATAMAP.get(item).contains(otherItem)) cir.setReturnValue(true);
+                return;
+            }
+
+            Item originalItem = INVERSE_SHAPES_DATAMAP.get(item);
+            if (originalItem != null) {
+                if (other.is(originalItem)) {
                     cir.setReturnValue(true);
                     return;
                 }
-            }
-        }
 
-        if (!stack.is(other.getItem())) {
-            cir.setReturnValue(false);
-        } else {
-            cir.setReturnValue(stack.isEmpty() && other.isEmpty() || Objects.equals(stack.getComponents(), other.getComponents()));
+                Item otherOriginalItem = INVERSE_SHAPES_DATAMAP.get(otherItem);
+                if (otherOriginalItem.equals(originalItem)) {
+                    cir.setReturnValue(true);
+                }
+            }
         }
     }
 }

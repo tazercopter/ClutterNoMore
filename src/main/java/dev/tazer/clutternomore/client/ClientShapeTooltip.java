@@ -2,7 +2,7 @@ package dev.tazer.clutternomore.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.tazer.clutternomore.ClutterNoMore;
-import dev.tazer.clutternomore.common.tooltip.ShapeTooltip;
+import dev.tazer.clutternomore.common.networking.ShapeTooltip;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
