@@ -21,17 +21,13 @@ import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES
 public class BlockItemMixin {
     @Redirect(method = "place", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;consume(ILnet/minecraft/world/entity/LivingEntity;)V"))
     private void place(ItemStack instance, int amount, LivingEntity entity, @Local(argsOnly = true) BlockPlaceContext context, @Local(ordinal = 0) BlockState blockstate) {
-        boolean consume = false;
+        boolean consume = true;
         if (INVERSE_SHAPES_DATAMAP.containsKey(context.getItemInHand().getItem())) {
             Optional<SlabType> slabType = blockstate.getOptionalValue(SlabBlock.TYPE);
             Optional<Boolean> isDouble = blockstate.getOptionalValue(VerticalSlabBlock.DOUBLE);
 
-            if (slabType.isEmpty() && isDouble.isEmpty()) {
-                consume = true;
-            } else {
-                if (slabType.isPresent()) consume = slabType.get() != SlabType.DOUBLE;
-                if (isDouble.isPresent()) consume = !isDouble.get();
-            }
+            if (slabType.isPresent()) consume = slabType.get() != SlabType.DOUBLE;
+            if (isDouble.isPresent()) consume = !isDouble.get();
         }
 
         if (consume) instance.consume(amount, entity);

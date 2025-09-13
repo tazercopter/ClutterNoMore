@@ -20,6 +20,7 @@ public class DynamicClientResources extends DynamicClientResourceProvider {
     public static void register() {
         RegHelper.registerDynamicResourceProvider(new DynamicClientResources());
     }
+
     protected DynamicClientResources() {
         super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.runOnce());
     }

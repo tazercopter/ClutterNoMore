@@ -10,6 +10,16 @@
         "warped_hyphae"
       ]
     },
+    "stripped_crimson_stem": {
+      "shapes": [
+        "stripped_crimson_hyphae"
+      ]
+    },
+    "stripped_warped_stem": {
+      "shapes": [
+        "stripped_warped_hyphae"
+      ]
+    },
     "supplementaries:timber_frame": {
       "neoforge:conditions": [
         {

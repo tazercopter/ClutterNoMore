@@ -20,8 +20,9 @@ public class DynamicServerResources extends DynamicServerResourceProvider {
     public static void register() {
         RegHelper.registerDynamicResourceProvider(new DynamicServerResources());
     }
+
     protected DynamicServerResources() {
-        super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.runOnce());
+        super(ClutterNoMore.location("generated_pack"), PackGenerationStrategy.REGEN_ON_EVERY_RELOAD);
     }
 
     @Override

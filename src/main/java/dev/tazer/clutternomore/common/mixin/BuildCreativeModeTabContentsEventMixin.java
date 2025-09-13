@@ -23,12 +23,12 @@ public abstract class BuildCreativeModeTabContentsEventMixin {
 
     @Inject(method = "accept", at = @At("HEAD"), cancellable = true)
     private void accept(ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (!CHooks.acceptItem(newEntry.getItem())) ci.cancel();
+        if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
     }
 
     @Inject(method = "insertAfter", at = @At("HEAD"), cancellable = true)
     private void insertAfter(ItemStack existingEntry, ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (!CHooks.acceptItem(newEntry.getItem())) ci.cancel();
+        if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
         if (INVERSE_SHAPES_DATAMAP.containsKey(existingEntry.getItem())) {
             insertAfter(INVERSE_SHAPES_DATAMAP.get(existingEntry.getItem()).getDefaultInstance(), newEntry, visibility);
             ci.cancel();
@@ -37,7 +37,7 @@ public abstract class BuildCreativeModeTabContentsEventMixin {
 
     @Inject(method = "insertBefore", at = @At("HEAD"), cancellable = true)
     private void insertBefore(ItemStack existingEntry, ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
-        if (!CHooks.acceptItem(newEntry.getItem())) ci.cancel();
+        if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
         if (INVERSE_SHAPES_DATAMAP.containsKey(existingEntry.getItem())) {
             insertBefore(INVERSE_SHAPES_DATAMAP.get(existingEntry.getItem()).getDefaultInstance(), newEntry, visibility);
             ci.cancel();

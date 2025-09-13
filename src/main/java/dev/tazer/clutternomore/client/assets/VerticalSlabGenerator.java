@@ -69,9 +69,20 @@ public final class VerticalSlabGenerator implements AssetGenerator {
             }
         }
 
-        if (top != null) {
-            if (bottom == null) bottom = top;
-            if (side == null) side = top;
+        if (top == null) {
+            if (side != null) {
+                top = side;
+            } else if (bottom != null) {
+                top = bottom;
+            }
+        }
+
+        if (side == null) {
+            side = top;
+        }
+
+        if (bottom == null) {
+            bottom = side;
         }
 
         JsonObject textures = new JsonObject();
