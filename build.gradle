@@ -97,10 +97,7 @@ dependencies {
 
     localRuntime "maven.modrinth:supplementaries:neoforge_1.21-3.4.14"
     localRuntime "maven.modrinth:the-block-box:0.1.1"
-    localRuntime "maven.modrinth:no-mans-land:1.3.3"
-    localRuntime "maven.modrinth:biolith:hd0IDIF5"
-    localRuntime "maven.modrinth:mixed-litter:0.1.2"
-
+    localRuntime "maven.modrinth:architects-palette:1.4.0-beta.5N"
 }
 
 tasks.withType(ProcessResources).configureEach {

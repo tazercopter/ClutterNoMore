@@ -244,22 +244,26 @@ public class BlockSetRegistry {
             if (CNMConfig.VERTICAL_SLABS.get() && set.hasChild("slab")) {
                 ResourceLocation id = ClutterNoMore.location(set.getVariantId("vertical", "slab"));
                 if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-                    try {
+                    Block slab = Block.byItem((Item) set.getChild("slab"));
+
+                    if (slab.defaultBlockState().getValues().size() == 2) {
                         Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("slab"))));
                         event.register(id, block);
                         set.addChild("vertical_slab_block", block);
-                    } catch (Exception ignored) {}
+                    }
                 }
             }
 
             if (CNMConfig.STEPS.get() && set.hasChild("stairs")) {
                 ResourceLocation id = ClutterNoMore.location(set.getVariantId("", "step"));
                 if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-                    try {
-                        Block block = new StepBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("stairs"))));
+                    Block stairs = Block.byItem((Item) set.getChild("stairs"));
+
+                    if (stairs.defaultBlockState().getValues().size() == 4) {
+                        Block block = new StepBlock(BlockBehaviour.Properties.ofFullCopy(stairs));
                         event.register(id, block);
                         set.addChild("step_block", block);
-                    } catch (Exception ignored) {}
+                    }
                 }
             }
         }

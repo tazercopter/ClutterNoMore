@@ -35,7 +35,7 @@ public class ItemStackMixin {
                 }
 
                 Item otherOriginalItem = INVERSE_SHAPES_DATAMAP.get(otherItem);
-                if (otherOriginalItem.equals(originalItem)) {
+                if (otherOriginalItem == originalItem) {
                     cir.setReturnValue(true);
                 }
             }
