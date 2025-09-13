@@ -11,9 +11,12 @@
     "ItemStackMixin"
   ],
   "client": [
+    "KeyboardHandlerMixin",
     "MinecraftMixin",
+    "MouseHandlerMixin",
     "screen.AccessibilityScreenMixin",
     "screen.OptionsSubScreenMixin",
+    "screen.ScreenAccessor",
     "screen.ScreenMixin"
   ],
   "injectors": {

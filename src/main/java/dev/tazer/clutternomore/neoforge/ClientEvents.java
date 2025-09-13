@@ -1,8 +1,10 @@
-package dev.tazer.clutternomore.client;
-
-import com.mojang.datafixers.util.Either;
+package dev.tazer.clutternomore.neoforge;
+//? if neoforge {
+/*import com.mojang.datafixers.util.Either;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.client.ClientShapeTooltip;
+import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import dev.tazer.clutternomore.common.networking.ShapeTooltip;
 import net.minecraft.ChatFormatting;
@@ -251,3 +253,4 @@ public class ClientEvents {
         PacketDistributor.sendToServer(new ChangeStackPayload(containerId, slotId, next));
     }
 }
+*///?}

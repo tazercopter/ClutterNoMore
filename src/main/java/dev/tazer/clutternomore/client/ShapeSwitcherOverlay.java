@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +14,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
+//? if neoforge {
+/*import net.neoforged.neoforge.network.PacketDistributor;
+*///?} else {
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+//?}
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,7 +106,13 @@ public class ShapeSwitcherOverlay {
         Player player = Objects.requireNonNull(minecraft.player);
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
         player.setItemInHand(InteractionHand.MAIN_HAND, next);
-        PacketDistributor.sendToServer(new ChangeStackPayload(-1, -1, next));
+
+        //? if neoforge {
+        /*PacketDistributor.sendToServer
+        *///?} else {
+        ClientPlayNetworking.send
+        //?}
+        (new ChangeStackPayload(-1, -1, next));
     }
 
     public boolean shouldStayOpenThisTick() {

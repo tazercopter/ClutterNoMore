@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore.common.data;
 
 import dev.tazer.clutternomore.ClutterNoMore;
+
 import net.mehvahdjukaar.moonlight.api.platform.RegHelper;
 import net.mehvahdjukaar.moonlight.api.resources.pack.DynamicServerResourceProvider;
 import net.mehvahdjukaar.moonlight.api.resources.pack.PackGenerationStrategy;
@@ -8,7 +9,11 @@ import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceGenTask;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.fml.ModList;
+//? if neoforge {
+/*import net.neoforged.fml.ModList;
+*///?} else {
+import net.fabricmc.loader.api.FabricLoader;
+//?}
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +33,11 @@ public class DynamicServerResources extends DynamicServerResourceProvider {
     @Override
     protected Collection<String> gatherSupportedNamespaces() {
         List<String> namespaces = new ArrayList<>(List.of("minecraft", ClutterNoMore.MODID));
-        ModList.get().getMods().forEach(info -> namespaces.add(info.getNamespace()));
+        //? if neoforge {
+        /*ModList.get().getMods().forEach(info -> namespaces.add(info.getNamespace()));
+        *///?} else {
+        FabricLoader.getInstance().getAllMods().forEach(info -> namespaces.add(info.getMetadata().getId()));
+        //?}
         return namespaces;
     }
 

@@ -1,6 +1,6 @@
 modLoader="javafml"
 
-loaderVersion="${loader_version_range}"
+loaderVersion="[4,)"
 license="${mod_license}"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
 

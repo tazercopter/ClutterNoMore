@@ -11,7 +11,11 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+//? if neoforge {
+/*import net.neoforged.neoforge.network.handling.IPayloadContext;
+*///?} else {
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+//?}
 
 import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
 import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
@@ -34,7 +38,13 @@ public record ChangeStackPayload(int containerId, int slot, ItemStack stack) imp
         return TYPE;
     }
 
-    public static void handleDataOnServer(final ChangeStackPayload data, final IPayloadContext context) {
+    public static void handleDataOnServer(final ChangeStackPayload data,
+                                          //? neoforge {
+                                          /*final IPayloadContext
+                                          *///?} else {
+                                          ServerPlayNetworking.Context
+                                            //?}
+                                                  context) {
         if (INVERSE_SHAPES_DATAMAP.containsKey(data.stack.getItem()) || SHAPES_DATAMAP.containsKey(data.stack.getItem())) {
             Item main = INVERSE_SHAPES_DATAMAP.getOrDefault(data.stack.getItem(), data.stack().getItem());
 
