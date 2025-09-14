@@ -5,6 +5,8 @@ import dev.tazer.clutternomore.client.assets.DynamicClientResources;
 import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
+//? fabric
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -18,6 +20,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+//? neoforge
+/*import net.neoforged.neoforge.network.PacketDistributor;*/
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +118,7 @@ public class ClutterNoMoreClient {
         }
     }
 
-    public static CustomPacketPayload switchShapeInSlot(Player player, int containerId, int slotId, ItemStack heldStack, int direction) {
+    public static void switchShapeInSlot(Player player, int containerId, int slotId, ItemStack heldStack, int direction) {
         Item item = INVERSE_SHAPES_DATAMAP.getOrDefault(heldStack.getItem(), heldStack.getItem());
         int count = heldStack.getCount();
 
@@ -132,6 +136,10 @@ public class ClutterNoMoreClient {
         next.setCount(count);
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
         if (slotId < 9) slotId += 36;
-        return new ChangeStackPayload(containerId, slotId, next);
+        var p = new ChangeStackPayload(containerId, slotId, next);
+        //? fabric
+        ClientPlayNetworking.send(p);
+        //? neoforge
+        /*PacketDistributor.sendToServer(p);*/
     }
 }

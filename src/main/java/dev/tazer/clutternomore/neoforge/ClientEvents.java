@@ -19,8 +19,7 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
-import static dev.tazer.clutternomore.ClutterNoMoreClient.OVERLAY;
-import static dev.tazer.clutternomore.ClutterNoMoreClient.showTooltip;
+import static dev.tazer.clutternomore.ClutterNoMoreClient.*;
 import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
 import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
@@ -131,10 +130,6 @@ public class ClientEvents {
         if (OVERLAY != null) {
             if (!OVERLAY.shouldStayOpenThisTick()) OVERLAY = null;
         }
-    }
-
-    public static void switchShapeInSlot(Player player, int containerId, int slotId, ItemStack heldStack, int direction) {
-        PacketDistributor.sendToServer(ClutterNoMoreClient.switchShapeInSlot(player, containerId, slotId, heldStack, direction));
     }
 }
 *///?}
