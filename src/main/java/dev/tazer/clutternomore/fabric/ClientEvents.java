@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore.fabric;
 
 //? if fabric {
+
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.client.ClientShapeTooltip;
 import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
@@ -32,14 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.ClutterNoMoreClient.showTooltip;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 
 public class ClientEvents {
 
     private static ShapeSwitcherOverlay OVERLAY = null;
-    private static boolean showTooltip = false;
 
     public static final Supplier<KeyMapping> SHAPE_KEY = () -> new KeyMapping(
             "key.clutternomore.change_block_shape",
@@ -88,7 +89,7 @@ public class ClientEvents {
 //    }
 
     public static void onKeyInput(int keyCode, int keyAction) {
-        if (keyCode == SHAPE_KEY.get().key.getValue()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
             onKeyInput(keyAction);
         }
     }
@@ -103,45 +104,44 @@ public class ClientEvents {
         return false;
     }
 
-
-    public static void onScreenScroll(Screen pScreen, double mouseX, double mouseY, double scrollX, double scrollY) {
+    public static boolean allowScreenScroll(Screen pScreen, double mouseX, double mouseY, double scrollX, double scrollY) {
         if (showTooltip) {
             if (pScreen instanceof AbstractContainerScreen<?> screen) {
                 Slot slot = ((ScreenAccessor) screen).getSlotUnderMouse();
-                if (slot != null) {
+                Player player = Minecraft.getInstance().player;
+                if (slot != null && slot.allowModification(player)) {
                     ItemStack heldStack = slot.getItem();
                     if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
-                        switchShapeInSlot(Minecraft.getInstance().player, screen.getMenu().containerId, ((SlotAccessor) slot).getSlotIndex(), heldStack, (int) scrollY);
+                        switchShapeInSlot(player, screen.getMenu().containerId, ((SlotAccessor) slot).getSlotIndex(), heldStack, (int) scrollY);
+                        return false;
                     }
                 }
             }
         }
-    }
 
+        return true;
+    }
 
     public static void onScreenInputKeyPressedPost(Screen screen, int keyCode, int scanCode, int modifiers) {
-        if (keyCode == SHAPE_KEY.get().key.getValue()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
             onKeyPress(screen);
         }
     }
-
 
     public static void onScreenInputMouseButtonPressedPost(Screen screen, double mouseX, double mouseY, int button) {
-        if (button == SHAPE_KEY.get().key.getValue()) {
+        if (button == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
             onKeyPress(screen);
         }
     }
-
 
     public static void onScreenInputKeyReleasedPost(Screen screen, int keyCode, int scanCode, int modifiers) {
-        if (keyCode == SHAPE_KEY.get().key.getValue()) {
-            onKeyPress(screen);
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
+            onKeyRelease();
         }
     }
 
-
     public static void onScreenInputMouseButtonReleasedPost(Screen screen, double mouseX, double mouseY, int button) {
-        if (button == SHAPE_KEY.get().key.getValue()) {
+        if (button == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
             onKeyRelease();
         }
     }
@@ -151,7 +151,6 @@ public class ClientEvents {
             OVERLAY.render(guiGraphics, tracker.getGameTimeDeltaTicks());
         }
     }
-
 
     public static void onPlayerTick(Minecraft minecraft) {
         if (OVERLAY != null) {
@@ -193,19 +192,20 @@ public class ClientEvents {
         }
     }
 
-    public static void onKeyPress(Screen screen) {
-        if (screen instanceof AbstractContainerScreen<?> containerScreen) {
-            Slot slot = ((ScreenAccessor) containerScreen).getSlotUnderMouse();
+    public static void onKeyPress(Screen pScreen) {
+        if (pScreen instanceof AbstractContainerScreen<?> screen) {
+            Slot slot = ((ScreenAccessor) screen).getSlotUnderMouse();
             if (slot != null) {
                 ItemStack heldStack = slot.getItem();
+                Player player = Minecraft.getInstance().player;
 
-                if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
+                if (slot.allowModification(player) && (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem()))) {
                     switch (CNMConfig.HOLD.get()) {
                         case HOLD -> showTooltip = true;
                         case TOGGLE -> showTooltip = !showTooltip;
                         case PRESS -> switchShapeInSlot(
-                                Minecraft.getInstance().player,
-                                containerScreen.getMenu().containerId,
+                                player,
+                                screen.getMenu().containerId,
                                 ((SlotAccessor) slot).getSlotIndex(),
                                 heldStack,
                                 -1

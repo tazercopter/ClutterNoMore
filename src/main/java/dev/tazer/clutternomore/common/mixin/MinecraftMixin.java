@@ -1,7 +1,6 @@
 package dev.tazer.clutternomore.common.mixin;
 
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
-//? if fabric
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -15,10 +14,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.List;
-import java.util.Objects;
 
-import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {

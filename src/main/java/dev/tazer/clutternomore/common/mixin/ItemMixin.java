@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 @Mixin(Item.class)
 public class ItemMixin {

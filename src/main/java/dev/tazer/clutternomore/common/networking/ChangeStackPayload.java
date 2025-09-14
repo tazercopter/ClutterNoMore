@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore.common.networking;
 
 import dev.tazer.clutternomore.ClutterNoMore;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -11,14 +12,9 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-//? if neoforge {
-/*import net.neoforged.neoforge.network.handling.IPayloadContext;
-*///?} else {
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-//?}
 
-import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 public record ChangeStackPayload(int containerId, int slot, ItemStack stack) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ChangeStackPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "player_change_stack"));

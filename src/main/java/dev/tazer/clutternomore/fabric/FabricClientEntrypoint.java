@@ -2,7 +2,7 @@ package dev.tazer.clutternomore.fabric;
 
 //? fabric {
 
-import dev.tazer.clutternomore.client.assets.DynamicClientResources;
+import dev.tazer.clutternomore.ClutterNoMoreClient;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -18,12 +18,12 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 public class FabricClientEntrypoint implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
+        ClutterNoMoreClient.init();
         ClientEvents.registerKeyMappings();
         TooltipComponentCallback.EVENT.register(ClientEvents::registerTooltipComponent);
         ItemTooltipCallback.EVENT.register(ClientEvents::onItemTooltips);
         HudRenderCallback.EVENT.register(ClientEvents::onRenderGui);
         ClientTickEvents.START_CLIENT_TICK.register(ClientEvents::onPlayerTick);
-        DynamicClientResources.register();
         ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
     }
 
@@ -33,7 +33,7 @@ public class FabricClientEntrypoint implements ClientModInitializer {
             ScreenKeyboardEvents.afterKeyRelease(screen).register(ClientEvents::onScreenInputKeyReleasedPost);
             ScreenMouseEvents.afterMouseClick(screen).register(ClientEvents::onScreenInputMouseButtonPressedPost);
             ScreenMouseEvents.afterMouseRelease(screen).register(ClientEvents::onScreenInputMouseButtonReleasedPost);
-            ScreenMouseEvents.afterMouseScroll(screen).register(ClientEvents::onScreenScroll);
+            ScreenMouseEvents.allowMouseScroll(screen).register(ClientEvents::allowScreenScroll);
         }
     }
 }

@@ -1,34 +1,17 @@
 package dev.tazer.clutternomore.common.event;
 
 
-import dev.tazer.clutternomore.ClutterNoMore;
-
-import dev.tazer.clutternomore.common.datamap.Shapes;
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
-//? if neoforge {
-/*
-import dev.tazer.clutternomore.common.datamap.ListMerger;
-import dev.tazer.clutternomore.common.datamap.ListRemover;
-import net.neoforged.bus.api.EventPriority;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.registries.datamaps.AdvancedDataMapType;
-import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
-import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
-*///?}
+
 import java.util.*;
 
 // FIXME
 //? if neoforge
 /*@EventBusSubscriber(modid = ClutterNoMore.MODID)*/
-public class DatamapHandler {
+public class ShapeMapHandler {
 
     //? if neoforge {
     /*public static final AdvancedDataMapType<Item, Shapes, ListRemover> ADD_SHAPE_DATA = AdvancedDataMapType.builder(

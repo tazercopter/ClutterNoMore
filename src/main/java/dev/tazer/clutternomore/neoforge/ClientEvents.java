@@ -34,14 +34,14 @@ import org.lwjgl.glfw.GLFW;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.tazer.clutternomore.common.event.DatamapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.DatamapHandler.SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.ClutterNoMoreClient.showTooltip;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
+import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 @EventBusSubscriber(modid = ClutterNoMore.MODID, value = Dist.CLIENT)
 public class ClientEvents {
 
     private static ShapeSwitcherOverlay OVERLAY = null;
-    private static boolean showTooltip = false;
 
     public static final Lazy<KeyMapping> SHAPE_KEY = Lazy.of(() -> new KeyMapping(
             "key.clutternomore.change_block_shape",
@@ -76,18 +76,6 @@ public class ClientEvents {
     }
 
     @SubscribeEvent
-    public static void onRenderTooltip(RenderTooltipEvent.GatherComponents event) {
-        List<Either<FormattedText, TooltipComponent>> tooltipElements = event.getTooltipElements();
-        for (Either<FormattedText, TooltipComponent> element : new ArrayList<>(tooltipElements)) {
-            element.ifRight(tooltipComponent -> {
-                if (tooltipComponent instanceof ShapeTooltip) {
-                    if (!showTooltip) tooltipElements.remove(element);
-                }
-            });
-        }
-    }
-
-    @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
         int action = event.getAction();
         if (event.getKey() == SHAPE_KEY.get().getKey().getValue()) {
@@ -117,10 +105,11 @@ public class ClientEvents {
         if (showTooltip) {
             if (event.getScreen() instanceof AbstractContainerScreen<?> screen) {
                 Slot slot = screen.getSlotUnderMouse();
-                if (slot != null) {
+                Player player = screen.getMinecraft().player;
+                if (slot != null && slot.allowModification(player)) {
                     ItemStack heldStack = slot.getItem();
                     if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
-                        switchShapeInSlot(screen.getMinecraft().player, screen.getMenu().containerId, slot.getSlotIndex(), heldStack, (int) event.getScrollDeltaY());
+                        switchShapeInSlot(player, screen.getMenu().containerId, slot.getSlotIndex(), heldStack, (int) event.getScrollDeltaY());
                     }
                 }
             }
@@ -208,13 +197,14 @@ public class ClientEvents {
             Slot slot = containerScreen.getSlotUnderMouse();
             if (slot != null) {
                 ItemStack heldStack = slot.getItem();
+                Player player = screen.getMinecraft().player;
 
-                if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
+                if (slot.allowModification(player) && (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem()))) {
                     switch (CNMConfig.HOLD.get()) {
                         case HOLD -> showTooltip = true;
                         case TOGGLE -> showTooltip = !showTooltip;
                         case PRESS -> switchShapeInSlot(
-                                screen.getMinecraft().player,
+                                player,
                                 containerScreen.getMenu().containerId,
                                 slot.getSlotIndex(),
                                 heldStack,
