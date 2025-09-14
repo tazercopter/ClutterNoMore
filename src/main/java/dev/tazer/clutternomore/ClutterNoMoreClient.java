@@ -1,12 +1,10 @@
 package dev.tazer.clutternomore;
 
-import dev.tazer.clutternomore.client.ClientShapeTooltip;
 import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
 import dev.tazer.clutternomore.client.assets.DynamicClientResources;
 import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
-import dev.tazer.clutternomore.common.networking.ShapeTooltip;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -17,7 +15,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;

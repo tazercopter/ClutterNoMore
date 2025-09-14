@@ -1,7 +1,11 @@
 package dev.tazer.clutternomore.common.networking;
 
 import dev.tazer.clutternomore.ClutterNoMore;
+//? if neoforge {
+/*import net.neoforged.neoforge.network.handling.IPayloadContext;
+ *///?} else {
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+//?}
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
