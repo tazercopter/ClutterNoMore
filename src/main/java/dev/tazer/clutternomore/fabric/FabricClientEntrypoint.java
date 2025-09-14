@@ -21,7 +21,7 @@ public class FabricClientEntrypoint implements ClientModInitializer {
         ClutterNoMoreClient.init();
         ClientEvents.registerKeyMappings();
         TooltipComponentCallback.EVENT.register(ClientEvents::registerTooltipComponent);
-        ItemTooltipCallback.EVENT.register(ClientEvents::onItemTooltips);
+        ItemTooltipCallback.EVENT.register(ClutterNoMoreClient::onItemTooltips);
         HudRenderCallback.EVENT.register(ClientEvents::onRenderGui);
         ClientTickEvents.START_CLIENT_TICK.register(ClientEvents::onPlayerTick);
         ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
