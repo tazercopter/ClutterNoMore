@@ -5,7 +5,7 @@
   "refmap": "clutternomore.refmap.json",
   "mixins": [
     "BlockItemMixin",
-    "BuildCreativeModeTabContentsEventMixin",
+    "CreativeModeTabEntriesMixin",
     "ItemDisplayBuilderMixin",
     "ItemMixin",
     "ItemStackMixin",

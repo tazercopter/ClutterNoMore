@@ -6,6 +6,7 @@ import dev.tazer.clutternomore.ClutterNoMore;
  *///?} else {
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 //?}
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -16,9 +17,6 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 public record ChangeStackPayload(int containerId, int slot, ItemStack stack) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ChangeStackPayload> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(ClutterNoMore.MODID, "player_change_stack"));
@@ -45,19 +43,19 @@ public record ChangeStackPayload(int containerId, int slot, ItemStack stack) imp
                                           ServerPlayNetworking.Context
                                             //?}
                                                   context) {
-        if (INVERSE_SHAPES_DATAMAP.containsKey(data.stack.getItem()) || SHAPES_DATAMAP.containsKey(data.stack.getItem())) {
-            Item main = INVERSE_SHAPES_DATAMAP.getOrDefault(data.stack.getItem(), data.stack().getItem());
+        if (ShapeMap.contains(data.stack.getItem())) {
+            Item main = ShapeMap.getParent(data.stack.getItem());
 
             if (data.slot == -1) {
                 Item item = context.player().getItemInHand(InteractionHand.MAIN_HAND).getItem();
-                if (main == item || SHAPES_DATAMAP.get(main).contains(item)) {
+                if (ShapeMap.isParentOfShape(main, item)) {
                     context.player().setItemInHand(InteractionHand.MAIN_HAND, data.stack);
                 }
             } else {
                 InventoryMenu inventory = context.player().inventoryMenu;
                 Slot slot = inventory.getSlot(data.slot);
                 Item item = slot.getItem().getItem();
-                if (main == item || SHAPES_DATAMAP.get(main).contains(item)) {
+                if (ShapeMap.isParentOfShape(main, item)) {
                     slot.setByPlayer(data.stack);
                     inventory.sendAllDataToRemote();
                 }

@@ -2,6 +2,7 @@ package dev.tazer.clutternomore;
 
 import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
 import dev.tazer.clutternomore.client.assets.DynamicClientResources;
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
@@ -12,7 +13,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -26,9 +26,6 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
-
 public class ClutterNoMoreClient {
     public static boolean showTooltip = false;
     public static ShapeSwitcherOverlay OVERLAY = null;
@@ -38,12 +35,8 @@ public class ClutterNoMoreClient {
     }
 
     public static void onItemTooltips(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {
-        Item item = stack.getItem();
-        boolean hasShapes = SHAPES_DATAMAP.containsKey(item);
-        boolean isShape = INVERSE_SHAPES_DATAMAP.containsKey(item);
-
         if (!showTooltip) {
-            if (hasShapes || isShape) {
+            if (ShapeMap.contains(stack.getItem())) {
                 Component component = tooltip.getFirst().copy().append(Component.literal(" [+]").withStyle(ChatFormatting.DARK_GRAY));
                 tooltip.removeFirst();
                 tooltip.addFirst(component);
@@ -57,7 +50,7 @@ public class ClutterNoMoreClient {
             Player player = minecraft.player;
             if (player != null) {
                 ItemStack heldStack = player.getItemInHand(InteractionHand.MAIN_HAND);
-                if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
+                if (ShapeMap.contains(heldStack.getItem())) {
                     switch (CNMConfig.HOLD.get()) {
                         case HOLD -> {
                             if (OVERLAY == null && action == 1)
@@ -95,7 +88,7 @@ public class ClutterNoMoreClient {
                 //? fabric
                 Player player = Minecraft.getInstance().player;
 
-                if (slot.allowModification(player) && (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem()))) {
+                if (slot.allowModification(player) && (ShapeMap.contains(heldStack.getItem()))) {
                     switch (CNMConfig.HOLD.get()) {
                         case HOLD -> showTooltip = true;
                         case TOGGLE -> showTooltip = !showTooltip;
@@ -119,10 +112,10 @@ public class ClutterNoMoreClient {
     }
 
     public static void switchShapeInSlot(Player player, int containerId, int slotId, ItemStack heldStack, int direction) {
-        Item item = INVERSE_SHAPES_DATAMAP.getOrDefault(heldStack.getItem(), heldStack.getItem());
+        Item item = ShapeMap.getParent(heldStack.getItem());
         int count = heldStack.getCount();
 
-        List<Item> shapes = new ArrayList<>(SHAPES_DATAMAP.get(item));
+        List<Item> shapes = new ArrayList<>(ShapeMap.getShapes(item));
         shapes.addFirst(item);
         int selectedIndex = shapes.indexOf(heldStack.getItem());
 

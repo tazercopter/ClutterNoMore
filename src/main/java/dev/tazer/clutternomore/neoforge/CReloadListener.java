@@ -1,4 +1,4 @@
-package dev.tazer.clutternomore.common.event;
+package dev.tazer.clutternomore.neoforge;
 
 //? if neoforge {
 

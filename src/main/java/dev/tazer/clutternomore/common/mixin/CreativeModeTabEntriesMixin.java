@@ -13,14 +13,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
-
 //? neoforge {
 /*@Mixin(BuildCreativeModeTabContentsEvent.class)
 *///?} else {
 @Mixin(FabricItemGroupEntries.class)
 //?}
-public abstract class BuildCreativeModeTabContentsEventMixin {
+public abstract class CreativeModeTabEntriesMixin {
 
     //? neoforge {
     /*@Shadow
@@ -37,8 +35,8 @@ public abstract class BuildCreativeModeTabContentsEventMixin {
     @Inject(method = "insertAfter", at = @At("HEAD"), cancellable = true)
     private void insertAfter(ItemStack existingEntry, ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
         if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
-        if (INVERSE_SHAPES_DATAMAP.containsKey(existingEntry.getItem())) {
-            insertAfter(INVERSE_SHAPES_DATAMAP.get(existingEntry.getItem()).getDefaultInstance(), newEntry, visibility);
+        if (ShapeMap.isShape(existingEntry.getItem())) {
+            insertAfter(ShapeMap.getParent(existingEntry.getItem()).getDefaultInstance(), newEntry, visibility);
             ci.cancel();
         }
     }
@@ -46,8 +44,8 @@ public abstract class BuildCreativeModeTabContentsEventMixin {
     @Inject(method = "insertBefore", at = @At("HEAD"), cancellable = true)
     private void insertBefore(ItemStack existingEntry, ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
         if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
-        if (INVERSE_SHAPES_DATAMAP.containsKey(existingEntry.getItem())) {
-            insertBefore(INVERSE_SHAPES_DATAMAP.get(existingEntry.getItem()).getDefaultInstance(), newEntry, visibility);
+        if (ShapeMap.isShape(existingEntry.getItem())) {
+            insertBefore(ShapeMap.getParent(existingEntry.getItem()).getDefaultInstance(), newEntry, visibility);
             ci.cancel();
         }
     }

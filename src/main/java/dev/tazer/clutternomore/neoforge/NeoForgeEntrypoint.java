@@ -4,11 +4,17 @@
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
+import dev.tazer.clutternomore.common.shape_map.ShapeMapHandler;
+import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +30,23 @@ public class NeoForgeEntrypoint {
         if (dist.isClient()) {
             ClutterNoMoreClient.init();
         }
+
+        modEventBus.addListener(NeoForgeEntrypoint::registerPayloadHandlers);
+        NeoForge.EVENT_BUS.addListener(NeoForgeEntrypoint::addReloadListeners);
+    }
+
+    public static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
+        final PayloadRegistrar registrar = event.registrar("1");
+        registrar.playToServer(
+                ChangeStackPayload.TYPE,
+                ChangeStackPayload.STREAM_CODEC,
+                ChangeStackPayload::handleDataOnServer
+        );
+    }
+
+    public static void addReloadListeners(AddReloadListenerEvent event) {
+        event.addListener(new CReloadListener(event.getServerResources()));
+        event.addListener(new ShapeMapHandler());
     }
 }
 *///?}

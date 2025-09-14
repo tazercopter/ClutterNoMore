@@ -3,6 +3,7 @@ package dev.tazer.clutternomore.neoforge;
 /*import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.client.ClientShapeTooltip;
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.networking.ShapeTooltip;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -16,17 +17,12 @@ import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 import static dev.tazer.clutternomore.ClutterNoMoreClient.*;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 @EventBusSubscriber(modid = ClutterNoMore.MODID, value = Dist.CLIENT)
 public class ClientEvents {
-
-
 
     public static final Lazy<KeyMapping> SHAPE_KEY = Lazy.of(() -> new KeyMapping(
             "key.clutternomore.change_block_shape",
@@ -82,7 +78,7 @@ public class ClientEvents {
                 Player player = screen.getMinecraft().player;
                 if (slot != null && slot.allowModification(player)) {
                     ItemStack heldStack = slot.getItem();
-                    if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
+                    if (ShapeMap.contains(heldStack.getItem())) {
                         switchShapeInSlot(player, screen.getMenu().containerId, slot.getSlotIndex(), heldStack, (int) event.getScrollDeltaY());
                     }
                 }

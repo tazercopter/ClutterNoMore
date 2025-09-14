@@ -1,22 +1,22 @@
 package dev.tazer.clutternomore.common.mixin;
 
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-
-import java.util.List;
-
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
+import java.util.Objects;
+//? if neoforge {
+/*import net.neoforged.neoforge.network.PacketDistributor;
+ *///?} else {
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+//?}
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
@@ -30,14 +30,9 @@ public abstract class MinecraftMixin {
         int exactIndex = inventory.findSlotMatchingItem(targetStack);
 
         if (exactIndex != -1) {
-            Item targetItem = targetStack.getItem();
-            Item originalItem = INVERSE_SHAPES_DATAMAP.getOrDefault(targetItem, targetItem);
-            List<Item> shapes = SHAPES_DATAMAP.getOrDefault(originalItem, List.of());
-
             ItemStack slotStack = inventory.items.get(exactIndex);
-            Item slotItem = slotStack.getItem();
 
-            if (slotItem == originalItem || shapes.contains(slotItem)) {
+            if (ShapeMap.inSameShapes(targetStack.getItem(), slotStack.getItem())) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
                 //? if neoforge {
                 /*Objects.requireNonNull(getConnection())

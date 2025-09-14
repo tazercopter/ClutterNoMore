@@ -30,8 +30,6 @@ public final class VerticalSlabGenerator implements AssetGenerator {
 
     public void generate(Item item, ResourceManager manager, ResourceSink sink) {
         BlockSetRegistry.ShapeSet set = BlockSetAPI.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
-        if (item == Items.BAMBOO)
-            System.out.println("bamBOO!");
         if (set == null || !set.hasChild("vertical_slab_block") || item != set.getChild("slab")) return;
 
         ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);

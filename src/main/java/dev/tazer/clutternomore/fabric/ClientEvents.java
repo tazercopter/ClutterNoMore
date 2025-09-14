@@ -2,22 +2,19 @@ package dev.tazer.clutternomore.fabric;
 
 //? if fabric {
 
-import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.client.ClientShapeTooltip;
-import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
 import dev.tazer.clutternomore.common.networking.ShapeTooltip;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -25,8 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 import static dev.tazer.clutternomore.ClutterNoMoreClient.*;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.SHAPES_DATAMAP;
 
 
 public class ClientEvents {
@@ -36,7 +31,6 @@ public class ClientEvents {
             GLFW.GLFW_KEY_LEFT_ALT,
             "key.categories.inventory"
     );
-
 
     public static void registerKeyMappings() {
         KeyBindingHelper.registerKeyBinding(SHAPE_KEY);
@@ -71,7 +65,7 @@ public class ClientEvents {
                 Player player = Minecraft.getInstance().player;
                 if (slot != null && slot.allowModification(player)) {
                     ItemStack heldStack = slot.getItem();
-                    if (SHAPES_DATAMAP.containsKey(heldStack.getItem()) || INVERSE_SHAPES_DATAMAP.containsKey(heldStack.getItem())) {
+                    if (ShapeMap.contains(heldStack.getItem())) {
                         switchShapeInSlot(player, screen.getMenu().containerId, ((SlotAccessor) slot).getSlotIndex(), heldStack, (int) scrollY);
                         return false;
                     }

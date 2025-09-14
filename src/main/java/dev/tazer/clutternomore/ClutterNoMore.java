@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore;
 
 import dev.tazer.clutternomore.common.data.DynamicServerResources;
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -17,8 +18,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static dev.tazer.clutternomore.common.event.ShapeMapHandler.INVERSE_SHAPES_DATAMAP;
 
 public class ClutterNoMore {
     public static final String MODID = "clutternomore";
@@ -44,15 +43,15 @@ public class ClutterNoMore {
 
             Item result = recipe.getResultItem(registries).getItem();
 
-            if (INVERSE_SHAPES_DATAMAP.containsKey(result)) continue;
+            if (ShapeMap.isShape(result)) continue;
 
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
             for (Ingredient ingredient : new ArrayList<>(ingredients)) {
                 ArrayList<ItemStack> stacks = new ArrayList<>();
                 for (ItemStack stack : ingredient.getItems()) {
                     Item item = stack.getItem();
-                    if (INVERSE_SHAPES_DATAMAP.containsKey(item)) {
-                        ItemStack originalStack = INVERSE_SHAPES_DATAMAP.get(item).getDefaultInstance();
+                    if (ShapeMap.isShape(item)) {
+                        ItemStack originalStack = ShapeMap.getParent(item).getDefaultInstance();
                         originalStack.setCount(stack.getCount());
                         stacks.add(originalStack);
                         changed = true;
