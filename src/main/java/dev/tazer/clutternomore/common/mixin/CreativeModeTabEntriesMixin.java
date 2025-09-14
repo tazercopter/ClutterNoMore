@@ -2,7 +2,9 @@ package dev.tazer.clutternomore.common.mixin;
 
 import dev.tazer.clutternomore.common.CHooks;
 //? neoforge {
-/*import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+/*import dev.tazer.clutternomore.common.shape_map.ShapeMap;
+import org.spongepowered.asm.mixin.Shadow;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
  *///?} else {
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 //?}

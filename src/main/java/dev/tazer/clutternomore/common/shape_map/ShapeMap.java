@@ -33,7 +33,9 @@ public class ShapeMap {
     }
 
     public static boolean inSameShapes(Item item, Item other) {
-        return getParent(item) == getParent(other);
+        if (INVERSE_SHAPES_DATAMAP.containsKey(item) || INVERSE_SHAPES_DATAMAP.containsKey(other))
+            return (getParent(item) == getParent(other));
+        return false;
     }
 
     public static List<Item> getShapes(Item item) {
