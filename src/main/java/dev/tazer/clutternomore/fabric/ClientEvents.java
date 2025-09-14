@@ -42,7 +42,7 @@ public class ClientEvents {
 
     private static ShapeSwitcherOverlay OVERLAY = null;
 
-    public static final Supplier<KeyMapping> SHAPE_KEY = () -> new KeyMapping(
+    public static final KeyMapping SHAPE_KEY = new KeyMapping(
             "key.clutternomore.change_block_shape",
             GLFW.GLFW_KEY_LEFT_ALT,
             "key.categories.inventory"
@@ -50,7 +50,7 @@ public class ClientEvents {
 
 
     public static void registerKeyMappings() {
-        KeyBindingHelper.registerKeyBinding(SHAPE_KEY.get());
+        KeyBindingHelper.registerKeyBinding(SHAPE_KEY);
     }
 
 
@@ -89,7 +89,7 @@ public class ClientEvents {
 //    }
 
     public static void onKeyInput(int keyCode, int keyAction) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY).getValue()) {
             onKeyInput(keyAction);
         }
     }
@@ -123,25 +123,25 @@ public class ClientEvents {
     }
 
     public static void onScreenInputKeyPressedPost(Screen screen, int keyCode, int scanCode, int modifiers) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY).getValue()) {
             onKeyPress(screen);
         }
     }
 
     public static void onScreenInputMouseButtonPressedPost(Screen screen, double mouseX, double mouseY, int button) {
-        if (button == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
+        if (button == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY).getValue()) {
             onKeyPress(screen);
         }
     }
 
     public static void onScreenInputKeyReleasedPost(Screen screen, int keyCode, int scanCode, int modifiers) {
-        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
+        if (keyCode == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY).getValue()) {
             onKeyRelease();
         }
     }
 
     public static void onScreenInputMouseButtonReleasedPost(Screen screen, double mouseX, double mouseY, int button) {
-        if (button == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY.get()).getValue()) {
+        if (button == KeyBindingHelper.getBoundKeyOf(SHAPE_KEY).getValue()) {
             onKeyRelease();
         }
     }
