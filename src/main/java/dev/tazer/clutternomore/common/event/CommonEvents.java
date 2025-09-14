@@ -56,9 +56,5 @@ public class CommonEvents {
         PayloadTypeRegistry.playC2S().register(ChangeStackPayload.TYPE, ChangeStackPayload.STREAM_CODEC);
         ServerPlayNetworking.registerGlobalReceiver(ChangeStackPayload.TYPE, ChangeStackPayload::handleDataOnServer);
     }
-
-    public static void addReloadListeners() {
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(ResourceLocation.fromNamespaceAndPath(MODID, "data"), CReloadListener::new);
-    }
     //?}
 }
