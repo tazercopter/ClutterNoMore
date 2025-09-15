@@ -2,6 +2,7 @@ package dev.tazer.clutternomore.common.mixin;
 
 //? if >1.21.2 {
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.protocol.game.ClientboundSetPlayerInventoryPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 //?} else {
 /*
@@ -77,13 +78,7 @@ public abstract class MinecraftMixin {
 
             if (ShapeMap.inSameShapeSet(targetStack.getItem(), slotStack.getItem())) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
-                //FIXME replace with serverside packet
-                //? if neoforge {
-                /*PacketDistributor
-                *///?} else {
-                ClientPlayNetworking
-                        //?}
-                        .send(new ChangeStackPayload(-1, exactIndex, replaced));
+                p.send(new ClientboundSetPlayerInventoryPacket(exactIndex, replaced));
             }
         }
         return exactIndex;
