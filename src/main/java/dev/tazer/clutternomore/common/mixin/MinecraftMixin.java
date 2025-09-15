@@ -5,8 +5,8 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.protocol.game.ClientboundSetPlayerInventoryPacket;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
 //?} else {
-/*
-import net.minecraft.client.Minecraft;
+
+/*import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Shadow;

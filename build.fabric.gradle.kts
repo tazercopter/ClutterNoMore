@@ -63,6 +63,14 @@ dependencies {
 //    modImplementation("maven.modrinth:moonlight:${property("deps.moonlight")}")
     modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${property("deps.forge_config_api_port")}")
     modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    if (hasProperty("deps.emi")) {
+        modCompileOnly("dev.emi:emi-fabric:${property("deps.emi")}:api")
+        modLocalRuntime("dev.emi:emi-fabric:${property("deps.emi")}")
+    }
+    if (hasProperty("deps.eiv")) {
+        modLocalRuntime("maven.modrinth:eiv:${property("deps.eiv")}")
+    }
+
 
     val modules = listOf("transitive-access-wideners-v1", "registry-sync-v0", "resource-loader-v0")
     for (it in modules) modImplementation(fabricApi.module("fabric-$it", property("deps.fabric-api") as String))

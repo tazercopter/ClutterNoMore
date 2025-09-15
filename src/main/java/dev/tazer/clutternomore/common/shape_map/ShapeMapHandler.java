@@ -1,6 +1,8 @@
 package dev.tazer.clutternomore.common.shape_map;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
