@@ -4,6 +4,7 @@ package dev.tazer.clutternomore.common.shape_map;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
 //? fabric {
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
@@ -35,49 +36,57 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
     //?}
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+    protected void apply(Map<ResourceLocation, JsonElement> file, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         Map<ResourceLocation, List<ResourceLocation>> result = new HashMap<>();
-        Map<String, NamespaceData> namespaceMap = new HashMap<>();
+        Map<String, NamespaceShapeMap> namespaceMap = new HashMap<>();
 
-        for (Map.Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
-            ResourceLocation fileId = entry.getKey();
-            JsonElement content = entry.getValue();
-
-            String namespace = fileId.getNamespace();
-            String path = fileId.getPath();
-
+        for (Map.Entry<ResourceLocation, JsonElement> fileEntry : file.entrySet()) {
+            ResourceLocation fileName = fileEntry.getKey();
+            String path = fileName.getPath();
             if (!path.equals("add_shapes") && !path.equals("remove_shapes")) continue;
 
-            NamespaceData nsData = namespaceMap.computeIfAbsent(namespace, k -> new NamespaceData(new HashMap<>(), new HashMap<>()));
+            Map<ResourceLocation, List<ResourceLocation>> fileShapeMap = new HashMap<>();
 
-            Map<ResourceLocation, List<ResourceLocation>> ids = parseIdList(content);
+            JsonObject content = fileEntry.getValue().getAsJsonObject();
+            for (Map.Entry<String, JsonElement> contentEntry : content.entrySet()) {
+                ResourceLocation key = ResourceLocation.parse(contentEntry.getKey());
+                List<ResourceLocation> values = new ArrayList<>();
+
+                for (JsonElement element : contentEntry.getValue().getAsJsonArray()) {
+                    values.add(ResourceLocation.parse(element.getAsString()));
+                }
+
+                fileShapeMap.put(key, values);
+            }
+
+            String namespace = fileName.getNamespace();
+            NamespaceShapeMap namespaceShapeMap = namespaceMap.computeIfAbsent(namespace, k -> new NamespaceShapeMap(new HashMap<>(), new HashMap<>()));
 
             if (path.equals("add_shapes")) {
-                nsData.addMap().putAll(ids);
+                namespaceShapeMap.addMap().putAll(fileShapeMap);
             } else {
-                nsData.removeMap().putAll(ids);
+                namespaceShapeMap.removeMap().putAll(fileShapeMap);
             }
         }
 
-        for (NamespaceData nsData : namespaceMap.values()) {
-            result.putAll(nsData.getResultingMap());
+        for (NamespaceShapeMap namespaceShapeMap : namespaceMap.values()) {
+            result.putAll(namespaceShapeMap.getResultingMap());
         }
 
         ShapeMap.set(result);
     }
 
-    private Map<ResourceLocation, List<ResourceLocation>> parseIdList(JsonElement element) {
-        return new HashMap<>();
-    }
-
-    private record NamespaceData(Map<ResourceLocation, List<ResourceLocation>> addMap, Map<ResourceLocation, List<ResourceLocation>> removeMap) {
+    private record NamespaceShapeMap(Map<ResourceLocation, List<ResourceLocation>> addMap, Map<ResourceLocation, List<ResourceLocation>> removeMap) {
         public Map<ResourceLocation, List<ResourceLocation>> getResultingMap() {
-            for (Map.Entry<ResourceLocation, List<ResourceLocation>> entry : new HashSet<>(addMap.entrySet())) {
-                ResourceLocation item = entry.getKey();
-                List<ResourceLocation> shapes = entry.getValue();
+            for (Map.Entry<ResourceLocation, List<ResourceLocation>> entry : new HashSet<>(removeMap.entrySet())) {
+                ResourceLocation key = entry.getKey();
+                List<ResourceLocation> removeList = entry.getValue();
 
-                if (new HashSet<>(removeMap.getOrDefault(item, List.of())).containsAll(shapes)) {
-                    addMap.remove(item);
+                List<ResourceLocation> list = addMap.get(key);
+                if (list != null) {
+                    if (list.removeAll(removeList)) {
+                        if (list.isEmpty()) addMap.remove(key);
+                    }
                 }
             }
 

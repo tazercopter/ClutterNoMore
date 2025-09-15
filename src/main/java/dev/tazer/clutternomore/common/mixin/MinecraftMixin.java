@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import java.util.Objects;
 //? if neoforge {
 /*import net.neoforged.neoforge.network.PacketDistributor;
+import java.util.Objects;
  *///?} else {
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 //?}
@@ -32,7 +32,7 @@ public abstract class MinecraftMixin {
         if (exactIndex != -1) {
             ItemStack slotStack = inventory.items.get(exactIndex);
 
-            if (ShapeMap.inSameShapes(targetStack.getItem(), slotStack.getItem())) {
+            if (ShapeMap.inSameShapeSet(targetStack.getItem(), slotStack.getItem())) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
                 //? if neoforge {
                 /*Objects.requireNonNull(getConnection())

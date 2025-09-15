@@ -9,8 +9,8 @@ import net.minecraft.world.item.Item;
 import java.util.*;
 
 public class ShapeMap {
-    public static final Map<Item, List<Item>> SHAPES_DATAMAP = new HashMap<>();
-    public static final Map<Item, Item> INVERSE_SHAPES_DATAMAP = new HashMap<>();
+    private static final Map<Item, List<Item>> SHAPES_DATAMAP = new HashMap<>();
+    private static final Map<Item, Item> INVERSE_SHAPES_DATAMAP = new HashMap<>();
 
     public static boolean hasShapes(Item item) {
         return SHAPES_DATAMAP.containsKey(item);
@@ -32,8 +32,8 @@ public class ShapeMap {
         return getParent(shape) == parent;
     }
 
-    public static boolean inSameShapes(Item item, Item other) {
-        if (INVERSE_SHAPES_DATAMAP.containsKey(item) || INVERSE_SHAPES_DATAMAP.containsKey(other))
+    public static boolean inSameShapeSet(Item item, Item other) {
+        if (isShape(item) || isShape(other))
             return (getParent(item) == getParent(other));
         return false;
     }

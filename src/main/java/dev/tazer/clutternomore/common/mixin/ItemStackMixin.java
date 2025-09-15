@@ -11,6 +11,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class ItemStackMixin {
     @Inject(method = "isSameItemSameComponents", at = @At("RETURN"), cancellable = true)
     private static void isSameItemSameComponents(ItemStack stack, ItemStack other, CallbackInfoReturnable<Boolean> cir) {
-        if (!cir.getReturnValue()) cir.setReturnValue(ShapeMap.inSameShapes(stack.getItem(), other.getItem()));
+        if (!cir.getReturnValue()) cir.setReturnValue(ShapeMap.inSameShapeSet(stack.getItem(), other.getItem()));
     }
 }
