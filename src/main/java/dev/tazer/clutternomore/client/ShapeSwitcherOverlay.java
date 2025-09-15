@@ -37,7 +37,12 @@ public class ShapeSwitcherOverlay {
     public ShapeSwitcherOverlay(Minecraft minecraft, ItemStack heldStack, boolean render) {
         this.minecraft = minecraft;
         this.render = render;
-        selected = minecraft.player.getInventory().selected;
+        selected = minecraft.player.getInventory()
+        //? if >1.21.2 {
+        /*.getSelectedSlot();
+        *///?} else {
+        .selected;
+        //?}
 
         Item item = ShapeMap.getParent(heldStack.getItem());
         count = heldStack.getCount();
@@ -67,11 +72,13 @@ public class ShapeSwitcherOverlay {
             for (int index = 0; index < shapes.size(); index++) {
                 int x = startX + index * spacing;
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+                //? if <1.21.2
                 RenderSystem.enableBlend();
                 guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
 
             }
 
+            //? if <1.21.2
             RenderSystem.enableBlend();
             guiGraphics.blit(selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
         } else {
@@ -80,14 +87,15 @@ public class ShapeSwitcherOverlay {
             for (int index = 0; index < shapes.size(); index++) {
                 int x = startX + index * spacing;
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+                //? if <1.21.2
                 RenderSystem.enableBlend();
                 guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
             }
-
+            //? if <1.21.2
             RenderSystem.enableBlend();
             guiGraphics.blit(selected, Mth.floor(startX + currentIndex * spacing) - 3, y - 3, 0, 0, 22, 22, 22, 22);
         }
-
+        //? if <1.21.2
         RenderSystem.disableBlend();
     }
 
@@ -113,7 +121,12 @@ public class ShapeSwitcherOverlay {
     }
 
     public boolean shouldStayOpenThisTick() {
-        int selected = minecraft.player.getInventory().selected;
+        int selected = minecraft.player.getInventory()
+        //? if >1.21.2 {
+        /*.getSelectedSlot();
+        *///?} else {
+        .selected;
+        //?}
         ItemStack heldStack = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
         count = heldStack.getCount();
         return shapes.contains(heldStack.getItem()) && selected == this.selected;

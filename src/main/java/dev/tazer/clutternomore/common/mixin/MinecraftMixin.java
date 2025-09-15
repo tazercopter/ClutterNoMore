@@ -30,7 +30,13 @@ public abstract class MinecraftMixin {
         int exactIndex = inventory.findSlotMatchingItem(targetStack);
 
         if (exactIndex != -1) {
-            ItemStack slotStack = inventory.items.get(exactIndex);
+            ItemStack slotStack = inventory.
+            //? if >1.21.2 {
+            /*getNonEquipmentItems()
+            *///?} else {
+            items
+             //?}
+            .get(exactIndex);
 
             if (ShapeMap.inSameShapeSet(targetStack.getItem(), slotStack.getItem())) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());

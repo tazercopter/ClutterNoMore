@@ -23,7 +23,11 @@ public class ClientShapeTooltip implements ClientTooltipComponent {
     }
 
     @Override
+    //? if >1.21.2 {
+    /*public int getHeight(Font font) {
+    *///?} else {
     public int getHeight() {
+    //?}
         return ClutterNoMoreClient.showTooltip ? 22 : 0;
     }
 
@@ -33,7 +37,11 @@ public class ClientShapeTooltip implements ClientTooltipComponent {
     }
 
     @Override
+    //? if >1.21.2 {
+    /*public void renderImage(Font font, int mouseX, int mouseY, int width, int height, GuiGraphics guiGraphics) {
+    *///?} else {
     public void renderImage(Font font, int mouseX, int mouseY, GuiGraphics guiGraphics) {
+    //?}
         if (ClutterNoMoreClient.showTooltip) {
             ResourceLocation selected = ClutterNoMore.location("textures/gui/selected_shape_inventory.png");
 
@@ -45,8 +53,10 @@ public class ClientShapeTooltip implements ClientTooltipComponent {
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, mouseY);
             }
 
+            //? if <1.21.2
             RenderSystem.enableBlend();
             guiGraphics.blit(selected, Mth.floor(startX + selectedIndex * spacing) - 3, mouseY - 3, 0, 0, 22, 22, 22, 22);
+            //? if <1.21.2
             RenderSystem.disableBlend();
         }
     }
