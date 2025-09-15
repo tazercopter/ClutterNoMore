@@ -70,36 +70,38 @@ public class ShapeSwitcherOverlay {
         if (CNMConfig.SCROLLING.get()) {
             startX = Mth.floor(centreX - currentIndex * spacing);
 
-            for (int index = 0; index < shapes.size(); index++) {
-                int x = startX + index * spacing;
-                guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
-                //? if <1.21.2
-                /*RenderSystem.enableBlend();*/
-                guiGraphics.blit(
-                        //? if >1.21.6
-                        RenderPipelines.GUI_TEXTURED,
-                        background, x, y, 0, 0, 16, 16, 16, 16);
-
-            }
-
             //? if <1.21.2
             /*RenderSystem.enableBlend();*/
             guiGraphics.blit(
                     //? if >1.21.6
                     RenderPipelines.GUI_TEXTURED,
                     selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
-        } else {
-            startX = Mth.floor(centreX - (float) shapes.size() / 2 * spacing) + spacing / 2;
 
             for (int index = 0; index < shapes.size(); index++) {
                 int x = startX + index * spacing;
-                guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
                 //? if <1.21.2
                 /*RenderSystem.enableBlend();*/
                 guiGraphics.blit(
                         //? if >1.21.6
                         RenderPipelines.GUI_TEXTURED,
                         background, x, y, 0, 0, 16, 16, 16, 16);
+
+                guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
+            }
+
+        } else {
+            startX = Mth.floor(centreX - (float) shapes.size() / 2 * spacing) + spacing / 2;
+
+            for (int index = 0; index < shapes.size(); index++) {
+                int x = startX + index * spacing;
+                //? if <1.21.2
+                /*RenderSystem.enableBlend();*/
+                guiGraphics.blit(
+                        //? if >1.21.6
+                        RenderPipelines.GUI_TEXTURED,
+                        background, x, y, 0, 0, 16, 16, 16, 16);
+
+                guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
             }
             //? if <1.21.2
             /*RenderSystem.enableBlend();*/
