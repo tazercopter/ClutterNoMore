@@ -25,24 +25,26 @@ public abstract class MinecraftMixin {
     @Nullable
     public abstract ClientPacketListener getConnection();
 
-    @Redirect(method = "pickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;findSlotMatchingItem(Lnet/minecraft/world/item/ItemStack;)I"))
+    //FIXME
+    //? if <1.21.2 {
+    /*@Redirect(method = "pickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;findSlotMatchingItem(Lnet/minecraft/world/item/ItemStack;)I"))
     private int pickBlock(Inventory inventory, ItemStack targetStack) {
         int exactIndex = inventory.findSlotMatchingItem(targetStack);
 
         if (exactIndex != -1) {
             ItemStack slotStack = inventory.
             //? if >1.21.2 {
-            /*getNonEquipmentItems()
-            *///?} else {
-            items
-             //?}
+            getNonEquipmentItems()
+            //?} else {
+            /^items
+             ^///?}
             .get(exactIndex);
 
             if (ShapeMap.inSameShapeSet(targetStack.getItem(), slotStack.getItem())) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
                 //? if neoforge {
-                /*Objects.requireNonNull(getConnection())
-                *///?} else {
+                /^Objects.requireNonNull(getConnection())
+                ^///?} else {
                 ClientPlayNetworking
                 //?}
                         .send(new ChangeStackPayload(-1, exactIndex, replaced));
@@ -51,4 +53,5 @@ public abstract class MinecraftMixin {
 
         return exactIndex;
     }
+    *///?}
 }

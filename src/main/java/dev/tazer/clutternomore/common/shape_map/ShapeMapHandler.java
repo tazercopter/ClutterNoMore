@@ -1,33 +1,43 @@
 package dev.tazer.clutternomore.common.shape_map;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
 //? fabric {
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 //?}
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.util.*;
 
 public class ShapeMapHandler extends SimpleJsonResourceReloadListener
+//? >1.21.2
+<JsonElement>
 //? fabric {
     implements IdentifiableResourceReloadListener
 //?}
 {
 
-    public static final Gson GSON = new GsonBuilder().create();
+    //? if >1.21.2 {
+
+    public static final FileToIdConverter CONVERTER = FileToIdConverter.json("shape_map");
+    public ShapeMapHandler() {
+        super(ExtraCodecs.JSON, CONVERTER);
+    }
+    //?} else {
+    /*public static final Gson GSON = new GsonBuilder().create();
 
     public ShapeMapHandler() {
         super(GSON, "shape_map");
     }
-
+    *///?}
+    
     //? fabric {
     @Override
     public ResourceLocation getFabricId() {

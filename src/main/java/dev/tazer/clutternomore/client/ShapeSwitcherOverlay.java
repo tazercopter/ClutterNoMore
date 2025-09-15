@@ -39,10 +39,10 @@ public class ShapeSwitcherOverlay {
         this.render = render;
         selected = minecraft.player.getInventory()
         //? if >1.21.2 {
-        /*.getSelectedSlot();
-        *///?} else {
-        .selected;
-        //?}
+        .getSelectedSlot();
+        //?} else {
+        /*.selected;
+        *///?}
 
         Item item = ShapeMap.getParent(heldStack.getItem());
         count = heldStack.getCount();
@@ -73,13 +73,13 @@ public class ShapeSwitcherOverlay {
                 int x = startX + index * spacing;
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
                 //? if <1.21.2
-                RenderSystem.enableBlend();
+                /*RenderSystem.enableBlend();*/
                 guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
 
             }
 
             //? if <1.21.2
-            RenderSystem.enableBlend();
+            /*RenderSystem.enableBlend();*/
             guiGraphics.blit(selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
         } else {
             startX = Mth.floor(centreX - (float) shapes.size() / 2 * spacing) + spacing / 2;
@@ -88,15 +88,15 @@ public class ShapeSwitcherOverlay {
                 int x = startX + index * spacing;
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
                 //? if <1.21.2
-                RenderSystem.enableBlend();
+                /*RenderSystem.enableBlend();*/
                 guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
             }
             //? if <1.21.2
-            RenderSystem.enableBlend();
+            /*RenderSystem.enableBlend();*/
             guiGraphics.blit(selected, Mth.floor(startX + currentIndex * spacing) - 3, y - 3, 0, 0, 22, 22, 22, 22);
         }
         //? if <1.21.2
-        RenderSystem.disableBlend();
+        /*RenderSystem.disableBlend();*/
     }
 
     public void onMouseScrolled(int direction) {
@@ -123,10 +123,10 @@ public class ShapeSwitcherOverlay {
     public boolean shouldStayOpenThisTick() {
         int selected = minecraft.player.getInventory()
         //? if >1.21.2 {
-        /*.getSelectedSlot();
-        *///?} else {
-        .selected;
-        //?}
+        .getSelectedSlot();
+        //?} else {
+        /*.selected;
+        *///?}
         ItemStack heldStack = minecraft.player.getItemInHand(InteractionHand.MAIN_HAND);
         count = heldStack.getCount();
         return shapes.contains(heldStack.getItem()) && selected == this.selected;

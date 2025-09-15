@@ -29,10 +29,10 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
 
     public static final
     //? if >1.21.2 {
-    /*EnumProperty<Direction>
-    *///?} else {
-    DirectionProperty
-    //?}
+    EnumProperty<Direction>
+    //?} else {
+    /*DirectionProperty
+    *///?}
     FACING = HorizontalDirectionalBlock.FACING;
     public static final EnumProperty<SlabType> SLAB_TYPE = BlockStateProperties.SLAB_TYPE;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -131,22 +131,22 @@ public class StepBlock extends HorizontalDirectionalBlock implements SimpleWater
 
     @Override
     //? if >1.21.2 {
-    /*protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (state.getValue(WATERLOGGED)) {
             scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(state, level, scheduledTickAccess, pos, direction, blockPos2, blockState2, randomSource);
     }
-    *///?} else {
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    //?} else {
+    /*protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
     if (state.getValue(WATERLOGGED)) {
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
-    //?}
+    *///?}
 
     @Override
     protected boolean useShapeForLightOcclusion(BlockState state) {

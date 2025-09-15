@@ -35,7 +35,9 @@ public class ClutterNoMore {
     }
 
     public static void load(HolderLookup.Provider registries, RecipeManager recipeManager) {
-        boolean changed = false;
+        //FIXME 1.21.8
+        //? if <1.21.2 {
+        /*boolean changed = false;
         Collection<RecipeHolder<?>> originalRecipes = recipeManager.getRecipes();
         List<RecipeHolder<?>> newRecipes = new ArrayList<>();
 
@@ -75,5 +77,6 @@ public class ClutterNoMore {
         if (changed) {
             recipeManager.replaceRecipes(newRecipes);
         }
+        *///?}
     }
 }

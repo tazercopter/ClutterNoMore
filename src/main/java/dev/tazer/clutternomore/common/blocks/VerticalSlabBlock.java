@@ -21,10 +21,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 //? if >1.21.2 {
-/*import net.minecraft.world.level.block.state.properties.EnumProperty;
-*///?} else {
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
-//?}
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+//?} else {
+/*import net.minecraft.world.level.block.state.properties.DirectionProperty;
+*///?}
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -41,10 +41,10 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
     public static final BooleanProperty DOUBLE = BooleanProperty.create("double");
     public static final
     //? if >1.21.2 {
-    /*EnumProperty<Direction>
-    *///?} else {
-    DirectionProperty
-    //?}
+    EnumProperty<Direction>
+    //?} else {
+    /*DirectionProperty
+    *///?}
     FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -136,22 +136,22 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
 
     @Override
     //? if >1.21.2 {
-    /*protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (state.getValue(WATERLOGGED)) {
             scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(state, level, scheduledTickAccess, pos, direction, blockPos2, blockState2, randomSource);
     }
-    *///?} else {
-    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    //?} else {
+    /*protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
     if (state.getValue(WATERLOGGED)) {
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
-    //?}
+    *///?}
 
     @Override
     public boolean useShapeForLightOcclusion(BlockState state) {
@@ -178,10 +178,10 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
 
     @Override
     //? if >1.21.2 {
-    /*public boolean canPlaceLiquid(@Nullable LivingEntity player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-    *///?} else {
-    public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-    //?}
+    public boolean canPlaceLiquid(@Nullable LivingEntity player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    //?} else {
+    /*public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    *///?}
         if (!state.getValue(DOUBLE)) {
             return SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
         }

@@ -6,7 +6,11 @@ import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import dev.tazer.clutternomore.common.shape_map.ShapeMapHandler;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
+//? if >1.21.2 {
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+//?} else {
+/*import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
+*///?}
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -22,8 +26,13 @@ public class FabricEntrypoint implements ModInitializer {
     @Override
     public void onInitialize() {
         ClutterNoMore.init();
-        NeoForgeConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
-        NeoForgeConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
+        //? if >1.21.2 {
+        var instance = ConfigRegistry.INSTANCE;
+        //?} else {
+        /*var instance = NeoForgeConfigRegistry.INSTANCE;
+        *///?}
+        instance.register(MODID, ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
+        instance.register(MODID, ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
         registerPayloadHandlers();
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register(((minecraftServer, closeableResourceManager) -> {

@@ -60,8 +60,8 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
 
 //    modImplementation("maven.modrinth:moonlight:${property("deps.moonlight")}")
-    modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:21.1.4")
-    modImplementation("com.terraformersmc:modmenu:11.0.3")
+    modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${property("deps.forge_config_api_port")}")
+    modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
 
     val modules = listOf("transitive-access-wideners-v1", "registry-sync-v0", "resource-loader-v0")
     for (it in modules) modImplementation(fabricApi.module("fabric-$it", property("deps.fabric-api") as String))
