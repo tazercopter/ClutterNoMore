@@ -59,7 +59,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
 
-    modImplementation("maven.modrinth:moonlight:${property("deps.moonlight")}")
+//    modImplementation("maven.modrinth:moonlight:${property("deps.moonlight")}")
     modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:21.1.4")
     modImplementation("com.terraformersmc:modmenu:11.0.3")
 

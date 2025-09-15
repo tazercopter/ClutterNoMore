@@ -1,6 +1,6 @@
 package dev.tazer.clutternomore;
 
-import dev.tazer.clutternomore.common.data.DynamicServerResources;
+//import dev.tazer.clutternomore.common.data.DynamicServerResources;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.minecraft.core.HolderLookup;
@@ -27,7 +27,7 @@ public class ClutterNoMore {
     public static void init() {
         LOGGER.info("Initializing {} on {}", MODID, Platform.INSTANCE.loader());
         BlockSetRegistry.init();
-        DynamicServerResources.register();
+//        DynamicServerResources.register();
     }
 
     public static ResourceLocation location(String path) {

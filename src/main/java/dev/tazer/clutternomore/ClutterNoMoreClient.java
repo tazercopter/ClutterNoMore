@@ -1,7 +1,6 @@
 package dev.tazer.clutternomore;
 
 import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
-import dev.tazer.clutternomore.client.assets.DynamicClientResources;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
@@ -31,7 +30,6 @@ public class ClutterNoMoreClient {
     public static ShapeSwitcherOverlay OVERLAY = null;
 
     public static void init() {
-        DynamicClientResources.register();
     }
 
     public static void onItemTooltips(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {

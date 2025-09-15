@@ -1,10 +1,11 @@
 package dev.tazer.clutternomore.common.shape_map;
 
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
-import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.SlabBlock;
 
 import java.util.*;
 
@@ -61,16 +62,25 @@ public class ShapeMap {
             }
         }
 
+        BuiltInRegistries.ITEM.entrySet().forEach((key -> {
+            var id = key.getKey().location();
+            var item = key.getValue();
+            if (item instanceof BlockItem blockItem) {
+                var block = blockItem.getBlock();
+                BlockSetRegistry.ShapeSetRegistry.detectTypeFromBlock(block, id);
+            }
+        }));
+
         for (Item item : BuiltInRegistries.ITEM.stream().toList()) {
             List<Item> shapes = new ArrayList<>(getShapes(item));
 
-            BlockSetRegistry.ShapeSet shapeSet = BlockSetAPI.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
+            BlockSetRegistry.ShapeSet shapeSet = BlockSetRegistry.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
 
             if (shapeSet != null) {
                 Item mainChild = shapeSet.mainChild().asItem();
                 if (item == mainChild) {
                     shapeSet.getChildren().forEach(child -> {
-                        if (child != mainChild && child.getValue() instanceof Item shape) {
+                        if (child != mainChild && child instanceof Item shape) {
                             shapes.add(shape);
                         }
                     });

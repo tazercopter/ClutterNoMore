@@ -1,21 +1,14 @@
 package dev.tazer.clutternomore.common.registry;
 
-import dev.tazer.clutternomore.CNMConfig;
-import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.blocks.StepBlock;
 import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
-import net.mehvahdjukaar.moonlight.api.misc.Registrator;
-import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
-import net.mehvahdjukaar.moonlight.api.set.BlockType;
-import net.mehvahdjukaar.moonlight.api.set.BlockTypeRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -23,18 +16,27 @@ import java.util.*;
 public class BlockSetRegistry {
 
     public static void init() {
-        BlockSetAPI.registerBlockSetDefinition(new ShapeSetRegistry());
-        BlockSetAPI.addDynamicBlockRegistration(BlockSetRegistry::registerShapeBlocks, ShapeSet.class);
-        BlockSetAPI.addDynamicItemRegistration(BlockSetRegistry::registerShapeItems, ShapeSet.class);
+//        BlockSetAPI.registerBlockSetDefinition(new ShapeSetRegistry());
+//        BlockSetAPI.addDynamicBlockRegistration(BlockSetRegistry::registerShapeBlocks, ShapeSet.class);
+//        BlockSetAPI.addDynamicItemRegistration(BlockSetRegistry::registerShapeItems, ShapeSet.class);
+
     }
 
-    public static class ShapeSetRegistry extends BlockTypeRegistry<ShapeSet> {
+    public static ShapeSet getBlockTypeOf(Item item, Class<ShapeSet> shapeSetClass) {
+        return ShapeSetRegistry.items.get(item);
+    }
+
+    public static class ShapeSetRegistry {
+
+        public static final Map<Item, ShapeSet> items = new LinkedHashMap<>();
         protected ShapeSetRegistry() {
-            super(ShapeSet.class, "shape_set");
         }
 
-        @Override
-        public Optional<ShapeSet> detectTypeFromBlock(Block block, ResourceLocation blockId) {
+        public static void register(Item block, ShapeSet shapeSet) {
+            items.put(block, shapeSet);
+        }
+
+        public static Optional<ShapeSet> detectTypeFromBlock(Block block, ResourceLocation blockId) {
             if (block.asItem() != Items.AIR) {
                 if (isParentBlock(blockId)) {
                     return Optional.of(new ShapeSet(blockId, block));
@@ -121,7 +123,7 @@ public class BlockSetRegistry {
             return false;
         }
 
-        @Override
+//        @Override
         public ShapeSet getDefaultType() {
             return STONE;
         }
@@ -129,19 +131,46 @@ public class BlockSetRegistry {
         public static final ShapeSet STONE = new ShapeSet(ResourceLocation.withDefaultNamespace("stone"), Blocks.STONE);
     }
 
-    public static class ShapeSet extends BlockType {
+    public static class ShapeSet {
         private final ResourceLocation id;
+        private final String type;
         private final Block block;
+        private final Map<String, ItemLike> items = new LinkedHashMap<>();
 
         ShapeSet(ResourceLocation id, Block block) {
-            super(id);
             this.id = id;
             this.block = block;
+            this.type = id.getPath().replace("_block", "").replace("_planks", "");
+            initializeChildrenBlocks();
+            ShapeSetRegistry.register(block.asItem(), this);
+
         }
 
-        @Override
         protected void initializeChildrenBlocks() {
             addChild("block", block);
+            if (id.getPath().contains("log")) {
+                items.put("wood", getWood());
+            }
+            items.put("slab", findRelatedEntry("slab"));
+            items.put("stairs", findRelatedEntry("stairs"));
+            items.put("wall", findRelatedEntry("wall"));
+        }
+
+        private void addChild(String block, ItemLike block1) {
+            items.put(block, block1);
+        }
+
+        private void addChild(ItemLike block1) {
+            var b = switch (block) {
+                case SlabBlock slabBlock -> "slab";
+                case StairBlock stairBlock ->  "stairs";
+                case WallBlock wallBlock -> "wall";
+                case FenceBlock wallBlock -> "fence";
+                case VerticalSlabBlock wallBlock -> "vertical_slab";
+                case StepBlock wallBlock -> "step";
+                case null, default -> "block";
+            };
+            items.put(b, block1);
         }
 
         public String getVariantId(String prefix, String postfix) {
@@ -157,6 +186,10 @@ public class BlockSetRegistry {
             }
 
             return name + (postfix.isEmpty() ? "" : "_") + postfix;
+        }
+
+        private String getTypeName() {
+            return type;
         }
 
 
@@ -211,7 +244,6 @@ public class BlockSetRegistry {
             return null;
         }
 
-        @Override
         protected void initializeChildrenItems() {
             List<String> postfixes = List.of("stairs", "slab", "wall");
 
@@ -228,72 +260,86 @@ public class BlockSetRegistry {
         }
 
 
-        @Override
         public String getTranslationKey() {
             return "shape_set." + this.getNamespace() + "." + this.getTypeName();
         }
 
-        @Override
+        private String getNamespace() {
+            return id.getNamespace();
+        }
+
         public Block mainChild() {
             return block;
         }
-    }
 
-    private static void registerShapeBlocks(Registrator<Block> event, Collection<ShapeSet> shapeSets) {
-        for (ShapeSet set : shapeSets) {
-            if (CNMConfig.VERTICAL_SLABS.get() && set.hasChild("slab")) {
-                ResourceLocation id = ClutterNoMore.location(set.getVariantId("vertical", "slab"));
-                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-                    Block slab = Block.byItem((Item) set.getChild("slab"));
+        public boolean hasChild(String slab) {
+            return items.containsKey(slab);
+        }
 
-                    if (slab.defaultBlockState().getValues().size() == 2) {
-                        Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("slab"))));
-                        event.register(id, block);
-                        set.addChild("vertical_slab_block", block);
-                    }
-                }
-            }
+        public ItemLike getChild(String slab) {
+            return items.get(slab);
+        }
 
-            if (CNMConfig.STEPS.get() && set.hasChild("stairs")) {
-                ResourceLocation id = ClutterNoMore.location(set.getVariantId("", "step"));
-                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-                    Block stairs = Block.byItem((Item) set.getChild("stairs"));
-
-                    if (stairs.defaultBlockState().getValues().size() == 4) {
-                        Block block = new StepBlock(BlockBehaviour.Properties.ofFullCopy(stairs));
-                        event.register(id, block);
-                        set.addChild("step_block", block);
-                    }
-                }
-            }
+        public Collection<ItemLike> getChildren() {
+            return items.values();
         }
     }
 
-    private static void registerShapeItems(Registrator<Item> event, Collection<ShapeSet> shapeSets) {
-        for (ShapeSet type : shapeSets) {
-            Block block;
+//    private static void registerShapeBlocks(Registrator<Block> event, Collection<ShapeSet> shapeSets) {
+//        for (ShapeSet set : shapeSets) {
+//            if (CNMConfig.VERTICAL_SLABS.get() && set.hasChild("slab")) {
+//                ResourceLocation id = ClutterNoMore.location(set.getVariantId("vertical", "slab"));
+//                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
+//                    Block slab = Block.byItem((Item) set.getChild("slab"));
+//
+//                    if (slab.defaultBlockState().getValues().size() == 2) {
+//                        Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("slab"))));
+//                        event.register(id, block);
+//                        set.addChild("vertical_slab_block", block);
+//                    }
+//                }
+//            }
+//
+//            if (CNMConfig.STEPS.get() && set.hasChild("stairs")) {
+//                ResourceLocation id = ClutterNoMore.location(set.getVariantId("", "step"));
+//                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
+//                    Block stairs = Block.byItem((Item) set.getChild("stairs"));
+//
+//                    if (stairs.defaultBlockState().getValues().size() == 4) {
+//                        Block block = new StepBlock(BlockBehaviour.Properties.ofFullCopy(stairs));
+//                        event.register(id, block);
+//                        set.addChild("step_block", block);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-            block = (Block) type.getChild("vertical_slab_block");
-            if (block != null) {
-                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
-                if (!BuiltInRegistries.ITEM.containsKey(id)) {
-                    Item item = new BlockItem(block, new Item.Properties());
-                    event.register(id, item);
-                    type.addChild("vertical_slab", item);
-                }
-            }
-
-            block = (Block) type.getChild("step_block");
-            if (block != null) {
-                ResourceLocation id = ClutterNoMore.location(type.getVariantId("", "step"));
-                if (!BuiltInRegistries.ITEM.containsKey(id)) {
-                    Item item = new BlockItem(block, new Item.Properties());
-                    event.register(id, item);
-                    type.addChild("step", item);
-                }
-            }
-        }
-    }
+//    private static void registerShapeItems(Registrator<Item> event, Collection<ShapeSet> shapeSets) {
+//        for (ShapeSet type : shapeSets) {
+//            Block block;
+//
+//            block = (Block) type.getChild("vertical_slab_block");
+//            if (block != null) {
+//                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
+//                if (!BuiltInRegistries.ITEM.containsKey(id)) {
+//                    Item item = new BlockItem(block, new Item.Properties());
+//                    event.register(id, item);
+//                    type.addChild("vertical_slab", item);
+//                }
+//            }
+//
+//            block = (Block) type.getChild("step_block");
+//            if (block != null) {
+//                ResourceLocation id = ClutterNoMore.location(type.getVariantId("", "step"));
+//                if (!BuiltInRegistries.ITEM.containsKey(id)) {
+//                    Item item = new BlockItem(block, new Item.Properties());
+//                    event.register(id, item);
+//                    type.addChild("step", item);
+//                }
+//            }
+//        }
+//    }
 
     private static String stripSuffix(String path, String suffix) {
         if (path.endsWith("_" + suffix)) return path.substring(0, path.length() - suffix.length() - 1);
