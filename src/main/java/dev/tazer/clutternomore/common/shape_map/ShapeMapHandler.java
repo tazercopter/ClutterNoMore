@@ -38,7 +38,7 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> file, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         Map<ResourceLocation, List<ResourceLocation>> result = new HashMap<>();
-        Map<String, NamespaceShapeMap> namespaceMap = new HashMap<>();
+        Map<String, ShapeMapFile> namespaceMap = new HashMap<>();
 
         for (Map.Entry<ResourceLocation, JsonElement> fileEntry : file.entrySet()) {
             ResourceLocation fileName = fileEntry.getKey();
@@ -60,7 +60,7 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
             }
 
             String namespace = fileName.getNamespace();
-            NamespaceShapeMap namespaceShapeMap = namespaceMap.computeIfAbsent(namespace, k -> new NamespaceShapeMap(new HashMap<>(), new HashMap<>()));
+            ShapeMapFile namespaceShapeMap = namespaceMap.computeIfAbsent(namespace, s -> new ShapeMapFile(new HashMap<>(), new HashMap<>()));
 
             if (path.equals("add_shapes")) {
                 namespaceShapeMap.addMap().putAll(fileShapeMap);
@@ -69,14 +69,14 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
             }
         }
 
-        for (NamespaceShapeMap namespaceShapeMap : namespaceMap.values()) {
-            result.putAll(namespaceShapeMap.getResultingMap());
+        for (ShapeMapFile shapeMapFile : namespaceMap.values()) {
+            result.putAll(shapeMapFile.getResultingMap());
         }
 
         ShapeMap.set(result);
     }
 
-    private record NamespaceShapeMap(Map<ResourceLocation, List<ResourceLocation>> addMap, Map<ResourceLocation, List<ResourceLocation>> removeMap) {
+    private record ShapeMapFile(Map<ResourceLocation, List<ResourceLocation>> addMap, Map<ResourceLocation, List<ResourceLocation>> removeMap) {
         public Map<ResourceLocation, List<ResourceLocation>> getResultingMap() {
             for (Map.Entry<ResourceLocation, List<ResourceLocation>> entry : new HashSet<>(removeMap.entrySet())) {
                 ResourceLocation key = entry.getKey();

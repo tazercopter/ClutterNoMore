@@ -16,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -35,7 +36,7 @@ public class ClutterNoMore {
 
     public static void load(HolderLookup.Provider registries, RecipeManager recipeManager) {
         boolean changed = false;
-        List<RecipeHolder<?>> originalRecipes = new ArrayList<>(recipeManager.getRecipes());
+        Collection<RecipeHolder<?>> originalRecipes = recipeManager.getRecipes();
         List<RecipeHolder<?>> newRecipes = new ArrayList<>();
 
         for (RecipeHolder<?> recipeHolder : originalRecipes) {
@@ -60,8 +61,10 @@ public class ClutterNoMore {
 
                 Stream<ItemStack> newStacks = stacks.stream();
                 if (changed) {
-                    int index = ingredients.indexOf(ingredient);
-                    ingredients.set(index, Ingredient.of(newStacks));
+                    try {
+                        int index = ingredients.indexOf(ingredient);
+                        ingredients.set(index, Ingredient.of(newStacks));
+                    } catch (Exception ignored) {}
                 }
             }
 
