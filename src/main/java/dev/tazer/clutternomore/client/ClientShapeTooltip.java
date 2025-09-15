@@ -7,6 +7,8 @@ import dev.tazer.clutternomore.common.networking.ShapeTooltip;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+//? if >1.21.6
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -55,7 +57,10 @@ public class ClientShapeTooltip implements ClientTooltipComponent {
 
             //? if <1.21.2
             /*RenderSystem.enableBlend();*/
-            guiGraphics.blit(selected, Mth.floor(startX + selectedIndex * spacing) - 3, mouseY - 3, 0, 0, 22, 22, 22, 22);
+            guiGraphics.blit(
+                    //? if >1.21.6
+                    RenderPipelines.GUI_TEXTURED,
+                    selected, Mth.floor(startX + selectedIndex * spacing) - 3, mouseY - 3, 0, 0, 22, 22, 22, 22);
             //? if <1.21.2
             /*RenderSystem.disableBlend();*/
         }

@@ -7,6 +7,7 @@ import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+//? if >1.21.6
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
