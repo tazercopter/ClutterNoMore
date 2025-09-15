@@ -7,6 +7,7 @@ import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -74,13 +75,19 @@ public class ShapeSwitcherOverlay {
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
                 //? if <1.21.2
                 /*RenderSystem.enableBlend();*/
-                guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(
+                        //? if >1.21.6
+                        RenderPipelines.GUI_TEXTURED,
+                        background, x, y, 0, 0, 16, 16, 16, 16);
 
             }
 
             //? if <1.21.2
             /*RenderSystem.enableBlend();*/
-            guiGraphics.blit(selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
+            guiGraphics.blit(
+                    //? if >1.21.6
+                    RenderPipelines.GUI_TEXTURED,
+                    selected, centreX - 3, y - 3, 0, 0, 22, 22, 22, 22);
         } else {
             startX = Mth.floor(centreX - (float) shapes.size() / 2 * spacing) + spacing / 2;
 
@@ -89,11 +96,17 @@ public class ShapeSwitcherOverlay {
                 guiGraphics.renderItem(shapes.get(index).getDefaultInstance(), x, y);
                 //? if <1.21.2
                 /*RenderSystem.enableBlend();*/
-                guiGraphics.blit(background, x, y, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(
+                        //? if >1.21.6
+                        RenderPipelines.GUI_TEXTURED,
+                        background, x, y, 0, 0, 16, 16, 16, 16);
             }
             //? if <1.21.2
             /*RenderSystem.enableBlend();*/
-            guiGraphics.blit(selected, Mth.floor(startX + currentIndex * spacing) - 3, y - 3, 0, 0, 22, 22, 22, 22);
+            guiGraphics.blit(
+                    //? if >1.21.6
+                    RenderPipelines.GUI_TEXTURED,
+                    selected, Mth.floor(startX + currentIndex * spacing) - 3, y - 3, 0, 0, 22, 22, 22, 22);
         }
         //? if <1.21.2
         /*RenderSystem.disableBlend();*/

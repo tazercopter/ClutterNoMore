@@ -47,6 +47,7 @@ repositories {
     maven (
         url = "https://maven.terraformersmc.com/"
     )
+    maven ("https://maven.parchmentmc.org")
 }
 
 dependencies {
