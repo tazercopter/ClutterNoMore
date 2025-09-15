@@ -78,6 +78,7 @@ public abstract class MinecraftMixin {
 
             if (ShapeMap.inSameShapeSet(targetStack.getItem(), slotStack.getItem())) {
                 ItemStack replaced = targetStack.copyWithCount(slotStack.getCount());
+                inventory.setItem(exactIndex, replaced);
                 p.send(new ClientboundSetPlayerInventoryPacket(exactIndex, replaced));
             }
         }
