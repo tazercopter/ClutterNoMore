@@ -150,6 +150,11 @@ public class BlockSetRegistry {
             addChild("block", block);
             if (id.getPath().contains("log")) {
                 items.put("wood", getWood());
+                if (id.getPath().contains("stripped")) {
+                    items.put("hollow_log", BuiltInRegistries.ITEM.getOptional(ResourceLocation.fromNamespaceAndPath("wilderwild", id.getPath().replace("stripped_", "stripped_hollowed_"))).orElse(null));
+                } else {
+                    items.put("hollow_log", BuiltInRegistries.ITEM.getOptional(ResourceLocation.fromNamespaceAndPath("wilderwild", "hollowed_"+ id.getPath())).orElse(null));
+                }
             }
             items.put("slab", findRelatedEntry("slab"));
             items.put("stairs", findRelatedEntry("stairs"));

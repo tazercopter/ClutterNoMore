@@ -7,6 +7,7 @@ plugins {
 }
 
 tasks.named<ProcessResources>("processResources") {
+    dependsOn("stonecutterGenerate") // Ensure the generate task runs first
     fun prop(name: String) = project.property(name) as String
 
     val props = HashMap<String, String>().apply {

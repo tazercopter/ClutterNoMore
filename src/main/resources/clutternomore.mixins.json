@@ -8,7 +8,10 @@
     "ItemDisplayBuilderMixin",
     "ItemMixin",
     "ItemStackMixin",
-    "SlotAccessor"
+    "SlotAccessor",
+    "recipe.ShapedRecipeMixin",
+    "recipe.ShapelessRecipeMixin",
+    "recipe.SingleItemRecipeMixin"
   ],
   "client": [
     "KeyboardHandlerMixin",
