@@ -93,9 +93,9 @@ public class ClutterNoMore {
     public static void registerVariants() {
         if (CNMConfig.VERTICAL_SLABS.get() || CNMConfig.STEPS.get()) {
             //? if neoforge {
-            ((RegistryAccess) BuiltInRegistries.BLOCK).clutternomore$unfreeze();
+            /*((RegistryAccess) BuiltInRegistries.BLOCK).clutternomore$unfreeze();
             ((RegistryAccess) BuiltInRegistries.ITEM).clutternomore$unfreeze();
-            //?}
+            *///?}
             LinkedHashMap<String, Supplier<? extends Block>> toRegister = new LinkedHashMap<>();
             for (Map.Entry<ResourceKey<Item>, Item> resourceKeyItemEntry : BuiltInRegistries.ITEM.entrySet()) {
                 if (resourceKeyItemEntry.getValue().asItem() instanceof BlockItem blockItem) {
@@ -117,9 +117,9 @@ public class ClutterNoMore {
             }
             toRegister.forEach(CBlocks::register);
             //? if neoforge {
-            BuiltInRegistries.BLOCK.freeze();
+            /*BuiltInRegistries.BLOCK.freeze();
             BuiltInRegistries.ITEM.freeze();
-            //?}
+            *///?}
         }
     }
 }
