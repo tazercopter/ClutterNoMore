@@ -12,6 +12,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
@@ -37,6 +38,7 @@ public class NeoForgeEntrypoint {
         modEventBus.addListener(NeoForgeEntrypoint::registerPayloadHandlers);
         NeoForge.EVENT_BUS.addListener(NeoForgeEntrypoint::addReloadListeners);
         NeoForge.EVENT_BUS.addListener(NeoForgeEntrypoint::onServerStarted);
+        modEventBus.addListener(NeoForgeEntrypoint::commonSetup);
     }
 
     private static void registerPayloadHandlers(RegisterPayloadHandlersEvent event) {
@@ -56,6 +58,10 @@ public class NeoForgeEntrypoint {
     private static void addReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new CReloadListener(event.getServerResources()));
         event.addListener(new ShapeMapHandler());
+    }
+
+    private static void commonSetup(FMLCommonSetupEvent event) {
+        ClutterNoMore.registerVariants();
     }
 }
 *///?}

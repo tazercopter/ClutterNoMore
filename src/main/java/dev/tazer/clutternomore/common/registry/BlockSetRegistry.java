@@ -1,9 +1,6 @@
 package dev.tazer.clutternomore.common.registry;
 
-import dev.tazer.clutternomore.common.blocks.StepBlock;
-import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -12,6 +9,8 @@ import net.minecraft.world.level.block.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static dev.tazer.clutternomore.ClutterNoMore.MODID;
 
 public class BlockSetRegistry {
 
@@ -149,33 +148,28 @@ public class BlockSetRegistry {
         protected void initializeChildrenBlocks() {
             addChild("block", block);
             if (id.getPath().contains("log")) {
-                items.put("wood", getWood());
+                addChild("wood", getWood());
                 if (id.getPath().contains("stripped")) {
-                    items.put("hollow_log", BuiltInRegistries.ITEM.getOptional(ResourceLocation.fromNamespaceAndPath("wilderwild", id.getPath().replace("stripped_", "stripped_hollowed_"))).orElse(null));
+                    addChild("hollow_log",ResourceLocation.fromNamespaceAndPath("wilderwild", id.getPath().replace("stripped_", "stripped_hollowed_")));
                 } else {
-                    items.put("hollow_log", BuiltInRegistries.ITEM.getOptional(ResourceLocation.fromNamespaceAndPath("wilderwild", "hollowed_"+ id.getPath())).orElse(null));
+                    addChild("hollow_log", ResourceLocation.fromNamespaceAndPath("wilderwild", "hollowed_"+ id.getPath()));
                 }
             }
-            items.put("slab", findRelatedEntry("slab"));
-            items.put("stairs", findRelatedEntry("stairs"));
-            items.put("wall", findRelatedEntry("wall"));
+            addChild("slab", findRelatedEntry("slab"));
+            addChild("stairs", findRelatedEntry("stairs"));
+            addChild("wall", findRelatedEntry("wall"));
+            addChild("vertical_slab", findRelatedEntry(MODID, "", "vertical_slab"));
+            addChild("steps", findRelatedEntry(MODID, "","steps"));
+            addChild("spiked", findRelatedEntry("spiked", ""));
         }
 
         private void addChild(String block, ItemLike block1) {
-            items.put(block, block1);
+            if (block1 != null)
+                items.put(block, block1);
         }
 
-        private void addChild(ItemLike block1) {
-            var b = switch (block) {
-                case SlabBlock slabBlock -> "slab";
-                case StairBlock stairBlock ->  "stairs";
-                case WallBlock wallBlock -> "wall";
-                case FenceBlock wallBlock -> "fence";
-                case VerticalSlabBlock wallBlock -> "vertical_slab";
-                case StepBlock wallBlock -> "step";
-                case null, default -> "block";
-            };
-            items.put(b, block1);
+        private void addChild(String block, ResourceLocation id) {
+            BuiltInRegistries.ITEM.getOptional(id).ifPresent(block1 -> items.put(block, block1));
         }
 
         public String getVariantId(String prefix, String postfix) {
@@ -197,8 +191,11 @@ public class BlockSetRegistry {
             return type;
         }
 
-
         protected @Nullable Item findRelatedEntry(String prefix, String postfix) {
+            return findRelatedEntry(id.getNamespace(), prefix, postfix);
+        }
+
+        protected @Nullable Item findRelatedEntry(String namespace, String prefix, String postfix) {
             String basePath = id.getPath();
 
             List<String> parentSuffixes = List.of("block", "planks");
@@ -226,7 +223,7 @@ public class BlockSetRegistry {
 
             for (String stem : candidates) {
                 String candidatePath = reapplyPrefix + prefixPart + stem + postfixPart;
-                ResourceLocation candidateId = id.withPath(p -> candidatePath);
+                ResourceLocation candidateId = ResourceLocation.fromNamespaceAndPath(namespace, candidatePath);
                 Optional<Item> found = BuiltInRegistries.ITEM.getOptional(candidateId);
                 if (found.isPresent()) return found.get();
             }
@@ -248,22 +245,6 @@ public class BlockSetRegistry {
 
             return null;
         }
-
-        protected void initializeChildrenItems() {
-            List<String> postfixes = List.of("stairs", "slab", "wall");
-
-            for (String postfix : postfixes) {
-                Item found = findRelatedEntry(postfix);
-                if (found != null) addChild(postfix, found);
-            }
-
-            Item spiked = findRelatedEntry("spiked", "");
-            if (spiked != null) addChild("spiked", spiked);
-
-            Item wood = getWood();
-            if (wood != null) addChild("wood", wood);
-        }
-
 
         public String getTranslationKey() {
             return "shape_set." + this.getNamespace() + "." + this.getTypeName();
@@ -289,62 +270,6 @@ public class BlockSetRegistry {
             return items.values();
         }
     }
-
-//    private static void registerShapeBlocks(Registrator<Block> event, Collection<ShapeSet> shapeSets) {
-//        for (ShapeSet set : shapeSets) {
-//            if (CNMConfig.VERTICAL_SLABS.get() && set.hasChild("slab")) {
-//                ResourceLocation id = ClutterNoMore.location(set.getVariantId("vertical", "slab"));
-//                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-//                    Block slab = Block.byItem((Item) set.getChild("slab"));
-//
-//                    if (slab.defaultBlockState().getValues().size() == 2) {
-//                        Block block = new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(Block.byItem((Item) set.getChild("slab"))));
-//                        event.register(id, block);
-//                        set.addChild("vertical_slab_block", block);
-//                    }
-//                }
-//            }
-//
-//            if (CNMConfig.STEPS.get() && set.hasChild("stairs")) {
-//                ResourceLocation id = ClutterNoMore.location(set.getVariantId("", "step"));
-//                if (!BuiltInRegistries.BLOCK.containsKey(id)) {
-//                    Block stairs = Block.byItem((Item) set.getChild("stairs"));
-//
-//                    if (stairs.defaultBlockState().getValues().size() == 4) {
-//                        Block block = new StepBlock(BlockBehaviour.Properties.ofFullCopy(stairs));
-//                        event.register(id, block);
-//                        set.addChild("step_block", block);
-//                    }
-//                }
-//            }
-//        }
-//    }
-
-//    private static void registerShapeItems(Registrator<Item> event, Collection<ShapeSet> shapeSets) {
-//        for (ShapeSet type : shapeSets) {
-//            Block block;
-//
-//            block = (Block) type.getChild("vertical_slab_block");
-//            if (block != null) {
-//                ResourceLocation id = ClutterNoMore.location(type.getVariantId("vertical", "slab"));
-//                if (!BuiltInRegistries.ITEM.containsKey(id)) {
-//                    Item item = new BlockItem(block, new Item.Properties());
-//                    event.register(id, item);
-//                    type.addChild("vertical_slab", item);
-//                }
-//            }
-//
-//            block = (Block) type.getChild("step_block");
-//            if (block != null) {
-//                ResourceLocation id = ClutterNoMore.location(type.getVariantId("", "step"));
-//                if (!BuiltInRegistries.ITEM.containsKey(id)) {
-//                    Item item = new BlockItem(block, new Item.Properties());
-//                    event.register(id, item);
-//                    type.addChild("step", item);
-//                }
-//            }
-//        }
-//    }
 
     private static String stripSuffix(String path, String suffix) {
         if (path.endsWith("_" + suffix)) return path.substring(0, path.length() - suffix.length() - 1);

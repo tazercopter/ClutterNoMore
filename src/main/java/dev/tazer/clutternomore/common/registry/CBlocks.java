@@ -1,6 +1,8 @@
 package dev.tazer.clutternomore.common.registry;
 
 import dev.tazer.clutternomore.ClutterNoMore;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -30,8 +32,12 @@ public class CBlocks {
         return CommonRegistry.registerBlock(name, block);
     }
 
+    public static ResourceKey<Block> registryKey(String string) {
+        return ResourceKey.create(Registries.BLOCK, ClutterNoMore.location(string));
+    }
+
     public static void registerBlockItem(String name, Supplier<? extends Block> block) {
-        CItems.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
+        CItems.register(name, () -> new BlockItem(block.get(), new Item.Properties().setId(ResourceKey.create(Registries.ITEM, ClutterNoMore.location(name)))));
     }
 
     public static void register() {
