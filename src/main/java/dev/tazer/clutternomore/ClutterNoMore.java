@@ -1,12 +1,14 @@
 package dev.tazer.clutternomore;
 
 //import dev.tazer.clutternomore.common.data.DynamicServerResources;
+import dev.tazer.clutternomore.client.assets.AssetGenerator;
+import dev.tazer.clutternomore.client.assets.VerticalSlabGenerator;
 import dev.tazer.clutternomore.common.access.RegistryAccess;
 import dev.tazer.clutternomore.common.blocks.StepBlock;
 import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import dev.tazer.clutternomore.common.registry.CBlocks;
-import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -97,14 +99,17 @@ public class ClutterNoMore {
             ((RegistryAccess) BuiltInRegistries.ITEM).clutternomore$unfreeze();
             *///?}
             LinkedHashMap<String, Supplier<? extends Block>> toRegister = new LinkedHashMap<>();
+            ArrayList<ResourceLocation> slabs = new ArrayList<>();
+            ArrayList<ResourceLocation> stairs = new ArrayList<>();
             for (Map.Entry<ResourceKey<Item>, Item> resourceKeyItemEntry : BuiltInRegistries.ITEM.entrySet()) {
                 if (resourceKeyItemEntry.getValue().asItem() instanceof BlockItem blockItem) {
                     if (blockItem.getBlock() instanceof SlabBlock slabBlock && CNMConfig.VERTICAL_SLABS.get()) {
-                        var path = resourceKeyItemEntry.getKey().location().getPath().replace("slab", "vertical_slab");
+                        var path = "vertical_" + resourceKeyItemEntry.getKey().location().getPath();
                         toRegister.put(path, ()->new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(slabBlock)
                                 //? if >1.21.2
                                 .setId(CBlocks.registryKey(path))
                         ));
+                        slabs.add(resourceKeyItemEntry.getKey().location());
                     }
                     if (blockItem.getBlock() instanceof StairBlock stairBlock && CNMConfig.STEPS.get()) {
                         var path = resourceKeyItemEntry.getKey().location().getPath().replace("stair", "step");
@@ -112,10 +117,13 @@ public class ClutterNoMore {
                                 //? if >1.21.2
                                 .setId(CBlocks.registryKey(path))
                         ));
+                        stairs.add(resourceKeyItemEntry.getKey().location());
                     }
                 }
             }
             toRegister.forEach(CBlocks::register);
+            VerticalSlabGenerator.SLABS = slabs;
+            AssetGenerator.keys = toRegister.keySet();
             //? if neoforge {
             /*BuiltInRegistries.BLOCK.freeze();
             BuiltInRegistries.ITEM.freeze();

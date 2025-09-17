@@ -1,8 +1,16 @@
 package dev.tazer.clutternomore.neoforge;
 
 //? neoforge {
-/*import dev.tazer.clutternomore.Platform;
+/*import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import dev.tazer.clutternomore.Platform;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.loading.FMLPaths;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.nio.file.Path;
 
 public class NeoForgePlatformImpl implements Platform {
 
@@ -14,6 +22,20 @@ public class NeoForgePlatformImpl implements Platform {
     @Override
     public String loader() {
         return "neoforge";
+    }
+
+    @Override
+    public Path getResourcePack() {
+        return FMLPaths.getOrCreateGameRelativePath(Path.of("resourcepacks"));
+    }
+
+    @Override
+    public JsonObject getFileInJar(String namespace, String path) {
+        try {
+            return JsonParser.parseReader(new FileReader(ModLoadingContext.get().getActiveContainer().getModInfo().getOwningFile().getFile().findResource(path).toString())).getAsJsonObject();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

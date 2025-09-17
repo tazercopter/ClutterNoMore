@@ -1,33 +1,24 @@
-//package dev.tazer.clutternomore.client.assets;
-//
-//import com.google.gson.JsonObject;
-//import dev.tazer.clutternomore.ClutterNoMore;
-//import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
-//import net.mehvahdjukaar.moonlight.api.events.AfterLanguageLoadEvent;
-//import net.mehvahdjukaar.moonlight.api.resources.StaticResource;
-//import net.mehvahdjukaar.moonlight.api.resources.pack.ResourceSink;
-//import net.mehvahdjukaar.moonlight.api.set.BlockSetAPI;
-//import net.minecraft.core.registries.BuiltInRegistries;
-//import net.minecraft.resources.ResourceLocation;
-//import net.minecraft.server.packs.resources.Resource;
-//import net.minecraft.server.packs.resources.ResourceManager;
-//import net.minecraft.world.item.Item;
-//
-//import java.io.BufferedReader;
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//public final class StepGenerator implements AssetGenerator {
-//    public static List<String> STEPS = new ArrayList<>();
-//
-//    @Override
-//    public void initialize(ResourceManager manager, ResourceSink sink) {
-//        STEPS.clear();
-//    }
-//
-//    public void generate(Item item, ResourceManager manager, ResourceSink sink) {
+package dev.tazer.clutternomore.client.assets;
+
+import com.google.gson.JsonObject;
+import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.Item;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public final class StepGenerator {
+    public static List<String> STEPS = new ArrayList<>();
+
+//    public void generate(Item item, ResourceManager manager) {
 //        BlockSetRegistry.ShapeSet set = BlockSetAPI.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
 //        if (set == null || !set.hasChild("step_block") || item != set.getChild("stairs")) return;
 //
@@ -125,38 +116,33 @@
 //            sink.addItemModel(ClutterNoMore.location(name), itemModel);
 //        }
 //    }
-//
-//    @Override
-//    public void translate(AfterLanguageLoadEvent languageEvent) {
-//        STEPS.forEach(name -> languageEvent.addEntry("block." + ClutterNoMore.MODID + "." + name, langName(name)));
-//    }
-//
-//    public static String langName(String name) {
-//        String processed = name.replace("_", " ");
-//
-//        List<String> nonCapital = List.of("of", "and", "with");
-//
-//        String[] words = processed.split(" ");
-//        StringBuilder result = new StringBuilder();
-//
-//        for (String word : words) {
-//            if (!word.isEmpty()) {
-//                if (!nonCapital.contains(word)) result.append(Character.toUpperCase(word.charAt(0)));
-//                else result.append(word.charAt(0));
-//                result.append(word.substring(1)).append(" ");
-//            }
-//        }
-//
-//        return result.toString().trim();
-//    }
-//
-//    public static String stepName(String name) {
-//        name = name.substring(0, name.length() - 7);
-//
-//        if (name.endsWith("_block")) name = name.substring(0, name.length() - 6);
-//        if (name.endsWith("_planks")) name = name.substring(0, name.length() - 7);
-//        if (name.endsWith("s")) name = name.substring(0, name.length() - 1);
-//        return name + "_step";
-//    }
-//}
-//
+
+    public static String langName(String name) {
+        String processed = name.replace("_", " ");
+
+        List<String> nonCapital = List.of("of", "and", "with");
+
+        String[] words = processed.split(" ");
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                if (!nonCapital.contains(word)) result.append(Character.toUpperCase(word.charAt(0)));
+                else result.append(word.charAt(0));
+                result.append(word.substring(1)).append(" ");
+            }
+        }
+
+        return result.toString().trim();
+    }
+
+    public static String stepName(String name) {
+        name = name.substring(0, name.length() - 7);
+
+        if (name.endsWith("_block")) name = name.substring(0, name.length() - 6);
+        if (name.endsWith("_planks")) name = name.substring(0, name.length() - 7);
+        if (name.endsWith("s")) name = name.substring(0, name.length() - 1);
+        return name + "_step";
+    }
+}
+

@@ -4,21 +4,29 @@
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
+import dev.tazer.clutternomore.client.assets.AssetGenerator;
 import dev.tazer.clutternomore.common.shape_map.ShapeMapHandler;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.packs.repository.Pack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.resource.ResourcePackLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -33,6 +41,7 @@ public class NeoForgeEntrypoint {
 
         if (dist.isClient()) {
             ClutterNoMoreClient.init();
+            modEventBus.addListener(NeoForgeEntrypoint::clientSetup);
         }
 
         modEventBus.addListener(NeoForgeEntrypoint::registerPayloadHandlers);
@@ -63,5 +72,14 @@ public class NeoForgeEntrypoint {
     private static void commonSetup(FMLCommonSetupEvent event) {
         ClutterNoMore.registerVariants();
     }
+
+    private static void clientSetup(FMLClientSetupEvent event) {
+        AssetGenerator.generate();
+    }
+
+    private static void defaultPacks(AddPackFindersEvent event) {
+//        event.addPackFinders(ResourceLocation.withDefaultNamespace(""));
+    }
+
 }
 *///?}
