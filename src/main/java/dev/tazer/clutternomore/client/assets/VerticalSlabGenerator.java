@@ -4,7 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dev.tazer.clutternomore.Platform;
+import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -20,34 +22,59 @@ public final class VerticalSlabGenerator {
     public static void generate() {
 
         for (ResourceLocation id : SLABS) {
+            var name = "vertical_" + id.getPath();
             try {
+                var blockState = new JsonObject();
+                var variants = new JsonObject();
                 var resourceManager = Minecraft.getInstance().getResourceManager();
+
                 //blockstate
-                JsonElement smoothStoneBlockState = Platform.INSTANCE.getFileInJar(MODID, "assets/clutternomore/blockstates/vertical_smooth_stone_slab.json");
-                String blockstate = smoothStoneBlockState.toString().replaceAll("smooth_stone_slab", id.getPath());
-                write(AssetGenerator.assets.resolve("blockstates"), "vertical_%s.json".formatted(id.getPath()), blockstate);
+                var potentialBlockstate = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blockstates/" + name + ".json"));
+                if (potentialBlockstate.isEmpty()) {
+                    VerticalSlabBlock.FACING.getAllValues().forEach(directionValue -> {
+                        VerticalSlabBlock.DOUBLE.getAllValues().forEach(doubleState->{
+                            JsonObject model = new JsonObject();
+                            var modelString = "clutternomore:block/vertical_"+id.getPath();
+                            if (doubleState.value()) {
+                                model.addProperty("model", modelString+"_double");
+                            } else {
+                                model.addProperty("model", modelString);
+                            }
+                            variants.add(directionValue.toString()+","+doubleState, model);
+                            if (directionValue.value().equals(Direction.EAST)) {
+                                model.addProperty("y", 90);
+                            } else if (directionValue.value().equals(Direction.SOUTH)) {
+                                model.addProperty("y", 180);
+                            } else if (directionValue.value().equals(Direction.WEST)) {
+                                model.addProperty("y", 270);
+                            }
+                        });
+                    });
+                    blockState.add("variants", variants);
+                    write(AssetGenerator.assets.resolve("blockstates"), "%s.json".formatted(name), blockState.toString());
+                }
 
                 // block models
                 var potentialSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
                 if (potentialSlabModel.isPresent()) {
                     JsonObject blockModel = JsonParser.parseReader(potentialSlabModel.get().openAsReader()).getAsJsonObject();
                     blockModel.addProperty("parent", "clutternomore:block/templates/vertical_slab");
-                    write(AssetGenerator.assets.resolve("models/block"), "vertical_"+id.getPath() + ".json", blockModel.toString());
+                    write(AssetGenerator.assets.resolve("models/block"), name + ".json", blockModel.toString());
                     blockModel.addProperty("parent", "clutternomore:block/templates/vertical_slab_double");
-                    write(AssetGenerator.assets.resolve("models/block"), "vertical_"+ id.getPath() + "_double.json", blockModel.toString());
+                    write(AssetGenerator.assets.resolve("models/block"), name + "_double.json", blockModel.toString());
                 }
                 // item models
                 //? if >1.21.4 {
                 JsonObject itemState = new JsonObject();
                 JsonObject model = new JsonObject();
                 model.addProperty("type", "minecraft:model");
-                model.addProperty("model", "clutternomore:block/vertical_"+id.getPath());
+                model.addProperty("model", "clutternomore:block/"+name);
                 itemState.add("model", model);
-                write(AssetGenerator.assets.resolve("items") , "vertical_%s.json".formatted(id.getPath()), itemState.toString());
+                write(AssetGenerator.assets.resolve("items") , "%s.json".formatted(name), itemState.toString());
                 //?} else {
                 /*JsonObject itemModel = new JsonObject();
-                itemModel.addProperty("parent", "clutternomore:block/vertical_"+id.getPath());
-                write(AssetGenerator.assets.resolve("models/item") , "vertical_%s.json".formatted(id.getPath()), itemModel.toString());
+                itemModel.addProperty("parent", "clutternomore:block/"+name);
+                write(AssetGenerator.assets.resolve("models/item") , "%s.json".formatted(name), itemModel.toString());
                 *///?}
             } catch (IOException e) {
                 throw new RuntimeException(e);
