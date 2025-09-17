@@ -2,6 +2,7 @@ package dev.tazer.clutternomore;
 
 //import dev.tazer.clutternomore.common.data.DynamicServerResources;
 import dev.tazer.clutternomore.client.assets.AssetGenerator;
+import dev.tazer.clutternomore.client.assets.StepGenerator;
 import dev.tazer.clutternomore.client.assets.VerticalSlabGenerator;
 import dev.tazer.clutternomore.common.access.RegistryAccess;
 import dev.tazer.clutternomore.common.blocks.StepBlock;
@@ -123,6 +124,7 @@ public class ClutterNoMore {
             }
             toRegister.forEach(CBlocks::register);
             VerticalSlabGenerator.SLABS = slabs;
+            StepGenerator.STAIRS = stairs;
             AssetGenerator.keys = toRegister.keySet();
             //? if neoforge {
             /*BuiltInRegistries.BLOCK.freeze();

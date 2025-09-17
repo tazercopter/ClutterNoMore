@@ -34,7 +34,7 @@ public final class VerticalSlabGenerator {
                     VerticalSlabBlock.FACING.getAllValues().forEach(directionValue -> {
                         VerticalSlabBlock.DOUBLE.getAllValues().forEach(doubleState->{
                             JsonObject model = new JsonObject();
-                            var modelString = "clutternomore:block/vertical_"+id.getPath();
+                            var modelString = "clutternomore:block/"+name;
                             if (doubleState.value()) {
                                 model.addProperty("model", modelString+"_double");
                             } else {

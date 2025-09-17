@@ -1,13 +1,19 @@
 package dev.tazer.clutternomore.client.assets;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.common.blocks.StepBlock;
+import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.state.properties.SlabType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,107 +21,80 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static dev.tazer.clutternomore.client.assets.AssetGenerator.getModel;
+import static dev.tazer.clutternomore.client.assets.AssetGenerator.write;
+
 public final class StepGenerator {
+    public static ArrayList<ResourceLocation> STAIRS = new ArrayList<>();
     public static List<String> STEPS = new ArrayList<>();
 
-//    public void generate(Item item, ResourceManager manager) {
-//        BlockSetRegistry.ShapeSet set = BlockSetAPI.getBlockTypeOf(item, BlockSetRegistry.ShapeSet.class);
-//        if (set == null || !set.hasChild("step_block") || item != set.getChild("stairs")) return;
-//
-//        ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
-//        String name = stepName(key.getPath());
-//        STEPS.add(name);
-//
-//        ResourceLocation id = ClutterNoMore.location(name);
-//
-//        String modelPath = getModel(manager, key);
-//        if (modelPath == null) return;
-//
-//        ResourceLocation sourceModel = ResourceLocation.parse(modelPath).withPath(path -> "models/" + path + ".json");
-//
-//        Optional<Resource> modelResource = manager.getResource(sourceModel);
-//        String bottom = null;
-//        String side = null;
-//        String top = null;
-//
-//        if (modelResource.isPresent()) {
-//            try (BufferedReader reader = modelResource.get().openAsReader()) {
-//                String line = reader.readLine();
-//                while (line != null) {
-//                    int end = line.lastIndexOf("\"");
-//
-//                    if (line.contains("\"bottom\": ")) bottom = line.substring(line.indexOf("\"bottom\": ") + 11, end);
-//                    if (line.contains("\"side\": ")) side = line.substring(line.indexOf("\"side\": ") + 9, end);
-//                    if (line.contains("\"top\": ")) top = line.substring(line.indexOf("\"top\": ") + 8, end);
-//
-//                    if (bottom != null && side != null && top != null) break;
-//                    line = reader.readLine();
-//                }
-//            } catch (IOException e) {
-//                ClutterNoMore.LOGGER.catching(e);
-//                throw new RuntimeException(e);
-//            }
-//        }
-//
-//        if (top == null) {
-//            if (side != null) {
-//                top = side;
-//            } else if (bottom != null) {
-//                top = bottom;
-//            }
-//        }
-//
-//        if (side == null) {
-//            side = top;
-//        }
-//
-//        if (bottom == null) {
-//            bottom = side;
-//        }
-//
-//        JsonObject textures = new JsonObject();
-//        if (top != null) {
-//            textures.addProperty("bottom", bottom);
-//            textures.addProperty("side", side);
-//            textures.addProperty("top", top);
-//        }
-//
-//        if (manager.getResource(id.withPath(path -> "blockstates/" + path + ".json")).isEmpty()) {
-//            if (manager.getResource(id.withPath(path -> "models/block/" + path + ".json")).isEmpty()) {
-//                JsonObject blockModel = new JsonObject();
-//                blockModel.addProperty("parent", ClutterNoMore.MODID + ":block/templates/step");
-//                if (!textures.isEmpty()) blockModel.add("textures", textures);
-//                sink.addBlockModel(id, blockModel);
-//            }
-//
-//            ResourceLocation topStepId = ClutterNoMore.location(name + "_top");
-//            if (manager.getResource(topStepId.withPath(path -> "models/block/" + path + ".json")).isEmpty()) {
-//                JsonObject blockModel = new JsonObject();
-//                blockModel.addProperty("parent", ClutterNoMore.MODID + ":block/templates/step_top");
-//                if (!textures.isEmpty()) blockModel.add("textures", textures);
-//                sink.addBlockModel(topStepId, blockModel);
-//            }
-//
-//            ResourceLocation doubleStepId = ClutterNoMore.location(name + "_double");
-//            if (manager.getResource(doubleStepId.withPath(path -> "models/block/" + path + ".json")).isEmpty()) {
-//                JsonObject blockModel = new JsonObject();
-//                blockModel.addProperty("parent", ClutterNoMore.MODID + ":block/templates/step_double");
-//                if (!textures.isEmpty()) blockModel.add("textures", textures);
-//                sink.addBlockModel(doubleStepId, blockModel);
-//            }
-//
-//            StaticResource template = StaticResource.getOrThrow(manager, ClutterNoMore.location("blockstates/step.json"));
-//            sink.addSimilarJsonResource(manager, template, string -> string
-//                    .replace("step", name)
-//            );
-//        }
-//
-//        if (set.hasChild("step") && manager.getResource(id.withPath(path -> "models/item/" + path + ".json")).isEmpty()) {
-//            JsonObject itemModel = new JsonObject();
-//            itemModel.addProperty("parent", ClutterNoMore.MODID + ":block/" + name);
-//            sink.addItemModel(ClutterNoMore.location(name), itemModel);
-//        }
-//    }
+    public static void generate() {
+
+        for (ResourceLocation id : STAIRS) {
+            var name = id.getPath().replace("stair", "step");
+            try {
+                var blockState = new JsonObject();
+                var variants = new JsonObject();
+                var resourceManager = Minecraft.getInstance().getResourceManager();
+
+                //blockstate
+                var potentialBlockstate = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blockstates/" + name + ".json"));
+                if (potentialBlockstate.isEmpty()) {
+                    StepBlock.FACING.getAllValues().forEach(directionValue -> {
+                        StepBlock.SLAB_TYPE.getAllValues().forEach(doubleState->{
+                            JsonObject model = new JsonObject();
+                            var modelString = "clutternomore:block/"+name;
+                            model.addProperty("uvlock", true);
+                            if (doubleState.value().equals(SlabType.DOUBLE)) {
+                                model.addProperty("model", modelString+"_double");
+                            } else if (doubleState.value().equals(SlabType.TOP)) {
+                                model.addProperty("model", modelString+"_top");
+                            } else {
+                                model.addProperty("model", modelString);
+                            }
+                            variants.add(directionValue.toString()+","+doubleState, model);
+                            if (directionValue.value().equals(Direction.EAST)) {
+                                model.addProperty("y", 90);
+                            } else if (directionValue.value().equals(Direction.SOUTH)) {
+                                model.addProperty("y", 180);
+                            } else if (directionValue.value().equals(Direction.WEST)) {
+                                model.addProperty("y", 270);
+                            }
+                        });
+                    });
+                    blockState.add("variants", variants);
+                    write(AssetGenerator.assets.resolve("blockstates"), "%s.json".formatted(name), blockState.toString());
+                }
+
+                // block models
+                var potentialSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
+                if (potentialSlabModel.isPresent()) {
+                    JsonObject blockModel = JsonParser.parseReader(potentialSlabModel.get().openAsReader()).getAsJsonObject();
+                    blockModel.addProperty("parent", "clutternomore:block/templates/step");
+                    write(AssetGenerator.assets.resolve("models/block"), name + ".json", blockModel.toString());
+                    blockModel.addProperty("parent", "clutternomore:block/templates/step_double");
+                    write(AssetGenerator.assets.resolve("models/block"), name + "_double.json", blockModel.toString());
+                    blockModel.addProperty("parent", "clutternomore:block/templates/step_top");
+                    write(AssetGenerator.assets.resolve("models/block"), name + "_top.json", blockModel.toString());
+                }
+                // item models
+                //? if >1.21.4 {
+                JsonObject itemState = new JsonObject();
+                JsonObject model = new JsonObject();
+                model.addProperty("type", "minecraft:model");
+                model.addProperty("model", "clutternomore:block/"+name);
+                itemState.add("model", model);
+                write(AssetGenerator.assets.resolve("items") , "%s.json".formatted(name), itemState.toString());
+                //?} else {
+                /*JsonObject itemModel = new JsonObject();
+                itemModel.addProperty("parent", "clutternomore:block/"+name);
+                write(AssetGenerator.assets.resolve("models/item") , "%s.json".formatted(name), itemModel.toString());
+                *///?}
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public static String langName(String name) {
         String processed = name.replace("_", " ");

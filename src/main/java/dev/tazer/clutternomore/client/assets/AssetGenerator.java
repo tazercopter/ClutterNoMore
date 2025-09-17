@@ -60,6 +60,7 @@ public class AssetGenerator {
          *///?}
         write(pack, "pack.mcmeta", "{   \"pack\": {     \"description\": \"Dynamic data for Clutter No More\",     \"pack_format\": "+packVersion+"   } }");
         VerticalSlabGenerator.generate();
+        StepGenerator.generate();
 
     }
 
