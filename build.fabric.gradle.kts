@@ -78,9 +78,9 @@ dependencies {
         modLocalRuntime("dev.emi:emi-fabric:${property("deps.emi")}")
     }
     if (hasProperty("deps.eiv")) {
-        modLocalRuntime("maven.modrinth:eiv:${property("deps.eiv")}")
+        modImplementation("maven.modrinth:eiv:${property("deps.eiv")}")
+        modLocalRuntime("maven.modrinth:pyrite:0.16.1+1.21.8")
     }
-
 
     val modules = listOf("transitive-access-wideners-v1", "registry-sync-v0", "resource-loader-v0")
     for (it in modules) modImplementation(fabricApi.module("fabric-$it", property("deps.fabric-api") as String))

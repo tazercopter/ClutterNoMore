@@ -77,9 +77,5 @@ public class NeoForgeEntrypoint {
         AssetGenerator.generate();
     }
 
-    private static void defaultPacks(AddPackFindersEvent event) {
-//        event.addPackFinders(ResourceLocation.withDefaultNamespace(""));
-    }
-
 }
 *///?}

@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 //? neoforge {
 /*@Mixin(BuildCreativeModeTabContentsEvent.class)
@@ -55,6 +56,11 @@ public abstract class CreativeModeTabEntriesMixin {
     @Inject(method = "accept", at = @At("HEAD"), cancellable = true)
     private void accept(ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
         if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
+    }
+
+    @Inject(method = "isEnabled", at = @At("RETURN"), cancellable = true)
+    private void accept(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+        if (CHooks.denyItem(stack.getItem())) cir.setReturnValue(false);
     }
     //?}
 }

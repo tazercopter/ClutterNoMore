@@ -57,7 +57,6 @@ public class FabricEntrypoint implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> {
             ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
         });
-        ClutterNoMore.registerVariants();
     }
 
     public void registerPayloadHandlers() {
