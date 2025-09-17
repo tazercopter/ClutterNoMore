@@ -35,6 +35,8 @@ public final class VerticalSlabGenerator {
                         VerticalSlabBlock.DOUBLE.getAllValues().forEach(doubleState->{
                             JsonObject model = new JsonObject();
                             var modelString = "clutternomore:block/"+name;
+                            if (modelString.contains("waxed"))
+                                modelString = modelString.replace("waxed_", "");
                             if (doubleState.value()) {
                                 model.addProperty("model", modelString+"_double");
                             } else {
@@ -64,16 +66,19 @@ public final class VerticalSlabGenerator {
                     write(AssetGenerator.assets.resolve("models/block"), name + "_double.json", blockModel.toString());
                 }
                 // item models
+                var modelString = name;
+                if (modelString.contains("waxed"))
+                    modelString = modelString.replace("waxed_", "");
                 //? if >1.21.4 {
                 JsonObject itemState = new JsonObject();
                 JsonObject model = new JsonObject();
                 model.addProperty("type", "minecraft:model");
-                model.addProperty("model", "clutternomore:block/"+name);
+                model.addProperty("model", "clutternomore:block/"+modelString);
                 itemState.add("model", model);
                 write(AssetGenerator.assets.resolve("items") , "%s.json".formatted(name), itemState.toString());
                 //?} else {
                 /*JsonObject itemModel = new JsonObject();
-                itemModel.addProperty("parent", "clutternomore:block/"+name);
+                itemModel.addProperty("parent", "clutternomore:block/"+modelString);
                 write(AssetGenerator.assets.resolve("models/item") , "%s.json".formatted(name), itemModel.toString());
                 *///?}
             } catch (IOException e) {

@@ -12,6 +12,7 @@ public class CNMConfig {
     public static ModConfigSpec CLIENT_CONFIG;
     public static ModConfigSpec.BooleanValue SCROLLING;
     public static ModConfigSpec.EnumValue<InputType> HOLD;
+    public static ModConfigSpec.BooleanValue RUNTIME_ASSET_GENERATION;
 
     public enum InputType implements StringRepresentable {
         HOLD,
@@ -53,6 +54,9 @@ public class CNMConfig {
         HOLD = CLIENT_BUILDER
                 .comment("If the change block shape key should be held or toggled to open the menu")
                 .defineEnum("hold", InputType.HOLD);
+        RUNTIME_ASSET_GENERATION = CLIENT_BUILDER
+                .comment("Whether to generate models for vertical slabs and steps when the game is launched. Modpacks looking for a faster start can disable this option and ship the generated resource pack.")
+                .define("runtime_asset_generation", true);
         CLIENT_CONFIG = CLIENT_BUILDER.build();
     }
 

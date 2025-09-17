@@ -113,7 +113,7 @@ public class ClutterNoMore {
                         slabs.add(resourceKeyItemEntry.getKey().location());
                     }
                     if (blockItem.getBlock() instanceof StairBlock stairBlock && CNMConfig.STEPS.get()) {
-                        var path = resourceKeyItemEntry.getKey().location().getPath().replace("stair", "step");
+                        var path = resourceKeyItemEntry.getKey().location().getPath().replace("stairs", "step");
                         toRegister.put(path, ()->new StepBlock(BlockBehaviour.Properties.ofFullCopy(stairBlock)
                                 //? if >1.21.2
                                 .setId(CBlocks.registryKey(path))

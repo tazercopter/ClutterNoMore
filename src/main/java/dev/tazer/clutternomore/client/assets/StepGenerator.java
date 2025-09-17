@@ -31,7 +31,7 @@ public final class StepGenerator {
     public static void generate() {
 
         for (ResourceLocation id : STAIRS) {
-            var name = id.getPath().replace("stair", "step");
+            var name = id.getPath().replace("stairs", "step");
             try {
                 var blockState = new JsonObject();
                 var variants = new JsonObject();
@@ -44,6 +44,8 @@ public final class StepGenerator {
                         StepBlock.SLAB_TYPE.getAllValues().forEach(doubleState->{
                             JsonObject model = new JsonObject();
                             var modelString = "clutternomore:block/"+name;
+                            if (modelString.contains("waxed"))
+                                modelString = modelString.replace("waxed_", "");
                             model.addProperty("uvlock", true);
                             if (doubleState.value().equals(SlabType.DOUBLE)) {
                                 model.addProperty("model", modelString+"_double");
@@ -67,27 +69,33 @@ public final class StepGenerator {
                 }
 
                 // block models
-                var potentialSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
-                if (potentialSlabModel.isPresent()) {
-                    JsonObject blockModel = JsonParser.parseReader(potentialSlabModel.get().openAsReader()).getAsJsonObject();
-                    blockModel.addProperty("parent", "clutternomore:block/templates/step");
-                    write(AssetGenerator.assets.resolve("models/block"), name + ".json", blockModel.toString());
-                    blockModel.addProperty("parent", "clutternomore:block/templates/step_double");
-                    write(AssetGenerator.assets.resolve("models/block"), name + "_double.json", blockModel.toString());
-                    blockModel.addProperty("parent", "clutternomore:block/templates/step_top");
-                    write(AssetGenerator.assets.resolve("models/block"), name + "_top.json", blockModel.toString());
+                var potentialModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + name + ".json"));
+                if (potentialModel.isEmpty()) {
+                    var baseSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
+                    if (baseSlabModel.isPresent()) {
+                        JsonObject blockModel = JsonParser.parseReader(baseSlabModel.get().openAsReader()).getAsJsonObject();
+                        blockModel.addProperty("parent", "clutternomore:block/templates/step");
+                        write(AssetGenerator.assets.resolve("models/block"), name + ".json", blockModel.toString());
+                        blockModel.addProperty("parent", "clutternomore:block/templates/step_double");
+                        write(AssetGenerator.assets.resolve("models/block"), name + "_double.json", blockModel.toString());
+                        blockModel.addProperty("parent", "clutternomore:block/templates/step_top");
+                        write(AssetGenerator.assets.resolve("models/block"), name + "_top.json", blockModel.toString());
+                    }
                 }
                 // item models
+                var modelString = name;
+                if (modelString.contains("waxed"))
+                    modelString = modelString.replace("waxed_", "");
                 //? if >1.21.4 {
                 JsonObject itemState = new JsonObject();
                 JsonObject model = new JsonObject();
                 model.addProperty("type", "minecraft:model");
-                model.addProperty("model", "clutternomore:block/"+name);
+                model.addProperty("model", "clutternomore:block/"+modelString);
                 itemState.add("model", model);
                 write(AssetGenerator.assets.resolve("items") , "%s.json".formatted(name), itemState.toString());
                 //?} else {
                 /*JsonObject itemModel = new JsonObject();
-                itemModel.addProperty("parent", "clutternomore:block/"+name);
+                itemModel.addProperty("parent", "clutternomore:block/"+modelString);
                 write(AssetGenerator.assets.resolve("models/item") , "%s.json".formatted(name), itemModel.toString());
                 *///?}
             } catch (IOException e) {

@@ -38,7 +38,6 @@ public class FabricClientEntrypoint implements ClientModInitializer {
         ClientLifecycleEvents.CLIENT_STARTED.register((minecraft -> {
             AssetGenerator.generate();
         }));
-        ResourceManagerHelper.registerBuiltinResourcePack(ClutterNoMore.location("clutternomore"), FabricLoader.getInstance().getModContainer(MODID).orElseThrow(), ResourcePackActivationType.ALWAYS_ENABLED);
     }
 
     private void afterInitScreen(Minecraft minecraft, Screen screen, int i, int i1) {

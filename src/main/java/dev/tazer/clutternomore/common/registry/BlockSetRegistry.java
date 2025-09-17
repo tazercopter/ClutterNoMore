@@ -159,7 +159,7 @@ public class BlockSetRegistry {
             addChild("stairs", findRelatedEntry("stairs"));
             addChild("wall", findRelatedEntry("wall"));
             addChild("vertical_slab", findRelatedEntry(MODID, "vertical", "slab"));
-            addChild("steps", findRelatedEntry(MODID, "","steps"));
+            addChild("step", findRelatedEntry(MODID, "","step"));
             addChild("spiked", findRelatedEntry("spiked", ""));
         }
 
