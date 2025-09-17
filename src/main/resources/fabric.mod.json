@@ -21,7 +21,7 @@
   "mixins": [
     "clutternomore.mixins.json"
   ],
-  "accessWidener": "clutternomore.accesswidener",
+  "accessWidener": "accesswideners/${aw_file}",
   "depends": {
     "minecraft": ">=1.21.1",
     "fabric-api": ">=0.88.1",

@@ -18,15 +18,17 @@ public final class VerticalSlabGenerator {
     public static ArrayList<ResourceLocation> SLABS = new ArrayList<>();
 
     public static void generate() {
+
         for (ResourceLocation id : SLABS) {
             try {
+                var resourceManager = Minecraft.getInstance().getResourceManager();
                 //blockstate
                 JsonElement smoothStoneBlockState = Platform.INSTANCE.getFileInJar(MODID, "assets/clutternomore/blockstates/vertical_smooth_stone_slab.json");
                 String blockstate = smoothStoneBlockState.toString().replaceAll("smooth_stone_slab", id.getPath());
                 write(AssetGenerator.assets.resolve("blockstates"), "vertical_%s.json".formatted(id.getPath()), blockstate);
 
                 // block models
-                var potentialSlabModel = Minecraft.getInstance().getResourceManager().getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
+                var potentialSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
                 if (potentialSlabModel.isPresent()) {
                     JsonObject blockModel = JsonParser.parseReader(potentialSlabModel.get().openAsReader()).getAsJsonObject();
                     blockModel.addProperty("parent", "clutternomore:block/templates/vertical_slab");

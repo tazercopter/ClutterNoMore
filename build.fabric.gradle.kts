@@ -6,6 +6,13 @@ plugins {
     id("me.modmuss50.mod-publish-plugin")
 }
 
+val minecraft = stonecutter.current.version
+val accesswidener = when {
+    stonecutter.eval(minecraft, ">1.21.1") -> "1.21.8.accesswidener"
+    else -> "1.21.1.accesswidener"
+}
+
+
 tasks.named<ProcessResources>("processResources") {
     dependsOn("stonecutterGenerate") // Ensure the generate task runs first
     fun prop(name: String) = project.property(name) as String
@@ -20,6 +27,8 @@ tasks.named<ProcessResources>("processResources") {
         this["mod_name"] = prop("mod.name")
         this["mod_authors"] = prop("mod.authors")
         this["minecraft_version_range"] = prop("deps.minecraft_version_range")
+        this["aw_file"] = accesswidener
+
     }
 
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
@@ -31,7 +40,7 @@ version = "${property("mod.version")}+${property("deps.minecraft")}-fabric"
 base.archivesName = property("mod.id") as String
 
 loom {
-    accessWidenerPath = rootProject.file("src/main/resources/${property("mod.id")}.accesswidener")
+    accessWidenerPath = rootProject.file("src/main/resources/accesswideners/$accesswidener")
 }
 
 jsonlang {
