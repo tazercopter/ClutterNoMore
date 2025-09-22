@@ -8,6 +8,7 @@
     "ItemDisplayBuilderMixin",
     "ItemMixin",
     "ItemStackMixin",
+    "RecipeManagerMixin",
     "SlotAccessor"
   ],
   "client": [

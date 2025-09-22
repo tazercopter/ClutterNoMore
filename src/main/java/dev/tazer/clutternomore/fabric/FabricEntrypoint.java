@@ -26,12 +26,12 @@ public class FabricEntrypoint implements ModInitializer {
         NeoForgeConfigRegistry.INSTANCE.register(MODID, ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
         registerPayloadHandlers();
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
-        ServerLifecycleEvents.START_DATA_PACK_RELOAD.register(((minecraftServer, closeableResourceManager) -> {
-            ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
-        }));
-        ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> {
-            ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
-        });
+//        ServerLifecycleEvents.START_DATA_PACK_RELOAD.register(((minecraftServer, closeableResourceManager) -> {
+//            ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
+//        }));
+//        ServerLifecycleEvents.SERVER_STARTED.register(minecraftServer -> {
+//            ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
+//        });
     }
 
     public void registerPayloadHandlers() {

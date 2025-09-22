@@ -50,11 +50,11 @@ public class NeoForgeEntrypoint {
 
     private static void onServerStarted(ServerStartedEvent event) {
         MinecraftServer server = event.getServer();
-        ClutterNoMore.load(server.registryAccess(), server.getRecipeManager());
+//        ClutterNoMore.load(server.registryAccess(), server.getRecipeManager());
     }
 
     private static void addReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new CReloadListener(event.getServerResources()));
+//        event.addListener(new CReloadListener(event.getServerResources()));
         event.addListener(new ShapeMapHandler());
     }
 }
