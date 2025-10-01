@@ -1,6 +1,7 @@
 package dev.tazer.clutternomore.common.shape_map;
 
 import dev.tazer.clutternomore.Platform;
+//? if >1.21.4
 import dev.tazer.clutternomore.common.compat.EIVCompat;
 import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;

@@ -72,14 +72,14 @@ dependencies {
 
 //    modImplementation("maven.modrinth:moonlight:${property("deps.moonlight")}")
     modImplementation("fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${property("deps.forge_config_api_port")}")
-    modImplementation("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+    modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
     if (hasProperty("deps.emi")) {
         modCompileOnly("dev.emi:emi-fabric:${property("deps.emi")}:api")
         modLocalRuntime("dev.emi:emi-fabric:${property("deps.emi")}")
     }
     if (hasProperty("deps.eiv")) {
-        modImplementation("maven.modrinth:eiv:${property("deps.eiv")}")
-        modLocalRuntime("maven.modrinth:pyrite:0.16.1+1.21.8")
+        modCompileOnly("maven.modrinth:eiv:${property("deps.eiv")}")
+        modLocalRuntime("maven.modrinth:pyrite:0.16.1+1.21.9-rc1")
     }
 
     val modules = listOf("transitive-access-wideners-v1", "registry-sync-v0", "resource-loader-v0")
