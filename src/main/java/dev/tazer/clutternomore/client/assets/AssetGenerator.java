@@ -66,7 +66,8 @@ public class AssetGenerator {
             VerticalSlabGenerator.generate();
             StepGenerator.generate();
         }
-        enablePack(Minecraft.getInstance());
+        if (CNMConfig.VERTICAL_SLABS.getAsBoolean() || CNMConfig.STEPS.getAsBoolean())
+            enablePack(Minecraft.getInstance());
     }
 
     static void enablePack(Minecraft client) {
