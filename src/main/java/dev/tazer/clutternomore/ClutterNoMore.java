@@ -4,7 +4,6 @@ package dev.tazer.clutternomore;
 import dev.tazer.clutternomore.client.assets.AssetGenerator;
 import dev.tazer.clutternomore.client.assets.StepGenerator;
 import dev.tazer.clutternomore.client.assets.VerticalSlabGenerator;
-import dev.tazer.clutternomore.common.access.RegistryAccess;
 import dev.tazer.clutternomore.common.blocks.StepBlock;
 import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import dev.tazer.clutternomore.common.registry.CBlocks;
@@ -12,6 +11,7 @@ import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +20,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+//? if >1.21
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.block.Block;
@@ -44,17 +45,43 @@ public class ClutterNoMore {
     }
 
     public static ResourceLocation location(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+        return location(MODID, path);
     }
 
-    public static void load(HolderLookup.Provider registries, RecipeManager recipeManager) {
+    public static ResourceLocation location(String namespace, String path) {
+        //? if >1.21
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+        //? if <1.21
+        /*return new ResourceLocation(namespace, path);*/
+    }
+
+    public static void load(
+            //? if >1.21 {
+            HolderLookup.Provider
+            //?} else {
+            /*RegistryAccess
+            *///?}
+                    registries, RecipeManager recipeManager) {
         //FIXME 1.21.8
         //? if <1.21.2 {
         /*boolean changed = false;
-        Collection<RecipeHolder<?>> originalRecipes = recipeManager.getRecipes();
-        List<RecipeHolder<?>> newRecipes = new ArrayList<>();
+        var originalRecipes = recipeManager.getRecipes();
+        ArrayList<
+        //? if >1.21 {
+        RecipeHolder<?>
+         //?} else {
+        /^Recipe<?>
+        ^///?}
+        > newRecipes = new ArrayList<>();
 
-        for (RecipeHolder<?> recipeHolder : originalRecipes) {
+        for (
+                //? if >1.21 {
+                RecipeHolder<?> recipeHolder
+                //?} else {
+                /^Recipe<?> recipe
+                ^///?}
+                        : originalRecipes) {
+            //? if >1.21
             Recipe<?> recipe = recipeHolder.value();
 
             Item result = recipe.getResultItem(registries).getItem();
@@ -83,8 +110,13 @@ public class ClutterNoMore {
                 }
             }
 
+
+            //? if >1.21 {
             RecipeHolder<?> newHolder = new RecipeHolder<>(recipeHolder.id(), recipe);
             newRecipes.add(newHolder);
+            //?} else {
+            /^newRecipes.add(recipe);
+            ^///?}
         }
 
         if (changed) {
@@ -106,7 +138,7 @@ public class ClutterNoMore {
                 if (resourceKeyItemEntry.getValue().asItem() instanceof BlockItem blockItem) {
                     if (blockItem.getBlock() instanceof SlabBlock slabBlock && CNMConfig.VERTICAL_SLABS.get()) {
                         var path = "vertical_" + resourceKeyItemEntry.getKey().location().getPath();
-                        toRegister.put(path, ()->new VerticalSlabBlock(BlockBehaviour.Properties.ofFullCopy(slabBlock)
+                        toRegister.put(path, ()->new VerticalSlabBlock(copy(slabBlock)
                                 //? if >1.21.2
                                 .setId(CBlocks.registryKey(path))
                         ));
@@ -114,7 +146,7 @@ public class ClutterNoMore {
                     }
                     if (blockItem.getBlock() instanceof StairBlock stairBlock && CNMConfig.STEPS.get()) {
                         var path = resourceKeyItemEntry.getKey().location().getPath().replace("stairs", "step");
-                        toRegister.put(path, ()->new StepBlock(BlockBehaviour.Properties.ofFullCopy(stairBlock)
+                        toRegister.put(path, ()->new StepBlock(copy(stairBlock)
                                 //? if >1.21.2
                                 .setId(CBlocks.registryKey(path))
                         ));
@@ -131,5 +163,12 @@ public class ClutterNoMore {
             BuiltInRegistries.ITEM.freeze();
             *///?}
         }
+    }
+
+    private static BlockBehaviour.Properties copy(Block block) {
+        //? if >1.21
+        return BlockBehaviour.Properties.ofFullCopy(block);
+        //? if <1.21
+        /*return BlockBehaviour.Properties.copy(block);*/
     }
 }

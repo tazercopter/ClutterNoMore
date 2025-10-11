@@ -7,6 +7,9 @@ import dev.tazer.clutternomore.fabric.FabricPlatformImpl;
 //? neoforge {
 /*import dev.tazer.clutternomore.neoforge.NeoForgePlatformImpl;
 *///?}
+//? forge {
+/*import dev.tazer.clutternomore.forge.ForgePlatformImpl;
+ *///?}
 import java.nio.file.Path;
 import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
@@ -21,6 +24,9 @@ public interface Platform {
     //? neoforge {
     /*Platform INSTANCE = new NeoForgePlatformImpl();
     *///?}
+    //? forge {
+    /*Platform INSTANCE = new ForgePlatformImpl();
+     *///?}
 
 
     boolean isModLoaded(String modid);

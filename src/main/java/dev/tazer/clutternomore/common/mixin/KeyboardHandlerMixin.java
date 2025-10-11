@@ -20,8 +20,8 @@ public class KeyboardHandlerMixin {
     private void key(long windowPointer, int action, KeyEvent keyEvent, CallbackInfo ci) {
         int key = keyEvent.key();
     //?} else {
-    /*
-    private void key(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
+    
+    /*private void key(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
     *///?}
         ClientEvents.onKeyInput(key, action);
     }

@@ -38,7 +38,7 @@ public final class StepGenerator {
                 var resourceManager = Minecraft.getInstance().getResourceManager();
 
                 //blockstate
-                var potentialBlockstate = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blockstates/" + name + ".json"));
+                var potentialBlockstate = resourceManager.getResource(ClutterNoMore.location(id.getNamespace(), "blockstates/" + name + ".json"));
                 if (potentialBlockstate.isEmpty()) {
                     StepBlock.FACING.getAllValues().forEach(directionValue -> {
                         StepBlock.SLAB_TYPE.getAllValues().forEach(doubleState->{

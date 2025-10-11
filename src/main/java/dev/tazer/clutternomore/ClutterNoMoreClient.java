@@ -32,12 +32,17 @@ public class ClutterNoMoreClient {
     public static void init() {
     }
 
-    public static void onItemTooltips(ItemStack stack, Item.TooltipContext tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {
+    public static void onItemTooltips(ItemStack stack,
+                                      //? if >1.21 {
+                                      Item.TooltipContext
+                                              //?} else
+                                              /*Object*/
+                                              tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {
         if (!showTooltip) {
             if (ShapeMap.contains(stack.getItem())) {
-                Component component = tooltip.getFirst().copy().append(Component.literal(" [+]").withStyle(ChatFormatting.DARK_GRAY));
-                tooltip.removeFirst();
-                tooltip.addFirst(component);
+                Component component = tooltip.get(0).copy().append(Component.literal(" [+]").withStyle(ChatFormatting.DARK_GRAY));
+                tooltip.remove(0);
+                tooltip.add(0, component);
             }
         }
     }
@@ -114,7 +119,7 @@ public class ClutterNoMoreClient {
         int count = heldStack.getCount();
 
         List<Item> shapes = new ArrayList<>(ShapeMap.getShapes(item));
-        shapes.addFirst(item);
+        shapes.add(0, item);
         int selectedIndex = shapes.indexOf(heldStack.getItem());
 
         int maxIndex = shapes.size() - 1;

@@ -1,5 +1,6 @@
 package dev.tazer.clutternomore.common.registry;
 
+import dev.tazer.clutternomore.ClutterNoMore;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -61,7 +62,7 @@ public class BlockSetRegistry {
             List<String> suffixes = List.of("stairs", "slab", "wall");
 
             for (String namespace : namespaces) {
-                ResourceLocation base = ResourceLocation.fromNamespaceAndPath(namespace, path);
+                ResourceLocation base = ClutterNoMore.location(namespace, path);
 
                 String suffixBase = path;
                 for (String ignored : ignoredSuffixes) {

@@ -3,6 +3,7 @@ package dev.tazer.clutternomore.client.assets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.Platform;
 import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import net.minecraft.client.Minecraft;
@@ -29,7 +30,7 @@ public final class VerticalSlabGenerator {
                 var resourceManager = Minecraft.getInstance().getResourceManager();
 
                 //blockstate
-                var potentialBlockstate = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "blockstates/" + name + ".json"));
+                var potentialBlockstate = resourceManager.getResource(ClutterNoMore.location(id.getNamespace(), "blockstates/" + name + ".json"));
                 if (potentialBlockstate.isEmpty()) {
                     VerticalSlabBlock.FACING.getAllValues().forEach(directionValue -> {
                         VerticalSlabBlock.DOUBLE.getAllValues().forEach(doubleState->{
@@ -57,7 +58,7 @@ public final class VerticalSlabGenerator {
                 }
 
                 // block models
-                var potentialSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
+                var potentialSlabModel = resourceManager.getResource(ClutterNoMore.location(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
                 if (potentialSlabModel.isPresent()) {
                     JsonObject blockModel = JsonParser.parseReader(potentialSlabModel.get().openAsReader()).getAsJsonObject();
                     blockModel.addProperty("parent", "clutternomore:block/templates/vertical_slab");

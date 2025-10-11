@@ -5,7 +5,7 @@ import dev.tazer.clutternomore.common.CHooks;
 /*import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import org.spongepowered.asm.mixin.Shadow;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
- *///?} else {
+ *///?} else if fabric {
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
 //?}
 import net.minecraft.world.item.CreativeModeTab;

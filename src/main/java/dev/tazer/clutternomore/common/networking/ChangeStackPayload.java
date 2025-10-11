@@ -3,7 +3,7 @@ package dev.tazer.clutternomore.common.networking;
 import dev.tazer.clutternomore.ClutterNoMore;
 //? if neoforge {
 /*import net.neoforged.neoforge.network.handling.IPayloadContext;
- *///?} else {
+ *///?} else if fabric {
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 //?}
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
