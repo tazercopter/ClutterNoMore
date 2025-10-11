@@ -1,4 +1,4 @@
-//? neoforge {
+//? if neoforge {
 /*package dev.tazer.clutternomore.neoforge;
 
 import dev.tazer.clutternomore.ClutterNoMore;
@@ -64,6 +64,11 @@ public class NeoForgeEntrypoint {
 
     private static void clientSetup(FMLClientSetupEvent event) {
         AssetGenerator.generate();
+    }
+
+    @Override
+    public Path configPath() {
+        return FMLPaths.CONFIGDIR.get();
     }
 
 }

@@ -5,9 +5,13 @@ import folk.sisby.kaleido.api.ReflectiveConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import net.minecraft.util.StringRepresentable;
+//? if >1.20.1 {
+/*import net.neoforged.neoforge.common.ModConfigSpec;*/
+//?} else {
+import net.minecraftforge.common.ForgeConfigSpec;
+//?}
 
 public class CNMConfig {
-
     public static class StartupConfig extends ReflectiveConfig {
         @Comment("If vertical slabs should be added to all existing slabs")
         public final TrackedValue<Boolean> VERTICAL_SLABS = this.value(true);
@@ -41,5 +45,4 @@ public class CNMConfig {
 
         public static final Codec<InputType> CODEC = StringRepresentable.fromEnum(InputType::values);
     }
-
 }
