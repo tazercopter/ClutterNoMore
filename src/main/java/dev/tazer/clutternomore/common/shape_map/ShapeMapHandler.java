@@ -21,9 +21,9 @@ import java.util.*;
 public class ShapeMapHandler extends SimpleJsonResourceReloadListener
 //? >1.21.2
 <JsonElement>
-//? fabric {
-    implements IdentifiableResourceReloadListener
-//?}
+//? fabric && <1.21.9 {
+    /*implements IdentifiableResourceReloadListener
+*///?}
 {
 
     //? if >1.21.2 {
@@ -40,12 +40,12 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
     }
     *///?}
     
-    //? fabric {
-    @Override
+    //? fabric && <1.21.9 {
+    /*@Override
     public ResourceLocation getFabricId() {
         return ClutterNoMore.location("shape_map");
     }
-    //?}
+    *///?}
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> file, ResourceManager resourceManager, ProfilerFiller profilerFiller) {

@@ -19,11 +19,16 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+//? if >=1.21.9 {
+import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+//?} else {
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+//?}
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -43,7 +48,11 @@ public class FabricEntrypoint implements ModInitializer {
     public void onInitialize() {
         ClutterNoMore.init();
         registerPayloadHandlers();
-        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
+        //? if >=1.21.9 {
+        ResourceLoader.get(PackType.SERVER_DATA).registerReloader(ClutterNoMore.location("shape_map"), new ShapeMapHandler());
+        //?} else {
+        /*ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
+        *///?}
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register(((minecraftServer, closeableResourceManager) -> {
             ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
         }));
