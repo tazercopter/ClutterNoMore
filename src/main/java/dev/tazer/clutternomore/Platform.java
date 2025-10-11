@@ -2,14 +2,14 @@ package dev.tazer.clutternomore;
 
 //? fabric {
 
-import dev.tazer.clutternomore.fabric.FabricPlatformImpl;
-//?}
+/*import dev.tazer.clutternomore.fabric.FabricPlatformImpl;
+*///?}
 //? neoforge {
 /*import dev.tazer.clutternomore.neoforge.NeoForgePlatformImpl;
 *///?}
 //? forge {
-/*import dev.tazer.clutternomore.forge.ForgePlatformImpl;
- *///?}
+import dev.tazer.clutternomore.forge.ForgePlatformImpl;
+ //?}
 import java.nio.file.Path;
 import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
@@ -18,15 +18,15 @@ import com.google.gson.JsonObject;
 
 public interface Platform {
 
-    //? fabric {
-    Platform INSTANCE = new FabricPlatformImpl();
-    //?}
-    //? neoforge {
+    //? if fabric {
+    /*Platform INSTANCE = new FabricPlatformImpl();
+    *///?}
+    //? if neoforge {
     /*Platform INSTANCE = new NeoForgePlatformImpl();
     *///?}
-    //? forge {
-    /*Platform INSTANCE = new ForgePlatformImpl();
-     *///?}
+    //? if forge {
+    Platform INSTANCE = new ForgePlatformImpl();
+     //?}
 
 
     boolean isModLoaded(String modid);
@@ -35,4 +35,6 @@ public interface Platform {
     Path getResourcePack();
 
     JsonObject getFileInJar(String namespace, String path);
+
+    Path configPath();
 }

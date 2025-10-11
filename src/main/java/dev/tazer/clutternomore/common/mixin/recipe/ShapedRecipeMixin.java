@@ -1,5 +1,6 @@
 package dev.tazer.clutternomore.common.mixin.recipe;
-
+//? if >1.21.1 {
+/*
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -16,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ShapedRecipe.class)
 public class ShapedRecipeMixin {
-    //? if >1.21.1 {
 
     @Shadow
     @Final
@@ -35,5 +35,5 @@ public class ShapedRecipeMixin {
             cir.setReturnValue(false);
         }
     }
-    //?}
 }
+*///?}

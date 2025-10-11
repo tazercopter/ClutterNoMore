@@ -19,12 +19,12 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 //? if >1.21.2 {
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+/*import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
-//?} else {
-/*import net.minecraft.world.level.block.state.properties.DirectionProperty;
-*///?}
+*///?} else {
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+//?}
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -37,14 +37,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class VerticalSlabBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
-    public static final MapCodec<? extends VerticalSlabBlock> CODEC = simpleCodec(VerticalSlabBlock::new);
+    //? if >1.20.1 {
+    /*public static final MapCodec<? extends VerticalSlabBlock> CODEC = simpleCodec(VerticalSlabBlock::new);*/
+    //?}
     public static final BooleanProperty DOUBLE = BooleanProperty.create("double");
     public static final
     //? if >1.21.2 {
-    EnumProperty<Direction>
-    //?} else {
-    /*DirectionProperty
-    *///?}
+    /*EnumProperty<Direction>
+    *///?} else {
+    DirectionProperty
+    //?}
     FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -53,10 +55,12 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
         registerDefaultState(stateDefinition.any().setValue(DOUBLE, false).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
-    @Override
+    //? if >1.20.1 {
+    /*@Override
     protected MapCodec<? extends VerticalSlabBlock> codec() {
         return CODEC;
     }
+    *///?}
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -96,7 +100,12 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
     }
 
     @Override
-    protected boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
+    //? if >1.20.1 {
+    /*protected*/
+    //?} else {
+    public
+    //?}
+    boolean canBeReplaced(BlockState state, BlockPlaceContext context) {
         ItemStack itemStack = context.getItemInHand();
         if (state.getValue(DOUBLE) || !(itemStack.is(asItem())) ) {
             return false;
@@ -111,10 +120,10 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
 
         Direction facingDirection = state.getValue(FACING);
         return switch (facingDirection) {
-            case Direction.NORTH -> hitposZ >= 0.5;
-            case Direction.EAST -> hitposX <= 0.5;
-            case Direction.SOUTH -> hitposZ <= 0.5;
-            case Direction.WEST -> hitposX >= 0.5;
+            case NORTH -> hitposZ >= 0.5;
+            case EAST -> hitposX <= 0.5;
+            case SOUTH -> hitposZ <= 0.5;
+            case WEST -> hitposX >= 0.5;
             default -> false;
         };
     }
@@ -126,32 +135,37 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
         }
         
         return switch (state.getValue(FACING)) {
-            case Direction.NORTH -> Shapes.create(0, 0, 0, 1, 1, 0.5F);
-            case Direction.EAST -> Shapes.create(0.5F, 0, 0, 1, 1, 1);
-            case Direction.SOUTH -> Shapes.create(0, 0, 0.5F, 1, 1, 1);
-            case Direction.WEST -> Shapes.create(0, 0, 0, 0.5F, 1, 1);
+            case NORTH -> Shapes.create(0, 0, 0, 1, 1, 0.5F);
+            case EAST -> Shapes.create(0.5F, 0, 0, 1, 1, 1);
+            case SOUTH -> Shapes.create(0, 0, 0.5F, 1, 1, 1);
+            case WEST -> Shapes.create(0, 0, 0, 0.5F, 1, 1);
             default -> Shapes.block();
         };
     }
 
     @Override
     //? if >1.21.2 {
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
+    /*protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess scheduledTickAccess, BlockPos pos, Direction direction, BlockPos blockPos2, BlockState blockState2, RandomSource randomSource) {
         if (state.getValue(WATERLOGGED)) {
             scheduledTickAccess.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(state, level, scheduledTickAccess, pos, direction, blockPos2, blockState2, randomSource);
     }
+    *///?} else {
+    //?if >1.20.1 {
+    /*protected*/
     //?} else {
-    /*protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+    public
+    //?}
+    BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
     if (state.getValue(WATERLOGGED)) {
             level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
         }
 
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
     }
-    *///?}
+    //?}
 
     @Override
     public boolean useShapeForLightOcclusion(BlockState state) {
@@ -178,18 +192,35 @@ public class VerticalSlabBlock extends HorizontalDirectionalBlock implements Sim
 
     @Override
     //? if >1.21.2 {
-    public boolean canPlaceLiquid(@Nullable LivingEntity player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-    //?} else {
+    /*public boolean canPlaceLiquid(@Nullable LivingEntity player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    *///?} else if 1.21.1 {
     /*public boolean canPlaceLiquid(@Nullable Player player, BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
-    *///?}
+    *///?} else if 1.20.1 {
+    public boolean canPlaceLiquid(BlockGetter level, BlockPos pos, BlockState state, Fluid fluid) {
+    //?}
         if (!state.getValue(DOUBLE)) {
-            return SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
+            //? if >1.20.1 {
+            /*return SimpleWaterloggedBlock.super.canPlaceLiquid(player, level, pos, state, fluid);
+            *///?} else {
+            return SimpleWaterloggedBlock.super.canPlaceLiquid(level, pos, state, fluid);
+            //?}
         }
         return false;
     }
 
     @Override
-    protected boolean isPathfindable(BlockState state, PathComputationType type) {
+    //? if >1.20.1 {
+    /*protected*/
+    //?} else {
+    public
+    //?}
+    boolean isPathfindable(
+            //?if >1.20.1 {
+            /*BlockState state, PathComputationType type
+            *///?} else {
+            BlockState state, BlockGetter level, BlockPos pos, PathComputationType type
+            //?}
+    ) {
         return state.getValue(DOUBLE);
     }
 }

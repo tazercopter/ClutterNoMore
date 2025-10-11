@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.ClutterNoMore;
-//? fabric {
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-//?}
+//? if fabric {
+/*import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+*///?}
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -20,32 +20,32 @@ import java.util.*;
 
 public class ShapeMapHandler extends SimpleJsonResourceReloadListener
 //? >1.21.2
-<JsonElement>
-//? fabric {
-    implements IdentifiableResourceReloadListener
-//?}
+/*<JsonElement>*/
+//? if fabric {
+    /*implements IdentifiableResourceReloadListener
+*///?}
 {
 
     //? if >1.21.2 {
 
-    public static final FileToIdConverter CONVERTER = FileToIdConverter.json("shape_map");
+    /*public static final FileToIdConverter CONVERTER = FileToIdConverter.json("shape_map");
     public ShapeMapHandler() {
         super(ExtraCodecs.JSON, CONVERTER);
     }
-    //?} else {
-    /*public static final Gson GSON = new GsonBuilder().create();
+    *///?} else {
+    public static final Gson GSON = new GsonBuilder().create();
 
     public ShapeMapHandler() {
         super(GSON, "shape_map");
     }
-    *///?}
+    //?}
     
-    //? fabric {
-    @Override
+    //? if fabric {
+    /*@Override
     public ResourceLocation getFabricId() {
         return ClutterNoMore.location("shape_map");
     }
-    //?}
+    *///?}
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> file, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
@@ -61,11 +61,11 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
 
             JsonObject content = fileEntry.getValue().getAsJsonObject();
             for (Map.Entry<String, JsonElement> contentEntry : content.entrySet()) {
-                ResourceLocation key = ResourceLocation.parse(contentEntry.getKey());
+                ResourceLocation key = ClutterNoMore.parse(contentEntry.getKey());
                 List<ResourceLocation> values = new ArrayList<>();
 
                 for (JsonElement element : contentEntry.getValue().getAsJsonArray()) {
-                    values.add(ResourceLocation.parse(element.getAsString()));
+                    values.add(ClutterNoMore.parse(element.getAsString()));
                 }
 
                 fileShapeMap.put(key, values);

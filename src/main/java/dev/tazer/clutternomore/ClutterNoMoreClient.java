@@ -4,9 +4,14 @@ import dev.tazer.clutternomore.client.ShapeSwitcherOverlay;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.mixin.SlotAccessor;
 import dev.tazer.clutternomore.common.mixin.screen.ScreenAccessor;
-import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
-//? fabric
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+//? if !forge {
+ /*import dev.tazer.clutternomore.common.networking.ChangeStackPayload;*/
+//?} else if forge && <1.21.1 {
+import dev.tazer.clutternomore.forge.networking.ChangeStackPacket;
+import dev.tazer.clutternomore.forge.networking.ForgeNetworking;
+//?}
+//? if fabric
+/*import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;*/
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -19,24 +24,27 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-//? neoforge
+//? if neoforge
 /*import net.neoforged.neoforge.network.PacketDistributor;*/
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.tazer.clutternomore.ClutterNoMore.MODID;
+
 public class ClutterNoMoreClient {
     public static boolean showTooltip = false;
     public static ShapeSwitcherOverlay OVERLAY = null;
+    public static final CNMConfig.ClientConfig CLIENT_CONFIG = CNMConfig.ClientConfig.createToml(Platform.INSTANCE.configPath(), "", MODID +"-client", CNMConfig.ClientConfig.class);
 
     public static void init() {
     }
 
     public static void onItemTooltips(ItemStack stack,
                                       //? if >1.21 {
-                                      Item.TooltipContext
-                                              //?} else
-                                              /*Object*/
+                                      /*Item.TooltipContext
+                                              *///?} else
+                                              Object
                                               tooltipContext, TooltipFlag tooltipFlag, List<Component> tooltip) {
         if (!showTooltip) {
             if (ShapeMap.contains(stack.getItem())) {
@@ -54,7 +62,7 @@ public class ClutterNoMoreClient {
             if (player != null) {
                 ItemStack heldStack = player.getItemInHand(InteractionHand.MAIN_HAND);
                 if (ShapeMap.contains(heldStack.getItem())) {
-                    switch (CNMConfig.HOLD.get()) {
+                    switch (CLIENT_CONFIG.HOLD.value()) {
                         case HOLD -> {
                             if (OVERLAY == null && action == 1)
                                 OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack, true);
@@ -86,13 +94,15 @@ public class ClutterNoMoreClient {
             Slot slot = ((ScreenAccessor) screen).getSlotUnderMouse();
             if (slot != null) {
                 ItemStack heldStack = slot.getItem();
-                //? neoforge
+                //? if neoforge
                 /*Player player = screen.getMinecraft().player;*/
-                //? fabric
+                //? if fabric
+                /*Player player = Minecraft.getInstance().player;*/
+                //? if forge
                 Player player = Minecraft.getInstance().player;
 
                 if (slot.allowModification(player) && (ShapeMap.contains(heldStack.getItem()))) {
-                    switch (CNMConfig.HOLD.get()) {
+                    switch (CLIENT_CONFIG.HOLD.value()) {
                         case HOLD -> showTooltip = true;
                         case TOGGLE -> showTooltip = !showTooltip;
                         case PRESS -> switchShapeInSlot(
@@ -109,7 +119,7 @@ public class ClutterNoMoreClient {
     }
 
     public static void onKeyRelease() {
-        if (CNMConfig.HOLD.get() == CNMConfig.InputType.HOLD) {
+        if (CLIENT_CONFIG.HOLD.value() == CNMConfig.InputType.HOLD) {
             showTooltip = false;
         }
     }
@@ -132,10 +142,17 @@ public class ClutterNoMoreClient {
         next.setCount(count);
         player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.3F, 1.5F);
         if (slotId < 9) slotId += 36;
-        var p = new ChangeStackPayload(containerId, slotId, next);
-        //? fabric
-        ClientPlayNetworking.send(p);
-        //? neoforge
+        //? if !forge {
+        /*var p = new ChangeStackPayload(containerId, slotId, next);*/
+        //?} else {
+        ChangeStackPacket p = new ChangeStackPacket(containerId, slotId, next);
+        //}
+        //? if fabric
+        /*ClientPlayNetworking.send(p);*/
+        //? if neoforge
         /*PacketDistributor.sendToServer(p);*/
+        //? if forge && <1.21.1
+        ForgeNetworking.sendToServer(p);
+        //?}
     }
 }

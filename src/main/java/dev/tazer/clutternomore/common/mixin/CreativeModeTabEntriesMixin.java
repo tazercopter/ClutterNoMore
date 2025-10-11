@@ -1,12 +1,16 @@
 package dev.tazer.clutternomore.common.mixin;
 
 import dev.tazer.clutternomore.common.CHooks;
-//? neoforge {
+//? if neoforge {
 /*import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import org.spongepowered.asm.mixin.Shadow;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
  *///?} else if fabric {
-import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+/*import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
+*///?} else {
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
+import org.spongepowered.asm.mixin.Shadow;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 //?}
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -16,14 +20,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//? neoforge {
-/*@Mixin(BuildCreativeModeTabContentsEvent.class)
-*///?} else {
-@Mixin(FabricItemGroupEntries.class)
+//? if neoforge || forge {
+@Mixin(BuildCreativeModeTabContentsEvent.class)
+//?} else {
+/*@Mixin(FabricItemGroupEntries.class)*/
 //?}
 public abstract class CreativeModeTabEntriesMixin {
-
-    //? neoforge {
+    //? if forge {
+    @Inject(method = "accept", at = @At("HEAD"), cancellable = true)
+    private void accept(ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
+        if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
+    }
+    //?} else if neoforge {
     /*@Shadow
     public abstract void insertBefore(ItemStack existingEntry, ItemStack newEntry, CreativeModeTab.TabVisibility visibility);
 
@@ -53,6 +61,7 @@ public abstract class CreativeModeTabEntriesMixin {
         }
     }
     *///?} else {
+    /*
     @Inject(method = "accept", at = @At("HEAD"), cancellable = true)
     private void accept(ItemStack newEntry, CreativeModeTab.TabVisibility visibility, CallbackInfo ci) {
         if (CHooks.denyItem(newEntry.getItem())) ci.cancel();
@@ -62,5 +71,5 @@ public abstract class CreativeModeTabEntriesMixin {
     private void accept(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
         if (CHooks.denyItem(stack.getItem())) cir.setReturnValue(false);
     }
-    //?}
+    *///?}
 }

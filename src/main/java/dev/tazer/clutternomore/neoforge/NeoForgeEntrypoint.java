@@ -1,4 +1,4 @@
-//? neoforge {
+//? if neoforge {
 /*package dev.tazer.clutternomore.neoforge;
 
 import dev.tazer.clutternomore.CNMConfig;
@@ -14,19 +14,14 @@ import net.minecraft.server.packs.repository.Pack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
-import net.neoforged.neoforge.resource.ResourcePackLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,8 +31,6 @@ public class NeoForgeEntrypoint {
 
     public NeoForgeEntrypoint(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         ClutterNoMore.init();
-        modContainer.registerConfig(ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
-        modContainer.registerConfig(ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
 
         if (dist.isClient()) {
             ClutterNoMoreClient.init();
@@ -75,6 +68,11 @@ public class NeoForgeEntrypoint {
 
     private static void clientSetup(FMLClientSetupEvent event) {
         AssetGenerator.generate();
+    }
+
+    @Override
+    public Path configPath() {
+        return FMLPaths.CONFIGDIR.get();
     }
 
 }

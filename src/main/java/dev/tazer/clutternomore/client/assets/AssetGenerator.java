@@ -3,6 +3,7 @@ package dev.tazer.clutternomore.client.assets;
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +49,13 @@ public class AssetGenerator {
     }
 
     public static void generate() {
-        if (CNMConfig.RUNTIME_ASSET_GENERATION.getAsBoolean()) {
+        if (
+                //? if >1.20.1 {
+                /*CNMConfig.RUNTIME_ASSET_GENERATION.getAsBoolean()*/
+                //?} else {
+                ClutterNoMoreClient.CLIENT_CONFIG.RUNTIME_ASSET_GENERATION.value()
+                //?}
+        ) {
             //lang
             var jsonObject = new JsonObject();
             keys.forEach((s)-> {
@@ -58,15 +65,21 @@ public class AssetGenerator {
             write(assets.resolve("lang"), "en_us.json", jsonObject.toString());
             // pack.mcmeta
             //? if >1.21.1 {
-            String packVersion = "64";
-            //?} else {
-            /*String packVersion = "34";
-             *///?}
+            /*String packVersion = "64";
+            *///?} else {
+            String packVersion = "34";
+             //?}
             write(pack, "pack.mcmeta", "{   \"pack\": {     \"description\": \"Dynamic data for Clutter No More\",     \"pack_format\": "+packVersion+"   } }");
             VerticalSlabGenerator.generate();
             StepGenerator.generate();
         }
-        if (CNMConfig.VERTICAL_SLABS.getAsBoolean() || CNMConfig.STEPS.getAsBoolean())
+        if (
+                //? if >1.20.1 {
+                /*CNMConfig.VERTICAL_SLABS.getAsBoolean() || CNMConfig.STEPS.getAsBoolean()*/
+                //?} else {
+                ClutterNoMore.STARTUP_CONFIG.VERTICAL_SLABS.value() || ClutterNoMore.STARTUP_CONFIG.STEPS.value()
+                //?}
+        )
             enablePack(Minecraft.getInstance());
     }
 

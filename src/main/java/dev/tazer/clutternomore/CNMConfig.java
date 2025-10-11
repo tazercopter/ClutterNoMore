@@ -1,18 +1,32 @@
 package dev.tazer.clutternomore;
 
 import com.mojang.serialization.Codec;
+import folk.sisby.kaleido.api.ReflectiveConfig;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
+import folk.sisby.kaleido.lib.quiltconfig.api.values.TrackedValue;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.neoforge.common.ModConfigSpec;
+//? if >1.20.1 {
+/*import net.neoforged.neoforge.common.ModConfigSpec;*/
+//?} else {
+import net.minecraftforge.common.ForgeConfigSpec;
+//?}
 
 public class CNMConfig {
+    public static class StartupConfig extends ReflectiveConfig {
+        @Comment("If vertical slabs should be added to all existing slabs")
+        public final TrackedValue<Boolean> VERTICAL_SLABS = this.value(true);
+        @Comment("If steps should be added to all existing stairs")
+        public final TrackedValue<Boolean> STEPS = this.value(true);
+    }
 
-    public static ModConfigSpec STARTUP_CONFIG;
-    public static ModConfigSpec.BooleanValue VERTICAL_SLABS;
-    public static ModConfigSpec.BooleanValue STEPS;
-    public static ModConfigSpec CLIENT_CONFIG;
-    public static ModConfigSpec.BooleanValue SCROLLING;
-    public static ModConfigSpec.EnumValue<InputType> HOLD;
-    public static ModConfigSpec.BooleanValue RUNTIME_ASSET_GENERATION;
+    public static class ClientConfig extends ReflectiveConfig {
+        @Comment("If the shape switcher menu should be scrolling or static")
+        public final TrackedValue<Boolean> SCROLLING = this.value(true);
+        @Comment("If the change block shape key should be held or toggled to open the menu")
+        public final TrackedValue<InputType> HOLD = this.value(InputType.HOLD);
+        @Comment("Whether to generate models for vertical slabs and steps when the game is launched. Modpacks looking for a faster start can disable this option and ship the generated resource pack.")
+        public final TrackedValue<Boolean> RUNTIME_ASSET_GENERATION = this.value(true);
+    }
 
     public enum InputType implements StringRepresentable {
         HOLD,
@@ -31,33 +45,4 @@ public class CNMConfig {
 
         public static final Codec<InputType> CODEC = StringRepresentable.fromEnum(InputType::values);
     }
-
-    static {
-
-        ModConfigSpec.Builder COMMON_BUILDER = new ModConfigSpec.Builder();
-        COMMON_BUILDER.push("shapes");
-        COMMON_BUILDER.comment("Ensure these values are the same as the servers you're joining or issues may arise");
-        VERTICAL_SLABS = COMMON_BUILDER
-                .comment("If vertical slabs should be added to all existing slabs")
-                .define("verticalSlabs", true);
-        STEPS = COMMON_BUILDER
-                .comment("If steps should be added to all existing stairs")
-                .define("steps", true);
-        COMMON_BUILDER.pop();
-        STARTUP_CONFIG = COMMON_BUILDER.build();
-
-        ModConfigSpec.Builder CLIENT_BUILDER = new ModConfigSpec.Builder();
-
-        SCROLLING = CLIENT_BUILDER
-                .comment("If the shape switcher menu should be scrolling or static")
-                .define("scrolling", true);
-        HOLD = CLIENT_BUILDER
-                .comment("If the change block shape key should be held or toggled to open the menu")
-                .defineEnum("hold", InputType.HOLD);
-        RUNTIME_ASSET_GENERATION = CLIENT_BUILDER
-                .comment("Whether to generate models for vertical slabs and steps when the game is launched. Modpacks looking for a faster start can disable this option and ship the generated resource pack.")
-                .define("runtime_asset_generation", true);
-        CLIENT_CONFIG = CLIENT_BUILDER.build();
-    }
-
 }

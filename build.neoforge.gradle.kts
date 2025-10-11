@@ -73,6 +73,9 @@ repositories {
     maven ( url = "https://maven.terraformersmc.com/" )
     maven ( url = "https://cursemaven.com" )
     maven ( url = "https://api.modrinth.com/maven")
+    maven ( "https://repo.sleeping.town/" ) {
+        name = "Sisby Maven"
+    }
 }
 
 dependencies {
@@ -81,6 +84,10 @@ dependencies {
     compileOnly("mezz.jei:jei-${property("deps.minecraft")}-common-api:19.21.0.247")
     compileOnly("mezz.jei:jei-${property("deps.minecraft")}-neoforge-api:19.21.0.247")
     runtimeOnly("mezz.jei:jei-${property("deps.minecraft")}-neoforge:19.21.0.247")
+
+    implementation("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    jarJar("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    "additionalRuntimeClasspath"("folk.sisby:kaleido-config:${property("deps.kaleido")}")
 
     runtimeOnly("me.djtheredstoner:DevAuth-neoforge:1.2.1")
 
