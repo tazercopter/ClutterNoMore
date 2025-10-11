@@ -38,5 +38,10 @@ public class NeoForgePlatformImpl implements Platform {
         }
     }
 
+    @Override
+    public Path configPath() {
+        return FMLPaths.CONFIGDIR.get();
+    }
+
 }
 *///?}

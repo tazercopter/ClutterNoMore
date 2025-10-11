@@ -1,16 +1,12 @@
 //? if neoforge {
 /*package dev.tazer.clutternomore.neoforge;
 
-import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.client.assets.AssetGenerator;
 import dev.tazer.clutternomore.common.shape_map.ShapeMapHandler;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.packs.repository.Pack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
