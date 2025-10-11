@@ -51,8 +51,8 @@ public class FabricEntrypoint implements ModInitializer {
         //? if >=1.21.9 {
         ResourceLoader.get(PackType.SERVER_DATA).registerReloader(ClutterNoMore.location("shape_map"), new ShapeMapHandler());
         //?} else {
-        /*ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
-        *///?}
+        /^ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
+        ^///?}
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register(((minecraftServer, closeableResourceManager) -> {
             ClutterNoMore.load(minecraftServer.registryAccess(), minecraftServer.getRecipeManager());
         }));
