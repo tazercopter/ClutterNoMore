@@ -69,9 +69,9 @@ public final class StepGenerator {
                 }
 
                 // block models
-                var potentialModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + name + ".json"));
+                var potentialModel = resourceManager.getResource(ClutterNoMore.location(id.getNamespace(), "models/block/" + name + ".json"));
                 if (potentialModel.isEmpty()) {
-                    var baseSlabModel = resourceManager.getResource(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
+                    var baseSlabModel = resourceManager.getResource(ClutterNoMore.location(id.getNamespace(), "models/block/" + id.getPath() + ".json"));
                     if (baseSlabModel.isPresent()) {
                         JsonObject blockModel = JsonParser.parseReader(baseSlabModel.get().openAsReader()).getAsJsonObject();
                         blockModel.addProperty("parent", "clutternomore:block/templates/step");

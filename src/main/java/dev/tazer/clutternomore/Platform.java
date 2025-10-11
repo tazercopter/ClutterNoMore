@@ -35,4 +35,6 @@ public interface Platform {
     Path getResourcePack();
 
     JsonObject getFileInJar(String namespace, String path);
+
+    Path configPath();
 }

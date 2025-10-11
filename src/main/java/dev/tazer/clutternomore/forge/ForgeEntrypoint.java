@@ -28,8 +28,6 @@ public class ForgeEntrypoint {
 
     public ForgeEntrypoint(IEventBus modEventBus, ModContainer modContainer, Dist dist) {
         ClutterNoMore.init();
-        modContainer.registerConfig(ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
-        modContainer.registerConfig(ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
 
         if (dist.isClient()) {
             ClutterNoMoreClient.init();

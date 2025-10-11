@@ -3,6 +3,7 @@ package dev.tazer.clutternomore.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import dev.tazer.clutternomore.common.networking.ChangeStackPayload;
 import net.minecraft.client.Minecraft;
@@ -68,7 +69,7 @@ public class ShapeSwitcherOverlay {
         float smoothing = 1 - (float) Math.exp(-5 * partialTick);
         currentIndex = Mth.lerp(smoothing, currentIndex, selectedIndex);
 
-        if (CNMConfig.SCROLLING.get()) {
+        if (ClutterNoMoreClient.CLIENT_CONFIG.SCROLLING.value()) {
             startX = Mth.floor(centreX - currentIndex * spacing);
 
             //? if <1.21.2

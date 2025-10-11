@@ -151,9 +151,9 @@ public class BlockSetRegistry {
             if (id.getPath().contains("log")) {
                 addChild("wood", getWood());
                 if (id.getPath().contains("stripped")) {
-                    addChild("hollow_log",ResourceLocation.fromNamespaceAndPath("wilderwild", id.getPath().replace("stripped_", "stripped_hollowed_")));
+                    addChild("hollow_log",ClutterNoMore.location("wilderwild", id.getPath().replace("stripped_", "stripped_hollowed_")));
                 } else {
-                    addChild("hollow_log", ResourceLocation.fromNamespaceAndPath("wilderwild", "hollowed_"+ id.getPath()));
+                    addChild("hollow_log", ClutterNoMore.location("wilderwild", "hollowed_"+ id.getPath()));
                 }
             }
             addChild("slab", findRelatedEntry("slab"));
@@ -224,7 +224,7 @@ public class BlockSetRegistry {
 
             for (String stem : candidates) {
                 String candidatePath = reapplyPrefix + prefixPart + stem + postfixPart;
-                ResourceLocation candidateId = ResourceLocation.fromNamespaceAndPath(namespace, candidatePath);
+                ResourceLocation candidateId = ClutterNoMore.location(namespace, candidatePath);
                 Optional<Item> found = BuiltInRegistries.ITEM.getOptional(candidateId);
                 if (found.isPresent()) return found.get();
             }

@@ -42,13 +42,6 @@ public class FabricEntrypoint implements ModInitializer {
     @Override
     public void onInitialize() {
         ClutterNoMore.init();
-        //? if >1.21.2 {
-        var instance = ConfigRegistry.INSTANCE;
-        //?} else {
-        /*var instance = NeoForgeConfigRegistry.INSTANCE;
-        *///?}
-        instance.register(MODID, ModConfig.Type.STARTUP, CNMConfig.STARTUP_CONFIG);
-        instance.register(MODID, ModConfig.Type.CLIENT, CNMConfig.CLIENT_CONFIG);
         registerPayloadHandlers();
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ShapeMapHandler());
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register(((minecraftServer, closeableResourceManager) -> {

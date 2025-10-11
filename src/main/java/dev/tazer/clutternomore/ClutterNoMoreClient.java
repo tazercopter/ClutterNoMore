@@ -25,9 +25,12 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.tazer.clutternomore.ClutterNoMore.MODID;
+
 public class ClutterNoMoreClient {
     public static boolean showTooltip = false;
     public static ShapeSwitcherOverlay OVERLAY = null;
+    public static final CNMConfig.ClientConfig CLIENT_CONFIG = CNMConfig.ClientConfig.createToml(Platform.INSTANCE.configPath(), "", MODID +"-client", CNMConfig.ClientConfig.class);
 
     public static void init() {
     }
@@ -54,7 +57,7 @@ public class ClutterNoMoreClient {
             if (player != null) {
                 ItemStack heldStack = player.getItemInHand(InteractionHand.MAIN_HAND);
                 if (ShapeMap.contains(heldStack.getItem())) {
-                    switch (CNMConfig.HOLD.get()) {
+                    switch (CLIENT_CONFIG.HOLD.value()) {
                         case HOLD -> {
                             if (OVERLAY == null && action == 1)
                                 OVERLAY = new ShapeSwitcherOverlay(minecraft, heldStack, true);
@@ -92,7 +95,7 @@ public class ClutterNoMoreClient {
                 Player player = Minecraft.getInstance().player;
 
                 if (slot.allowModification(player) && (ShapeMap.contains(heldStack.getItem()))) {
-                    switch (CNMConfig.HOLD.get()) {
+                    switch (CLIENT_CONFIG.HOLD.value()) {
                         case HOLD -> showTooltip = true;
                         case TOGGLE -> showTooltip = !showTooltip;
                         case PRESS -> switchShapeInSlot(
@@ -109,7 +112,7 @@ public class ClutterNoMoreClient {
     }
 
     public static void onKeyRelease() {
-        if (CNMConfig.HOLD.get() == CNMConfig.InputType.HOLD) {
+        if (CLIENT_CONFIG.HOLD.value() == CNMConfig.InputType.HOLD) {
             showTooltip = false;
         }
     }

@@ -61,11 +61,11 @@ public class ShapeMapHandler extends SimpleJsonResourceReloadListener
 
             JsonObject content = fileEntry.getValue().getAsJsonObject();
             for (Map.Entry<String, JsonElement> contentEntry : content.entrySet()) {
-                ResourceLocation key = ResourceLocation.parse(contentEntry.getKey());
+                ResourceLocation key = ClutterNoMore.parse(contentEntry.getKey());
                 List<ResourceLocation> values = new ArrayList<>();
 
                 for (JsonElement element : contentEntry.getValue().getAsJsonArray()) {
-                    values.add(ResourceLocation.parse(element.getAsString()));
+                    values.add(ClutterNoMore.parse(element.getAsString()));
                 }
 
                 fileShapeMap.put(key, values);

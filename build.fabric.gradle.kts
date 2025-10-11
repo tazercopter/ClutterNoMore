@@ -58,6 +58,9 @@ repositories {
         url = "https://maven.terraformersmc.com/"
     )
     maven ("https://maven.parchmentmc.org")
+    maven ( "https://repo.sleeping.town/" ) {
+        name = "Sisby Maven"
+    }
 }
 
 dependencies {
@@ -81,6 +84,9 @@ dependencies {
         modCompileOnly("maven.modrinth:eiv:${property("deps.eiv")}")
         modLocalRuntime("maven.modrinth:pyrite:0.16.1+1.21.9-rc1")
     }
+
+    implementation("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    include("folk.sisby:kaleido-config:${property("deps.kaleido")}")
 
     val modules = listOf("transitive-access-wideners-v1", "registry-sync-v0", "resource-loader-v0")
     for (it in modules) modImplementation(fabricApi.module("fabric-$it", property("deps.fabric-api") as String))

@@ -1,29 +1,32 @@
 package dev.tazer.clutternomore.common.mixin;
 
 import dev.tazer.clutternomore.common.CHooks;
+import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 //? neoforge {
-/*import dev.tazer.clutternomore.common.shape_map.ShapeMap;
-import org.spongepowered.asm.mixin.Shadow;
+/*
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
  *///?} else if fabric {
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroupEntries;
-//?}
+//?} else {
+/*import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+*///?}
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-//? neoforge {
+//? neoforge || forge {
 /*@Mixin(BuildCreativeModeTabContentsEvent.class)
 *///?} else {
 @Mixin(FabricItemGroupEntries.class)
 //?}
 public abstract class CreativeModeTabEntriesMixin {
 
-    //? neoforge {
+    //? neoforge || forge {
     /*@Shadow
     public abstract void insertBefore(ItemStack existingEntry, ItemStack newEntry, CreativeModeTab.TabVisibility visibility);
 

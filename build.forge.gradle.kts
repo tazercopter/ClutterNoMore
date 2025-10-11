@@ -73,11 +73,19 @@ repositories {
     maven ( url = "https://maven.terraformersmc.com/" )
     maven ( url = "https://cursemaven.com" )
     maven ( url = "https://api.modrinth.com/maven")
+    maven ( "https://repo.sleeping.town/" ) {
+        name = "Sisby Maven"
+    }
 }
 
 dependencies {
     compileOnly("mezz.jei:jei-${property("deps.minecraft")}-forge-api:${property("deps.jei")}")
     runtimeOnly("mezz.jei:jei-${property("deps.minecraft")}-forge:${property("deps.jei")}")
+
+    implementation("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    jarJar("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    "additionalRuntimeClasspath"("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+
     modCompileOnly("io.github.llamalad7:mixinextras-common:0.5.0")
     implementation("io.github.llamalad7:mixinextras-forge:0.5.0")
     jarJar("io.github.llamalad7:mixinextras-forge:0.5.0")

@@ -3,6 +3,7 @@ package dev.tazer.clutternomore.client.assets;
 import com.google.gson.JsonObject;
 import dev.tazer.clutternomore.CNMConfig;
 import dev.tazer.clutternomore.ClutterNoMore;
+import dev.tazer.clutternomore.ClutterNoMoreClient;
 import dev.tazer.clutternomore.Platform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +49,7 @@ public class AssetGenerator {
     }
 
     public static void generate() {
-        if (CNMConfig.RUNTIME_ASSET_GENERATION.getAsBoolean()) {
+        if (ClutterNoMoreClient.CLIENT_CONFIG.RUNTIME_ASSET_GENERATION.value()) {
             //lang
             var jsonObject = new JsonObject();
             keys.forEach((s)-> {
@@ -66,7 +67,7 @@ public class AssetGenerator {
             VerticalSlabGenerator.generate();
             StepGenerator.generate();
         }
-        if (CNMConfig.VERTICAL_SLABS.getAsBoolean() || CNMConfig.STEPS.getAsBoolean())
+        if (ClutterNoMore.STARTUP_CONFIG.VERTICAL_SLABS.value() || ClutterNoMore.STARTUP_CONFIG.STEPS.value())
             enablePack(Minecraft.getInstance());
     }
 

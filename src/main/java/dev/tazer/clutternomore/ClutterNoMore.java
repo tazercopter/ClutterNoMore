@@ -4,6 +4,7 @@ package dev.tazer.clutternomore;
 import dev.tazer.clutternomore.client.assets.AssetGenerator;
 import dev.tazer.clutternomore.client.assets.StepGenerator;
 import dev.tazer.clutternomore.client.assets.VerticalSlabGenerator;
+import dev.tazer.clutternomore.common.access.RegistryAccess;
 import dev.tazer.clutternomore.common.blocks.StepBlock;
 import dev.tazer.clutternomore.common.blocks.VerticalSlabBlock;
 import dev.tazer.clutternomore.common.registry.CBlocks;
@@ -11,7 +12,6 @@ import dev.tazer.clutternomore.common.registry.BlockSetRegistry;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 public class ClutterNoMore {
     public static final String MODID = "clutternomore";
     public static final Logger LOGGER = LogManager.getLogger("ClutterNoMore");
+    public static final CNMConfig.StartupConfig STARTUP_CONFIG = CNMConfig.StartupConfig.createToml(Platform.INSTANCE.configPath(), "", MODID+"-startup", CNMConfig.StartupConfig.class);
 
     public static void init() {
         LOGGER.info("Initializing {} on {}", MODID, Platform.INSTANCE.loader());
@@ -55,11 +56,18 @@ public class ClutterNoMore {
         /*return new ResourceLocation(namespace, path);*/
     }
 
+    public static ResourceLocation parse(String id) {
+        //? if >1.21
+        return ResourceLocation.parse(id);
+        //? if <1.21
+        /*return new ResourceLocation(id);*/
+    }
+
     public static void load(
             //? if >1.21 {
             HolderLookup.Provider
             //?} else {
-            /*RegistryAccess
+            /*net.minecraft.core.RegistryAccess
             *///?}
                     registries, RecipeManager recipeManager) {
         //FIXME 1.21.8
@@ -126,7 +134,7 @@ public class ClutterNoMore {
     }
 
     public static void registerVariants() {
-        if (CNMConfig.VERTICAL_SLABS.get() || CNMConfig.STEPS.get()) {
+        if (STARTUP_CONFIG.VERTICAL_SLABS.value() || STARTUP_CONFIG.STEPS.value()) {
             //? if neoforge {
             /*((RegistryAccess) BuiltInRegistries.BLOCK).clutternomore$unfreeze();
             ((RegistryAccess) BuiltInRegistries.ITEM).clutternomore$unfreeze();
@@ -136,7 +144,7 @@ public class ClutterNoMore {
             ArrayList<ResourceLocation> stairs = new ArrayList<>();
             for (Map.Entry<ResourceKey<Item>, Item> resourceKeyItemEntry : BuiltInRegistries.ITEM.entrySet()) {
                 if (resourceKeyItemEntry.getValue().asItem() instanceof BlockItem blockItem) {
-                    if (blockItem.getBlock() instanceof SlabBlock slabBlock && CNMConfig.VERTICAL_SLABS.get()) {
+                    if (blockItem.getBlock() instanceof SlabBlock slabBlock && STARTUP_CONFIG.VERTICAL_SLABS.value()) {
                         var path = "vertical_" + resourceKeyItemEntry.getKey().location().getPath();
                         toRegister.put(path, ()->new VerticalSlabBlock(copy(slabBlock)
                                 //? if >1.21.2
@@ -144,7 +152,7 @@ public class ClutterNoMore {
                         ));
                         slabs.add(resourceKeyItemEntry.getKey().location());
                     }
-                    if (blockItem.getBlock() instanceof StairBlock stairBlock && CNMConfig.STEPS.get()) {
+                    if (blockItem.getBlock() instanceof StairBlock stairBlock && STARTUP_CONFIG.STEPS.value()) {
                         var path = resourceKeyItemEntry.getKey().location().getPath().replace("stairs", "step");
                         toRegister.put(path, ()->new StepBlock(copy(stairBlock)
                                 //? if >1.21.2
