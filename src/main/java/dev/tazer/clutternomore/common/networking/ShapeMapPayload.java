@@ -50,6 +50,8 @@ public record ShapeMapPayload(Map<ItemStack, List<ItemStack>> shapes, Map<ItemSt
                                           ClientPlayNetworking.Context
                                           //? if neoforge
                                           /*IPayloadContext*/
+                                          //? if forge
+                                          /*Object*/
                                           context) {
         final Map<Item, List<Item>> SHAPES_DATAMAP = new HashMap<>();
         data.shapes.forEach(((item, items) -> {

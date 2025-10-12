@@ -15,6 +15,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 //? if neoforge
 /*import net.neoforged.neoforge.network.PacketDistributor;*/
+//? if forge {
+/*import dev.tazer.clutternomore.forge.networking.ForgeNetworking;
+*///?}
 
 import java.util.*;
 
@@ -146,6 +149,8 @@ public class ShapeMap {
         ServerPlayNetworking.send
         //? if neoforge
         /*PacketDistributor.sendToPlayer*/
+        //? if forge
+        /*ForgeNetworking.sendToPlayer*/
                 (serverPlayer, new ShapeMapPayload(shapes, inverseShapes));
     }
 }
