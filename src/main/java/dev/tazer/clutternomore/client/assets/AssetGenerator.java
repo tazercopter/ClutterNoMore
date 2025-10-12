@@ -49,13 +49,7 @@ public class AssetGenerator {
     }
 
     public static void generate() {
-        if (
-                //? if >1.20.1 {
-                /*CNMConfig.RUNTIME_ASSET_GENERATION.getAsBoolean()*/
-                //?} else {
-                ClutterNoMoreClient.CLIENT_CONFIG.RUNTIME_ASSET_GENERATION.value()
-                //?}
-        ) {
+        if (ClutterNoMoreClient.CLIENT_CONFIG.RUNTIME_ASSET_GENERATION.value()) {
             //lang
             var jsonObject = new JsonObject();
             keys.forEach((s)-> {
@@ -66,20 +60,16 @@ public class AssetGenerator {
             // pack.mcmeta
             //? if >1.21.1 {
             /*String packVersion = "64";
-            *///?} else {
-            String packVersion = "34";
+            *///?} else if 1.21.1 {
+            /*String packVersion = "34";
+            *///?} else if 1.20.1 {
+            String packVersion = "15";
              //?}
             write(pack, "pack.mcmeta", "{   \"pack\": {     \"description\": \"Dynamic data for Clutter No More\",     \"pack_format\": "+packVersion+"   } }");
             VerticalSlabGenerator.generate();
             StepGenerator.generate();
         }
-        if (
-                //? if >1.20.1 {
-                /*CNMConfig.VERTICAL_SLABS.getAsBoolean() || CNMConfig.STEPS.getAsBoolean()*/
-                //?} else {
-                ClutterNoMore.STARTUP_CONFIG.VERTICAL_SLABS.value() || ClutterNoMore.STARTUP_CONFIG.STEPS.value()
-                //?}
-        )
+        if (ClutterNoMore.STARTUP_CONFIG.VERTICAL_SLABS.value() || ClutterNoMore.STARTUP_CONFIG.STEPS.value())
             enablePack(Minecraft.getInstance());
     }
 

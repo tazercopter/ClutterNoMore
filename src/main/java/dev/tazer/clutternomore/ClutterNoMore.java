@@ -175,7 +175,10 @@ public class ClutterNoMore {
             //? if neoforge {
             /*BuiltInRegistries.BLOCK.freeze();
             BuiltInRegistries.ITEM.freeze();
-            *///?}
+            *///?} else if forge {
+            RegistryManager.ACTIVE.getRegistry(BuiltInRegistries.BLOCK.key()).freeze();
+            RegistryManager.ACTIVE.getRegistry(BuiltInRegistries.ITEM.key()).freeze();
+            //?}
         }
     }
 
