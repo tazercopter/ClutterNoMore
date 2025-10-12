@@ -4,8 +4,7 @@ import dev.tazer.clutternomore.ClutterNoMore;
 import dev.tazer.clutternomore.common.shape_map.ShapeMap;
 //? if fabric
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-//? if neoforge
-/*import net.minecraft.core.registries.BuiltInRegistries;*/
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,7 +13,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+//? if neoforge
+/*import net.neoforged.neoforge.network.handling.IPayloadContext;*/
 
 import java.util.ArrayList;
 import java.util.HashMap;
