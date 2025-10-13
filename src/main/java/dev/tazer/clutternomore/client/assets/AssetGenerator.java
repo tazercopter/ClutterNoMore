@@ -58,10 +58,15 @@ public class AssetGenerator {
             final Path assets = pack.resolve("assets/clutternomore");
             write(assets.resolve("lang"), "en_us.json", jsonObject.toString());
             // pack.mcmeta
-            //? if >1.21.1 {
-            String packVersion = "64";
+            String packVersion =
+            //? if >1.21.8 {
+            "69";
+            //?} else if >1.21.6 {
+            /*"64";
+            *///?} else if >1.21 {
+            /*"34";
             //?} else {
-            /*String packVersion = "34";
+            /*"15";
              *///?}
             write(pack, "pack.mcmeta", "{   \"pack\": {     \"description\": \"Dynamic data for Clutter No More\",     \"pack_format\": "+packVersion+"   } }");
             VerticalSlabGenerator.generate();
