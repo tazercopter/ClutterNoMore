@@ -63,11 +63,12 @@ public class AssetGenerator {
             "69";
             //?} else if >1.21.6 {
             /*"64";
-            *///?} else if >1.21 {
-            /*"34";
+            */
+            //?} else if >1.21 {
+            /*"34";*/
             //?} else {
             /*"15";
-             *///?}
+            *///?}
             write(pack, "pack.mcmeta", "{   \"pack\": {     \"description\": \"Dynamic data for Clutter No More\",     \"pack_format\": "+packVersion+"   } }");
             VerticalSlabGenerator.generate();
             StepGenerator.generate();
